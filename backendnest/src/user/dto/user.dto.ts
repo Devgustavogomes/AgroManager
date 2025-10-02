@@ -1,21 +1,32 @@
 import z from 'zod';
 
+export interface UserDTO {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export type UserOutput = Omit<UserDTO, 'password'> & { id: string };
+
 export const createUserSchema = z.object({
   name: z.string().min(5).max(32).trim(),
   email: z.email(),
   password: z.string().min(8).max(16), // Adicionar um Regex depois
 });
-export type createUserDto = z.infer<typeof createUserSchema>;
+
+export type CreateUserDTO = Omit<UserDTO, 'password'> & {
+  hashedPassword: string;
+};
 
 export const idSchema = z.object({
   id: z.uuid(),
 });
 
-export type idDto = z.infer<typeof idSchema>;
+export type UserIdDTO = z.infer<typeof idSchema>;
 
 export const changeUserSchema = z.object({
   name: z.string().min(5).max(32).trim().optional(),
   email: z.email().optional(),
 });
 
-export type changeUserDto = z.infer<typeof changeUserSchema>;
+export type changeUserDTO = z.infer<typeof changeUserSchema>;

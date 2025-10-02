@@ -1,4 +1,3 @@
-import { User } from './interfaces/user.interface';
 import {
   Body,
   Controller,
@@ -6,6 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
   Put,
   UsePipes,
@@ -13,7 +13,12 @@ import {
 import { UserService } from './user.service';
 import { ZodValidationPipe } from 'src/pipes/validation.pipe';
 import { changeUserSchema, createUserSchema, idSchema } from './dto/user.dto';
-import type { changeUserDto, createUserDto, idDto } from './dto/user.dto';
+import type {
+  UserDTO,
+  UserIdDTO,
+  UserOutput,
+  changeUserDTO,
+} from './dto/user.dto';
 
 @Controller('/users')
 export class UserController {
@@ -21,7 +26,7 @@ export class UserController {
 
   @Get()
   @HttpCode(200)
-  async getUsers(): Promise<User[]> {
+  async getUsers(): Promise<UserOutput[]> {
     const users = await this.userService.getUsers();
 
     return users;
@@ -30,7 +35,7 @@ export class UserController {
   @Get(':id')
   @HttpCode(200)
   @UsePipes(new ZodValidationPipe(idSchema))
-  async getUserById(@Param('id') id: idDto): Promise<User> {
+  async getUserById(@Param('id') id: UserIdDTO): Promise<UserOutput> {
     const user = await this.userService.getUserById(id);
     return user;
   }
@@ -38,19 +43,19 @@ export class UserController {
   @Post()
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createUserSchema))
-  async create(@Body() data: createUserDto): Promise<User> {
+  async create(@Body() data: UserDTO): Promise<UserOutput> {
     const user = await this.userService.create(data);
 
     return user;
   }
 
-  @Put(':id')
+  @Patch(':id')
   @HttpCode(200)
   @UsePipes(new ZodValidationPipe(changeUserSchema))
   async change(
-    @Param('id') id: idDto,
-    @Body() data: changeUserDto,
-  ): Promise<User> {
+    @Param('id') id: UserIdDTO,
+    @Body() data: changeUserDTO,
+  ): Promise<UserOutput> {
     const user = await this.userService.change(id, data);
 
     return user;
@@ -59,7 +64,7 @@ export class UserController {
   @Delete(':id')
   @HttpCode(204)
   @UsePipes(new ZodValidationPipe(idSchema))
-  async delete(@Param('id') id: idDto): Promise<void> {
+  async delete(@Param('id') id: UserIdDTO): Promise<void> {
     await this.userService.delete(id);
   }
 }

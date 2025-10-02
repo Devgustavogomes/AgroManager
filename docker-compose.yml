@@ -6,6 +6,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - 3000:3000
-    env.env_file:
+    env_file:
       - .env
     container_name: skillhub-backend-prod

@@ -1,6 +1,5 @@
-import { changeUserDto, createUserDto, idDto } from './dto/user.dto';
+import { changeUserDTO, UserDTO, UserIdDTO, UserOutput } from './dto/user.dto';
 import { Injectable } from '@nestjs/common';
-import { User } from './interfaces/user.interface';
 import { UserRepository } from './user.repository';
 import { hash } from 'bcryptjs';
 
@@ -8,7 +7,7 @@ import { hash } from 'bcryptjs';
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async getUsers(): Promise<User[]> {
+  async getUsers(): Promise<UserOutput[]> {
     const users = await this.userRepository.getUsers();
 
     if (!users) {
@@ -18,13 +17,13 @@ export class UserService {
     return users;
   }
 
-  async getUserById(id: idDto): Promise<User> {
+  async getUserById(id: UserIdDTO): Promise<UserOutput> {
     const user = await this.userRepository.getUserById(id);
 
     return user[0];
   }
 
-  async create(data: createUserDto): Promise<User> {
+  async create(data: UserDTO): Promise<UserOutput> {
     const { name, email, password } = data;
 
     const hashedPassword = await hash(password, 10);
@@ -39,13 +38,18 @@ export class UserService {
 
     return user[0];
   }
-  async change(id: idDto, data: changeUserDto): Promise<User> {
-    const user = await this.userRepository.change(id, data);
+  async change(id: UserIdDTO, data: changeUserDTO): Promise<UserOutput> {
+    const cleanData = Object.fromEntries(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      Object.entries(data).filter(([_, value]) => value !== undefined),
+    );
+
+    const user = await this.userRepository.change(id, cleanData);
 
     return user[0];
   }
 
-  async delete(id: idDto): Promise<void> {
+  async delete(id: UserIdDTO): Promise<void> {
     await this.userRepository.delete(id);
   }
 }

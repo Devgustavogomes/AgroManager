@@ -1,47 +1,51 @@
 import { Injectable } from '@nestjs/common';
-import { User } from './interfaces/user.interface';
-import { changeUserDto, idDto } from './dto/user.dto';
+import {
+  changeUserDTO,
+  CreateUserDTO,
+  UserIdDTO,
+  UserOutput,
+} from './dto/user.dto';
 import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class UserRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async getUsers(): Promise<User[]> {
+  async getUsers(): Promise<UserOutput[]> {
     const sql = `SELECT *
                 FROM users_table`;
-    const users = await this.databaseService.query<User>(sql);
+    const users = await this.databaseService.query<UserOutput>(sql);
     return users;
   }
-  async getUserById(id: idDto): Promise<User[]> {
+  async getUserById(id: UserIdDTO): Promise<UserOutput[]> {
     const sql = `SELECT *
                 FROM users_table
                 WHERE id = $1`;
     const params = [`${id.id}`];
-    const user = await this.databaseService.query<User>(sql, params);
+    const user = await this.databaseService.query<UserOutput>(sql, params);
     return user;
   }
-  async create(data: User): Promise<User[]> {
+  async create(data: CreateUserDTO): Promise<UserOutput[]> {
     const { name, email, hashedPassword } = data;
     const sql = '';
     const params = [`${name}`, `${email}`, `${hashedPassword}`];
 
-    const user = this.databaseService.query<User>(sql, params);
+    const user = this.databaseService.query<UserOutput>(sql, params);
 
     return user;
   }
 
-  async change(id: idDto, data: changeUserDto): Promise<User[]> {
+  async change(id: UserIdDTO, data: changeUserDTO): Promise<UserOutput[]> {
     const sql = '';
     const params = [];
-    const user = await this.databaseService.query<User>(sql, params);
+    const user = await this.databaseService.query<UserOutput>(sql, params);
 
     return user;
   }
 
-  async delete(id: idDto): Promise<void> {
+  async delete(id: UserIdDTO): Promise<void> {
     const sql = '';
-    const params = [];
+    const params = [`${id.id}`]; // mudar
 
     await this.databaseService.query(sql, params);
   }
