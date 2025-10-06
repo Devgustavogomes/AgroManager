@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 import {
   Global,
   Module,
@@ -21,7 +21,7 @@ export class DatabaseModule implements OnModuleInit, OnModuleDestroy {
 
   async onModuleInit() {
     try {
-      await this.pool.connect();
+      await this.pool.query('SELECT NOW()');
       console.log('Connect to Database');
     } catch (error) {
       console.log(error);
@@ -30,8 +30,6 @@ export class DatabaseModule implements OnModuleInit, OnModuleDestroy {
   }
 
   async onModuleDestroy() {
-    if (this.pool) {
-      await this.pool.end();
-    }
+    await this.pool.end();
   }
 }

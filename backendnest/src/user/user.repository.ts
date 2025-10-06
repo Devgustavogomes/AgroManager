@@ -37,7 +37,7 @@ export class UserRepository {
 
   async change(id: UserIdDTO, data: changeUserDTO): Promise<UserOutput[]> {
     const sql = '';
-    const params = [];
+    const params = [`${id.id}`];
     const user = await this.databaseService.query<UserOutput>(sql, params);
 
     return user;
@@ -45,7 +45,7 @@ export class UserRepository {
 
   async delete(id: UserIdDTO): Promise<void> {
     const sql = '';
-    const params = [`${id.id}`]; // mudar
+    const params = [`${id.id}`];
 
     await this.databaseService.query(sql, params);
   }

@@ -11,7 +11,7 @@ export type UserOutput = Omit<UserDTO, 'password'> & { id: string };
 export const createUserSchema = z.object({
   name: z.string().min(5).max(32).trim(),
   email: z.email(),
-  password: z.string().min(8).max(16), // Adicionar um Regex depois
+  password: z.string().regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/),
 });
 
 export type CreateUserDTO = Omit<UserDTO, 'password'> & {
@@ -27,6 +27,10 @@ export type UserIdDTO = z.infer<typeof idSchema>;
 export const changeUserSchema = z.object({
   name: z.string().min(5).max(32).trim().optional(),
   email: z.email().optional(),
+  password: z
+    .string()
+    .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/)
+    .optional(),
 });
 
 export type changeUserDTO = z.infer<typeof changeUserSchema>;
