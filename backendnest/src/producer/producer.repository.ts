@@ -10,26 +10,29 @@ export class ProducerRepository {
 
   async getProducers(): Promise<producerOutput[]> {
     const sql = `SELECT *
-                FROM users_table`;
+                FROM producers`;
     const producers = await this.databaseService.query<producerOutput>(sql);
     return producers;
   }
   async getProducerById(id: ProducerIdDTO): Promise<producerOutput[]> {
     const sql = `SELECT *
-                FROM users_table
+                FROM producers
                 WHERE id = $1`;
     const params = [`${id.id}`];
-    const user = await this.databaseService.query<producerOutput>(sql, params);
-    return user;
+    const producer = await this.databaseService.query<producerOutput>(
+      sql,
+      params,
+    );
+    return producer;
   }
   async create(data: CreateProducerDTO): Promise<producerOutput[]> {
     const { name, hashedPassword } = data;
     const sql = '';
     const params = [`${name}`, `${hashedPassword}`];
 
-    const user = this.databaseService.query<producerOutput>(sql, params);
+    const producer = this.databaseService.query<producerOutput>(sql, params);
 
-    return user;
+    return producer;
   }
 
   async change(
@@ -38,9 +41,12 @@ export class ProducerRepository {
   ): Promise<producerOutput[]> {
     const sql = '';
     const params = [`${id.id}`];
-    const user = await this.databaseService.query<producerOutput>(sql, params);
+    const producer = await this.databaseService.query<producerOutput>(
+      sql,
+      params,
+    );
 
-    return user;
+    return producer;
   }
 
   async delete(id: ProducerIdDTO): Promise<void> {

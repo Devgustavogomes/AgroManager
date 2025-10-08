@@ -4,12 +4,14 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
   const configService = app.get(ConfigService, { strict: false });
 
-  const PORT = configService.get('PORT');
-  await app.listen(PORT ?? 3000, () => {
+  const PORT = configService.get('PORT') ?? 3000;
+
+  await app.listen(PORT, () => {
     console.log(`Server running on PORT ${PORT}`);
   });
 }
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
+
 bootstrap();

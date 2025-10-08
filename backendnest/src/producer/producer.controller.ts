@@ -20,7 +20,7 @@ import {
 } from './dto/producerInput.dto';
 import type { changeProducerDTO } from './dto/producerInput.dto';
 
-@Controller('/users')
+@Controller('/producers')
 export class ProducerController {
   constructor(private readonly producerService: ProducerService) {}
 
