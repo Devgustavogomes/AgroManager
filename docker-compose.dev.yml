@@ -1,22 +1,22 @@
-version: "3.9"
+# version: "3.9"
 
 services:
-  server:
-    image: node:22-slim
-    build:
-      context: ./backendnest
-      dockerfile: dev.Dockerfile
-    container_name: skillhub-backend-dev
-    ports:
-      - "3000:3000"
-    env_file:
-      - ./backendnest/.env
-    volumes:
-      - ./backendnest:/usr/src/app
-      - /usr/src/app/node_modules
-    depends_on:
-      postgres:
-        condition: service_healthy
+  #   server:
+  #     image: node:22-slim
+  #     build:
+  #       context: ./backendnest
+  #       dockerfile: dev.Dockerfile
+  #     container_name: skillhub-backend-dev
+  #     ports:
+  #       - "3000:3000"
+  #     env_file:
+  #       - ./backendnest/.env
+  #     volumes:
+  #       - ./backendnest:/usr/src/app
+  #       - /usr/src/app/node_modules
+  #     depends_on:
+  #       postgres:
+  #         condition: service_healthy
 
   postgres:
     image: postgres:alpine
