@@ -1,4 +1,4 @@
-CREATE TABLE "producer" (
+CREATE TABLE "producers" (
   "id" UUID PRIMARY KEY,
   "username" varchar NOT NULL,
   "CPForCNPJ" varchar UNIQUE NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE "producer" (
 
 CREATE TABLE "properties" (
   "id" UUID PRIMARY KEY,
-  "producer_id" UUID NOT NULL,
+  "producers_id" UUID NOT NULL,
   "city" varchar NOT NULL,
   "state" varchar NOT NULL,
   "total_area" float NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE "cultures" (
   "created_at" timestamp DEFAULT NOW()
 );
 
-ALTER TABLE "properties" ADD FOREIGN KEY ("producer_id") REFERENCES "producer" ("id");
+ALTER TABLE "properties" ADD FOREIGN KEY ("producers_id") REFERENCES "producers" ("id");
 
 ALTER TABLE "crops" ADD FOREIGN KEY ("properties_id") REFERENCES "properties" ("id");
 

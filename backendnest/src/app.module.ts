@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ProducerModule } from './producer/producer.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { envSchema } from './config/dto/env.dto';
+import { LoggerMiddleware } from './middleware/logger.middleware';
 
 @Module({
   imports: [
@@ -19,4 +20,8 @@ import { envSchema } from './config/dto/env.dto';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
