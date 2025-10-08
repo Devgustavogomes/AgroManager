@@ -1,10 +1,11 @@
+-- Up Migration
 CREATE TABLE "producers" (
   "id" UUID PRIMARY KEY,
   "username" varchar NOT NULL,
   "CPForCNPJ" varchar UNIQUE NOT NULL,
   "hashedPassword" varchar NOT NULL,
   "role" varchar NOT NULL,
-  "created_at" timestamp DEFAULT NOW(),
+  "created_at" timestamp DEFAULT NOW()
 );
 
 CREATE TABLE "properties" (
@@ -15,7 +16,7 @@ CREATE TABLE "properties" (
   "total_area" float NOT NULL,
   "arable_area" float NOT NULL,
   "vegetation_area" float NOT NULL,
-  "created_at" timestamp DEFAULT NOW(),
+  "created_at" timestamp DEFAULT NOW()
 );
 
 CREATE TABLE "crops" (
@@ -37,3 +38,12 @@ ALTER TABLE "properties" ADD FOREIGN KEY ("producers_id") REFERENCES "producers"
 ALTER TABLE "crops" ADD FOREIGN KEY ("properties_id") REFERENCES "properties" ("id");
 
 ALTER TABLE "cultures" ADD FOREIGN KEY ("crops_id") REFERENCES "crops" ("id");
+-- Down Migration
+
+DROP TABLE "cultures";
+
+DROP TABLE "crops";
+
+DROP TABLE "properties";
+
+DROP TABLE "producers";
