@@ -43,12 +43,7 @@ export class ProducerService {
     id: ProducerIdDTO,
     data: changeProducerDTO,
   ): Promise<producerOutput> {
-    const cleanData = Object.fromEntries(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      Object.entries(data).filter(([_, value]) => value !== undefined),
-    );
-
-    const producer = await this.producerRepository.change(id, cleanData);
+    const producer = await this.producerRepository.change(id, data);
 
     return producer[0];
   }
