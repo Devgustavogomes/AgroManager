@@ -2,7 +2,7 @@
 CREATE TABLE "producers" (
   "id" UUID PRIMARY KEY,
   "username" varchar NOT NULL,
-  "CPForCNPJ" varchar UNIQUE NOT NULL,
+  "cpf_or_cnpj" varchar UNIQUE NOT NULL,
   "hashedPassword" varchar NOT NULL,
   "role" varchar NOT NULL,
   "created_at" timestamp DEFAULT NOW()

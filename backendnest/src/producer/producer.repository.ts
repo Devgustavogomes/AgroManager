@@ -9,13 +9,13 @@ export class ProducerRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async getProducers(): Promise<producerOutput[]> {
-    const sql = `SELECT id, username, CPForCNPJ, created_at
+    const sql = `SELECT id, username, cpf_or_cnpj, created_at
                 FROM producers;`;
     const producers = await this.databaseService.query<producerOutput>(sql);
     return producers;
   }
   async getProducerById(id: ProducerIdDTO): Promise<producerOutput[]> {
-    const sql = `SELECT id, username, CPForCNPJ, created_at
+    const sql = `SELECT id, username, cpf_or_cnpj, created_at
                 FROM producers
                 WHERE id = $1;`;
     const params = [`${id.id}`];
@@ -30,7 +30,7 @@ export class ProducerRepository {
     const sql = `INSERT INTO producers 
                 (
                 username, 
-                CPForCNPJ, 
+                cpf_or_cnpj, 
                 hashedPassword,
                 role
                 )

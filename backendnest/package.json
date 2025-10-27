@@ -18,8 +18,8 @@
     "test:cov": "cross-env NODE_ENV=test jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "cross-env NODE_ENV=test jest --config ./test/jest-e2e.json",
-    "migrate:prod": "node-pg-migrate up -- --envPath .env.production ",
-    "migrate:dev": "node-pg-migrate up -- --envPath .env.development"
+    "migrate:prod": "node-pg-migrate up --envPath .env.production",
+    "migrate:dev": "node-pg-migrate up --envPath .env.development"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -30,7 +30,6 @@
     "cpf-cnpj-validator": "^1.0.3",
     "cross-env": "^10.1.0",
     "db-migrate": "^0.11.14",
-    "node-pg-migrate": "^8.0.3",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
@@ -52,6 +51,7 @@
     "eslint-plugin-prettier": "^5.2.2",
     "globals": "^16.0.0",
     "jest": "^30.0.0",
+    "node-pg-migrate": "^8.0.3",
     "prettier": "^3.4.2",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
