@@ -26,9 +26,23 @@ export class ProducerRepository {
     return producer;
   }
   async create(data: CreateProducerDTO): Promise<producerOutput[]> {
-    const { name, hashedPassword } = data;
-    const sql = '';
-    const params = [`${name}`, `${hashedPassword}`];
+    const { name, hashedPassword, CPForCNPJ, role } = data;
+    const sql = `INSERT INTO producers 
+                (
+                username, 
+                CPForCNPJ, 
+                hashedPassword,
+                role
+                )
+                VALUES
+                (
+                $1,
+                $2,
+                $3,
+                $4
+                )
+                RETURNING id, username, CPForCNPJ, role`;
+    const params = [`${name}`, `${CPForCNPJ}`, `${hashedPassword}`, `${role}`];
 
     const producer = this.databaseService.query<producerOutput>(sql, params);
 
