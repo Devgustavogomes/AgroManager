@@ -10,14 +10,14 @@ export class ProducerRepository {
 
   async getProducers(): Promise<producerOutput[]> {
     const sql = `SELECT id, username, CPForCNPJ, created_at
-                FROM producers`;
+                FROM producers;`;
     const producers = await this.databaseService.query<producerOutput>(sql);
     return producers;
   }
   async getProducerById(id: ProducerIdDTO): Promise<producerOutput[]> {
     const sql = `SELECT id, username, CPForCNPJ, created_at
                 FROM producers
-                WHERE id = $1`;
+                WHERE id = $1;`;
     const params = [`${id.id}`];
     const producer = await this.databaseService.query<producerOutput>(
       sql,
@@ -41,7 +41,7 @@ export class ProducerRepository {
                 $3,
                 $4
                 )
-                RETURNING id, username, CPForCNPJ, role`;
+                RETURNING id, username, CPForCNPJ, role;`;
     const params = [`${name}`, `${CPForCNPJ}`, `${hashedPassword}`, `${role}`];
 
     const producer = this.databaseService.query<producerOutput>(sql, params);
@@ -53,8 +53,13 @@ export class ProducerRepository {
     id: ProducerIdDTO,
     data: changeProducerDTO,
   ): Promise<producerOutput[]> {
-    const sql = '';
-    const params = [`${id.id}`];
+    const sql = `UPDATE producers
+                SET username = $1,
+                CPForCNPJ = $2,
+                WHERE id = $3
+                RETURNING id, username, CPForCNPJ, role;
+                `;
+    const params = [`${data.name}`, `${data.CPForCNPJ}`, `${id.id}`];
     const producer = await this.databaseService.query<producerOutput>(
       sql,
       params,

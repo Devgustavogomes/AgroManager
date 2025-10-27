@@ -1,11 +1,29 @@
 services:
-  server:
-    image: node:22.slim
-    build:
-      context: ./backendnest
-      dockerfile: Dockerfile
+  postgres:
+    image: postgres:18.0
+    restart: always
+    shm_size: 128mb
+    container_name: agroManager-postgres-dev
     ports:
-      - 3000:3000
+      - "5432:5432"
     env_file:
-      - .env
-    container_name: skillhub-backend-prod
+      - ./backendnest/.env.development
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-U",
+          "local_agroManager",
+          "-d",
+          "local_agroManager",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes: #aprender sobre isso
+  postgres-data:

@@ -24,8 +24,9 @@ export const DatabaseClientProvider = {
       password: dbConfig.password,
       host: dbConfig.host,
       port: dbConfig.port,
+      ssl: process.env.NODE_ENV === 'production' ? true : false,
       database: dbConfig.database,
-      max: 20,
+      max: 1000,
       idleTimeoutMillis: 80000,
       connectionTimeoutMillis: 10000,
     });
