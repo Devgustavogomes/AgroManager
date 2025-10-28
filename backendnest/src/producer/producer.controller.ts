@@ -7,11 +7,9 @@ import {
   Param,
   Post,
   Patch,
-  UsePipes,
 } from '@nestjs/common';
 import { ProducerService } from './producer.service';
 import { ZodValidationPipe } from 'src/pipes/validation.pipe';
-import { idSchema } from './dto/producer.dto';
 import { producerOutput } from './dto/producerOutput.dto';
 import {
   changeProducerSchema,
@@ -36,7 +34,6 @@ export class ProducerController {
 
   @Get(':id')
   @HttpCode(200)
-  @UsePipes(new ZodValidationPipe(idSchema))
   async getUserById(@Param('id') id: string): Promise<producerOutput> {
     const producer = await this.producerService.getProducerById(id);
     return producer;
@@ -67,7 +64,6 @@ export class ProducerController {
 
   @Delete(':id')
   @HttpCode(204)
-  @UsePipes(new ZodValidationPipe(idSchema))
   async delete(@Param('id') id: string): Promise<void> {
     await this.producerService.delete(id);
   }

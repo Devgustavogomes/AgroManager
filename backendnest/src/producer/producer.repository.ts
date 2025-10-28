@@ -59,7 +59,7 @@ export class ProducerRepository {
   }
 
   async delete(id: string): Promise<void> {
-    const sql = `DELETE INTO producers
+    const sql = `DELETE FROM producers
                 WHERE id = $1`;
     const params = [`${id}`];
 
