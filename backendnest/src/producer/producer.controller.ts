@@ -5,20 +5,22 @@ import {
   Get,
   HttpCode,
   Param,
-  Patch,
   Post,
+  Patch,
   UsePipes,
 } from '@nestjs/common';
 import { ProducerService } from './producer.service';
 import { ZodValidationPipe } from 'src/pipes/validation.pipe';
-import type { ProducerDTO, ProducerIdDTO } from './dto/producer.dto';
 import { idSchema } from './dto/producer.dto';
 import { producerOutput } from './dto/producerOutput.dto';
 import {
   changeProducerSchema,
   createProducerSchema,
 } from './dto/producerInput.dto';
-import type { changeProducerDTO } from './dto/producerInput.dto';
+import type {
+  changeProducerDTO,
+  CreateProducerInput,
+} from './dto/producerInput.dto';
 
 @Controller('/producers')
 export class ProducerController {
@@ -35,15 +37,17 @@ export class ProducerController {
   @Get(':id')
   @HttpCode(200)
   @UsePipes(new ZodValidationPipe(idSchema))
-  async getUserById(@Param('id') id: ProducerIdDTO): Promise<producerOutput> {
+  async getUserById(@Param('id') id: string): Promise<producerOutput> {
     const producer = await this.producerService.getProducerById(id);
     return producer;
   }
 
   @Post()
   @HttpCode(201)
-  @UsePipes(new ZodValidationPipe(createProducerSchema))
-  async create(@Body() data: ProducerDTO): Promise<producerOutput> {
+  async create(
+    @Body(new ZodValidationPipe(createProducerSchema))
+    data: CreateProducerInput,
+  ): Promise<producerOutput> {
     const producer = await this.producerService.create(data);
 
     return producer;
@@ -51,11 +55,11 @@ export class ProducerController {
 
   @Patch(':id')
   @HttpCode(200)
-  @UsePipes(new ZodValidationPipe(changeProducerSchema))
   async change(
-    @Param('id') id: ProducerIdDTO,
-    @Body() data: changeProducerDTO,
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(changeProducerSchema)) data: changeProducerDTO,
   ): Promise<producerOutput> {
+    console.log(id);
     const producer = await this.producerService.change(id, data);
 
     return producer;
@@ -64,7 +68,7 @@ export class ProducerController {
   @Delete(':id')
   @HttpCode(204)
   @UsePipes(new ZodValidationPipe(idSchema))
-  async delete(@Param('id') id: ProducerIdDTO): Promise<void> {
+  async delete(@Param('id') id: string): Promise<void> {
     await this.producerService.delete(id);
   }
 }

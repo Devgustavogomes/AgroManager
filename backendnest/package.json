@@ -19,7 +19,11 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "cross-env NODE_ENV=test jest --config ./test/jest-e2e.json",
     "migrate:prod": "node-pg-migrate up --envPath .env.production",
-    "migrate:dev": "node-pg-migrate up --envPath .env.development"
+    "migrate:dev": "node-pg-migrate up --envPath .env.development",
+    "compose:up": "docker compose -f ../docker-compose.yml up",
+    "compose:build": "docker compose -f ../docker-compose.yml up --build",
+    "compose:stop": "docker compose -f ../docker-compose.yml stop",
+    "compose:down": "docker compose -f ../docker-compose.yml down"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

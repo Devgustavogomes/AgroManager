@@ -1,9 +1,11 @@
-import { ProducerDTO, ProducerIdDTO } from './dto/producer.dto';
 import { Injectable } from '@nestjs/common';
 import { ProducerRepository } from './producer.repository';
 import { hash } from 'bcryptjs';
 import { producerOutput } from './dto/producerOutput.dto';
-import { changeProducerDTO } from './dto/producerInput.dto';
+import {
+  changeProducerDTO,
+  CreateProducerInput,
+} from './dto/producerInput.dto';
 
 @Injectable()
 export class ProducerService {
@@ -19,13 +21,13 @@ export class ProducerService {
     return producers;
   }
 
-  async getProducerById(id: ProducerIdDTO): Promise<producerOutput> {
+  async getProducerById(id: string): Promise<producerOutput> {
     const producer = await this.producerRepository.getProducerById(id);
 
     return producer[0];
   }
 
-  async create(data: ProducerDTO): Promise<producerOutput> {
+  async create(data: CreateProducerInput): Promise<producerOutput> {
     const { password, ...rest } = data;
 
     const hashedPassword = await hash(password, 10);
@@ -39,16 +41,13 @@ export class ProducerService {
 
     return producer[0];
   }
-  async change(
-    id: ProducerIdDTO,
-    data: changeProducerDTO,
-  ): Promise<producerOutput> {
+  async change(id: string, data: changeProducerDTO): Promise<producerOutput> {
     const producer = await this.producerRepository.change(id, data);
 
     return producer[0];
   }
 
-  async delete(id: ProducerIdDTO): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.producerRepository.delete(id);
   }
 }

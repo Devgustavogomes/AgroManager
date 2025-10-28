@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ProducerIdDTO } from './dto/producer.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { producerOutput } from './dto/producerOutput.dto';
 import { changeProducerDTO, CreateProducerDTO } from './dto/producerInput.dto';
@@ -14,11 +13,11 @@ export class ProducerRepository {
     const producers = await this.databaseService.query<producerOutput>(sql);
     return producers;
   }
-  async getProducerById(id: ProducerIdDTO): Promise<producerOutput[]> {
+  async getProducerById(id: string): Promise<producerOutput[]> {
     const sql = `SELECT id, username, cpf_or_cnpj, created_at
                 FROM producers
                 WHERE id = $1;`;
-    const params = [`${id.id}`];
+    const params = [`${id}`];
     const producer = await this.databaseService.query<producerOutput>(
       sql,
       params,
@@ -26,40 +25,31 @@ export class ProducerRepository {
     return producer;
   }
   async create(data: CreateProducerDTO): Promise<producerOutput[]> {
-    const { name, hashedPassword, CPForCNPJ, role } = data;
+    const { name, hashedPassword, CPForCNPJ } = data;
     const sql = `INSERT INTO producers 
-                (
-                username, 
+                (username, 
                 cpf_or_cnpj, 
-                hashedPassword,
-                role
-                )
+                hashed_password)
                 VALUES
-                (
-                $1,
+                ($1,
                 $2,
-                $3,
-                $4
-                )
-                RETURNING id, username, CPForCNPJ, role;`;
-    const params = [`${name}`, `${CPForCNPJ}`, `${hashedPassword}`, `${role}`];
+                $3)
+                RETURNING id, username, cpf_or_cnpj, role;`;
+    const params = [`${name}`, `${CPForCNPJ}`, `${hashedPassword}`];
 
     const producer = this.databaseService.query<producerOutput>(sql, params);
 
     return producer;
   }
 
-  async change(
-    id: ProducerIdDTO,
-    data: changeProducerDTO,
-  ): Promise<producerOutput[]> {
+  async change(id: string, data: changeProducerDTO): Promise<producerOutput[]> {
     const sql = `UPDATE producers
                 SET username = $1,
-                CPForCNPJ = $2,
+                cpf_or_cnpj = $2
                 WHERE id = $3
-                RETURNING id, username, CPForCNPJ, role;
+                RETURNING id, username, cpf_or_cnpj, role;
                 `;
-    const params = [`${data.name}`, `${data.CPForCNPJ}`, `${id.id}`];
+    const params = [`${data.name}`, `${data.CPForCNPJ}`, `${id}`];
     const producer = await this.databaseService.query<producerOutput>(
       sql,
       params,
@@ -68,9 +58,10 @@ export class ProducerRepository {
     return producer;
   }
 
-  async delete(id: ProducerIdDTO): Promise<void> {
-    const sql = '';
-    const params = [`${id.id}`];
+  async delete(id: string): Promise<void> {
+    const sql = `DELETE INTO producers
+                WHERE id = $1`;
+    const params = [`${id}`];
 
     await this.databaseService.query(sql, params);
   }

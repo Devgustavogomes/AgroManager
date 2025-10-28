@@ -1,30 +1,18 @@
-import { ProducerDTO } from './producer.dto';
 import z from 'zod';
-import { cpf, cnpj } from 'cpf-cnpj-validator';
 
 export const createProducerSchema = z.object({
   name: z.string().min(5).max(128).trim(),
-  CPForCNPJ: z
-    .string()
-    .transform((val) => val.replace(/\D/g, ''))
-    .refine((val) => cpf.isValid(val) || cnpj.isValid(val), {
-      message: 'CPF ou CNPJ inválido',
-    }),
-  password: z.string().regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/),
+  CPForCNPJ: z.string().trim(),
+  password: z.string().trim(),
 });
-
-export type CreateProducerDTO = Omit<ProducerDTO, 'password'> & {
+export type CreateProducerInput = z.infer<typeof createProducerSchema>;
+export type CreateProducerDTO = Omit<CreateProducerInput, 'password'> & {
   hashedPassword: string;
 };
 
 export const changeProducerSchema = z.object({
   name: z.string().min(5).max(128).trim(),
-  CPForCNPJ: z
-    .string()
-    .transform((val) => val.replace(/\D/g, ''))
-    .refine((val) => cpf.isValid(val) || cnpj.isValid(val), {
-      message: 'CPF ou CNPJ inválido',
-    }),
+  CPForCNPJ: z.string(),
 });
 
 export type changeProducerDTO = z.infer<typeof changeProducerSchema>;
