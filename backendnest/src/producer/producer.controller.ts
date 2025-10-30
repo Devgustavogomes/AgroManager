@@ -56,7 +56,6 @@ export class ProducerController {
     @Param('id') id: string,
     @Body(new ZodValidationPipe(changeProducerSchema)) data: changeProducerDTO,
   ): Promise<producerOutput> {
-    console.log(id);
     const producer = await this.producerService.change(id, data);
 
     return producer;

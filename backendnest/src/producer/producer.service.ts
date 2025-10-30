@@ -14,10 +14,6 @@ export class ProducerService {
   async getProducers(): Promise<producerOutput[]> {
     const producers = await this.producerRepository.getProducers();
 
-    if (!producers) {
-      throw new Error('Producers not found');
-    }
-
     return producers;
   }
 

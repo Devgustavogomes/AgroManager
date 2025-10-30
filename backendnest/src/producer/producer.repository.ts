@@ -44,8 +44,8 @@ export class ProducerRepository {
 
   async change(id: string, data: changeProducerDTO): Promise<producerOutput[]> {
     const sql = `UPDATE producers
-                SET username = $1,
-                cpf_or_cnpj = $2
+                SET COALESCE($1, ''),
+                    COALESCE($2, '')
                 WHERE id = $3
                 RETURNING id, username, cpf_or_cnpj, role;
                 `;
