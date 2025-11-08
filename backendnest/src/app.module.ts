@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { envSchema } from './config/dto/env.dto';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
     }),
     ProducerModule,
     DatabaseModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
