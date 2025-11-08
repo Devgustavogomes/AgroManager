@@ -15,7 +15,7 @@ export const redisProvider = {
     client.on('ready', () => console.log('[Redis] Ready for commands!'));
     client.on('error', (err) => console.error('[Redis] Error:', err));
     client.on('reconnecting', () => console.log('[Redis] Reconnecting...'));
-
+    console.log('error');
     return client;
   },
 };

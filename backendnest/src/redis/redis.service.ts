@@ -19,6 +19,7 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async get(key: string) {
+    console.log('error');
     return await this.redis.get(key);
   }
 
