@@ -1,13 +1,9 @@
-// import { Body, Controller, Post, UsePipes } from '@nestjs/common';
-// import { ZodValidationPipe } from 'src/pipes/validation.pipe';
-// import { loginSchema } from './dto/login.dto';
-// import type { loginDto } from './dto/login.dto';
+import { Body, Controller, Post } from '@nestjs/common';
 
-// @Controller('login')
-// export class AuthController {
-//   constructor(private readonly authService) {}
+@Controller('login')
+export class AuthController {
+  constructor(private readonly authService) {}
 
-//   @Post()
-//   @UsePipes(new ZodValidationPipe(loginSchema))
-//   async login(@Body() data: loginDto) {}
-// }
+  @Post()
+  async login() {}
+}
