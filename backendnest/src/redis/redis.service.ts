@@ -7,7 +7,6 @@ export class RedisService implements OnModuleDestroy {
 
   async onModuleDestroy() {
     await this.redis.quit();
-    console.log('Conexão Redis fechada');
   }
 
   async set(key: string, value: string, ttl?: number) {

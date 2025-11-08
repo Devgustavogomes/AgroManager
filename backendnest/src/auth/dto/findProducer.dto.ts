@@ -5,5 +5,4 @@ export interface findProducerOutput {
   hashed_password: string;
   role: string;
   created_at: string;
-  a: string;
 }

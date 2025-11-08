@@ -1,4 +1,4 @@
-import { Global, Module, OnModuleDestroy } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { redisProvider } from './redis.provider';
 import { RedisService } from './redis.service';
 
@@ -7,4 +7,4 @@ import { RedisService } from './redis.service';
   providers: [redisProvider, RedisService],
   exports: [RedisService],
 })
-export class RedisModule implements OnModuleDestroy {}
+export class RedisModule {}
