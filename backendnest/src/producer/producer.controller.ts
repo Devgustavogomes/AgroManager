@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { ProducerService } from './producer.service';
 import { ZodValidationPipe } from 'src/pipes/validation.pipe';
@@ -19,12 +20,18 @@ import type {
   changeProducerDTO,
   CreateProducerInput,
 } from './dto/producerInput.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { RolesGuards } from 'src/authorization/roles.guard';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from 'src/types/role';
 
 @Controller('/producers')
+@UseGuards(AuthGuard, RolesGuards)
 export class ProducerController {
   constructor(private readonly producerService: ProducerService) {}
 
   @Get()
+  @Roles(Role.ADMIN)
   @HttpCode(200)
   async getUsers(): Promise<producerOutput[]> {
     const producers = await this.producerService.getProducers();

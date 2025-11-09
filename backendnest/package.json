@@ -23,6 +23,7 @@
     "compose:up": "docker compose -f ../docker-compose.yml up",
     "compose:build": "docker compose -f ../docker-compose.yml up --build",
     "compose:stop": "docker compose -f ../docker-compose.yml stop",
+    "compose:start": "docker compose -f ../docker-compose.yml start",
     "compose:down": "docker compose -f ../docker-compose.yml down"
   },
   "dependencies": {
