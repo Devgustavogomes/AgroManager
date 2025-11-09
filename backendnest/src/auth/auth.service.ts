@@ -71,18 +71,17 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const isInRedis = await this.redisService.get(`refresh_${refreshToken.id}`);
+
+    if (!isInRedis || isInRedis !== refreshToken) {
+      throw new UnauthorizedException();
+    }
+
     const refreshTokenPayload: AuthenticatedRequest['producer'] =
       await this.jwtService.verifyAsync(refreshToken, {
         secret: process.env.REFRESH_SECRET,
       });
-
-    const isInRedis = await this.redisService.get(
-      `refresh_${refreshTokenPayload.id}`,
-    );
-
-    if (!isInRedis) {
-      throw new UnauthorizedException();
-    }
 
     const payload = { ...refreshTokenPayload };
 
