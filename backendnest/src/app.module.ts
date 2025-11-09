@@ -6,6 +6,7 @@ import configuration from './config/configuration';
 import { envSchema } from './config/dto/env.dto';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { AuthModule } from './auth/auth.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthModule } from './auth/auth.module';
     ProducerModule,
     DatabaseModule,
     AuthModule,
+    RedisModule,
   ],
   controllers: [],
   providers: [],

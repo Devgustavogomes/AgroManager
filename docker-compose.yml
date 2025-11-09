@@ -24,6 +24,16 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+  redis:
+    image: redis:8.2.3-alpine
+    restart: always
+    container_name: redis_local_agroManager
+    ports:
+      - "6379:6379"
+    env_file:
+      - ./backendnest/.env.development
+    volumes:
+      - /redis-data/:/data
 
 volumes: #aprender sobre isso
   postgres-data:
