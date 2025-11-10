@@ -24,9 +24,11 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { RolesGuards } from 'src/authorization/roles.guard';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from 'src/types/role';
+import { OwnerGuard } from 'src/authorization/owner.guard';
+import { OwnerService } from 'src/decorators/owner.decorator';
 
 @Controller('/producers')
-@UseGuards(AuthGuard, RolesGuards)
+@UseGuards(AuthGuard, RolesGuards, OwnerGuard)
 export class ProducerController {
   constructor(private readonly producerService: ProducerService) {}
 
@@ -40,6 +42,7 @@ export class ProducerController {
   }
 
   @Get(':id')
+  @OwnerService(ProducerService)
   @HttpCode(200)
   async getUserById(@Param('id') id: string): Promise<producerOutput> {
     const producer = await this.producerService.getProducerById(id);
@@ -58,6 +61,7 @@ export class ProducerController {
   }
 
   @Patch(':id')
+  @OwnerService(ProducerService)
   @HttpCode(200)
   async change(
     @Param('id') id: string,
@@ -69,6 +73,7 @@ export class ProducerController {
   }
 
   @Delete(':id')
+  @OwnerService(ProducerService)
   @HttpCode(204)
   async delete(@Param('id') id: string): Promise<void> {
     await this.producerService.delete(id);

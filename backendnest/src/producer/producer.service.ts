@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ProducerRepository } from './producer.repository';
 import { hash } from 'bcryptjs';
 import { producerOutput } from './dto/producerOutput.dto';
@@ -48,7 +48,12 @@ export class ProducerService {
     await this.producerRepository.delete(id);
   }
 
-  async findOwner(id: string): Promise<{ id: string }> {
-    return await this.producerRepository.findOwner(id);
+  async findOwner(id: string): Promise<{ id: string } | null> {
+    const result = await this.producerRepository.findOwner(id);
+
+    if (!result) {
+      throw new ForbiddenException();
+    }
+    return result;
   }
 }
