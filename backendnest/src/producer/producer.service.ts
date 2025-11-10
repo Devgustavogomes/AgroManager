@@ -37,6 +37,7 @@ export class ProducerService {
 
     return producer[0];
   }
+
   async change(id: string, data: changeProducerDTO): Promise<producerOutput> {
     const producer = await this.producerRepository.change(id, data);
 
@@ -45,5 +46,9 @@ export class ProducerService {
 
   async delete(id: string): Promise<void> {
     await this.producerRepository.delete(id);
+  }
+
+  async findOwner(id: string): Promise<{ id: string }> {
+    return await this.producerRepository.findOwner(id);
   }
 }

@@ -65,4 +65,18 @@ export class ProducerRepository {
 
     await this.databaseService.query(sql, params);
   }
+
+  async findOwner(id: string): Promise<{ id: string }> {
+    const sql = `SELECT id FROM producers
+                  WHERE id = $1`;
+
+    const params = [`${id}`];
+
+    const result = await this.databaseService.query<{ id: string }>(
+      sql,
+      params,
+    );
+
+    return result[0];
+  }
 }
