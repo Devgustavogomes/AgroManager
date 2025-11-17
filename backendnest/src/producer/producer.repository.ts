@@ -13,7 +13,7 @@ export class ProducerRepository {
     const producers = await this.databaseService.query<producerOutput>(sql);
     return producers;
   }
-  async getProducerById(id: string): Promise<producerOutput[]> {
+  async getProducerById(id: string): Promise<producerOutput> {
     const sql = `SELECT id, username, cpf_or_cnpj, created_at
                 FROM producers
                 WHERE id = $1;`;
@@ -22,9 +22,9 @@ export class ProducerRepository {
       sql,
       params,
     );
-    return producer;
+    return producer[0];
   }
-  async create(data: CreateProducerDTO): Promise<producerOutput[]> {
+  async create(data: CreateProducerDTO): Promise<producerOutput> {
     const { name, hashedPassword, CPForCNPJ } = data;
     const sql = `INSERT INTO producers 
                 (username, 
@@ -37,12 +37,15 @@ export class ProducerRepository {
                 RETURNING id, username, cpf_or_cnpj, role;`;
     const params = [`${name}`, `${CPForCNPJ}`, `${hashedPassword}`];
 
-    const producer = this.databaseService.query<producerOutput>(sql, params);
+    const producer = await this.databaseService.query<producerOutput>(
+      sql,
+      params,
+    );
 
-    return producer;
+    return producer[0];
   }
 
-  async change(id: string, data: changeProducerDTO): Promise<producerOutput[]> {
+  async change(id: string, data: changeProducerDTO): Promise<producerOutput> {
     const sql = `UPDATE producers
                 SET COALESCE($1, ''),
                     COALESCE($2, '')
@@ -55,7 +58,7 @@ export class ProducerRepository {
       params,
     );
 
-    return producer;
+    return producer[0];
   }
 
   async delete(id: string): Promise<void> {

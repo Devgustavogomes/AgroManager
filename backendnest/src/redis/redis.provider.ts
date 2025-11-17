@@ -1,12 +1,14 @@
+import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
 
 export const redisProvider = {
   provide: 'REDIS_CLIENT',
-  useFactory: () => {
+  inject: [ConfigService],
+  useFactory: (configService: ConfigService) => {
     const client = new Redis({
-      host: process.env.REDIS_HOST,
-      port: Number(process.env.REDIS_PORT),
-      password: process.env.REDIS_PASSWORD,
+      host: configService.get<string>('REDIS_HOST'),
+      port: Number(configService.get<string>('REDIS_PORT')),
+      password: configService.get<string>('REDIS_PASSWORD'),
       retryStrategy: (times) => Math.min(times * 50, 2000),
       enableReadyCheck: true,
     });

@@ -20,7 +20,7 @@ export class ProducerService {
   async getProducerById(id: string): Promise<producerOutput> {
     const producer = await this.producerRepository.getProducerById(id);
 
-    return producer[0];
+    return producer;
   }
 
   async create(data: CreateProducerInput): Promise<producerOutput> {
@@ -35,13 +35,13 @@ export class ProducerService {
 
     const producer = await this.producerRepository.create(parsedProducer);
 
-    return producer[0];
+    return producer;
   }
 
   async change(id: string, data: changeProducerDTO): Promise<producerOutput> {
     const producer = await this.producerRepository.change(id, data);
 
-    return producer[0];
+    return producer;
   }
 
   async delete(id: string): Promise<void> {

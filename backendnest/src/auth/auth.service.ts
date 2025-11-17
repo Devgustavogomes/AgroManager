@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JwtService } from '@nestjs/jwt';
 import { AuthRepository } from './auth.repository';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
@@ -5,12 +7,14 @@ import { loginInputDto } from './dto/login.dto';
 import { compare } from 'bcryptjs';
 import { RedisService } from 'src/redis/redis.service';
 import { AuthenticatedRequest } from 'src/types/authenticatedRequest';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly authRepository: AuthRepository,
     private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
+    private readonly configService: ConfigService,
   ) {}
 
   async login(
@@ -37,7 +41,7 @@ export class AuthService {
       };
 
       const refreshToken = await this.jwtService.signAsync(payload, {
-        secret: process.env.REFRESH_SECRET,
+        secret: this.configService.get<string>('REFRESH_SECRET'),
         expiresIn: '7d',
       });
 
@@ -46,13 +50,11 @@ export class AuthService {
         refreshToken,
         604800,
       );
-
       return {
         accessToken: await this.jwtService.signAsync(payload),
         refreshToken,
       };
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } catch {
       throw new UnauthorizedException();
     }
   }
@@ -64,26 +66,28 @@ export class AuthService {
   async refresh(
     req: AuthenticatedRequest,
   ): Promise<{ accessToken: string; newRefreshToken: string }> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const refreshToken = req.cookies['refresh_token'];
 
     if (!refreshToken) {
       throw new UnauthorizedException();
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const isInRedis = await this.redisService.get(`refresh_${refreshToken.id}`);
+    const refreshTokenPayload = await this.jwtService.verifyAsync(
+      refreshToken,
+      {
+        secret: process.env.REFRESH_SECRET,
+      },
+    );
+
+    const isInRedis = await this.redisService.get(
+      `refresh_${refreshTokenPayload.id}`,
+    );
 
     if (!isInRedis || isInRedis !== refreshToken) {
       throw new UnauthorizedException();
     }
 
-    const refreshTokenPayload: AuthenticatedRequest['producer'] =
-      await this.jwtService.verifyAsync(refreshToken, {
-        secret: process.env.REFRESH_SECRET,
-      });
-
-    const payload = { ...refreshTokenPayload };
+    const { iat, exp, ...payload } = { ...refreshTokenPayload };
 
     const accessToken = await this.jwtService.signAsync(payload);
 
