@@ -1,6 +1,6 @@
 -- Up Migration
 CREATE TABLE "producers" (
-  "id" UUID PRIMARY KEY,
+  "id" UUID  PRIMARY KEY,
   "username" varchar NOT NULL,
   "cpf_or_cnpj" varchar UNIQUE NOT NULL,
   "hashed_password" varchar NOT NULL,
