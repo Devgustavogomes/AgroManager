@@ -11,7 +11,7 @@ import { AuthenticatedRequest } from 'src/types/authenticatedRequest';
 import { Role } from 'src/types/role';
 
 interface Service {
-  findOwner(id: string): Promise<{ id: string } | null>;
+  findOwner(id: string): Promise<{ id_owner: string } | undefined>;
 }
 
 @Injectable()
@@ -48,7 +48,7 @@ export class OwnerGuard implements CanActivate {
 
     const owner = await service.findOwner(producer.id);
 
-    if (!owner || producer.id !== owner.id) {
+    if (!owner || producer.id !== owner.id_owner) {
       throw new ForbiddenException('You do not own this resource.');
     }
 

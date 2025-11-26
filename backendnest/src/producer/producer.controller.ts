@@ -10,14 +10,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ProducerService } from './producer.service';
-import { ZodValidationPipe } from 'src/pipes/validation.pipe';
 import { producerOutput } from './dto/producerOutput.dto';
 import {
-  changeProducerSchema,
-  createProducerSchema,
-} from './dto/producerInput.dto';
-import type {
-  changeProducerDTO,
+  UpdateProducerDTO,
   CreateProducerInput,
 } from './dto/producerInput.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -26,6 +21,7 @@ import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from 'src/types/role';
 import { OwnerGuard } from 'src/authorization/owner.guard';
 import { OwnerService } from 'src/decorators/owner.decorator';
+import { ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('/producers')
 @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
@@ -35,24 +31,27 @@ export class ProducerController {
   @Get()
   @Roles(Role.ADMIN)
   @HttpCode(200)
-  async getUsers(): Promise<producerOutput[]> {
-    const producers = await this.producerService.getProducers();
+  @ApiOkResponse({ type: producerOutput })
+  async findAll(): Promise<producerOutput[]> {
+    const producers = await this.producerService.findAll();
 
     return producers;
   }
 
   @Get(':id')
   @OwnerService(ProducerService)
+  @ApiOkResponse({ type: producerOutput })
   @HttpCode(200)
-  async getUserById(@Param('id') id: string): Promise<producerOutput> {
-    const producer = await this.producerService.getProducerById(id);
+  async findOne(@Param('id') id: string): Promise<producerOutput> {
+    const producer = await this.producerService.findOne(id);
     return producer;
   }
 
   @Post()
+  @ApiOkResponse({ type: producerOutput, isArray: true })
   @HttpCode(201)
   async create(
-    @Body(new ZodValidationPipe(createProducerSchema))
+    @Body()
     data: CreateProducerInput,
   ): Promise<producerOutput> {
     const producer = await this.producerService.create(data);
@@ -61,13 +60,14 @@ export class ProducerController {
   }
 
   @Patch(':id')
+  @ApiOkResponse({ type: producerOutput })
   @OwnerService(ProducerService)
   @HttpCode(200)
-  async change(
+  async update(
     @Param('id') id: string,
-    @Body(new ZodValidationPipe(changeProducerSchema)) data: changeProducerDTO,
+    @Body() data: UpdateProducerDTO,
   ): Promise<producerOutput> {
-    const producer = await this.producerService.change(id, data);
+    const producer = await this.producerService.update(id, data);
 
     return producer;
   }
@@ -75,7 +75,7 @@ export class ProducerController {
   @Delete(':id')
   @OwnerService(ProducerService)
   @HttpCode(204)
-  async delete(@Param('id') id: string): Promise<void> {
-    await this.producerService.delete(id);
+  async remove(@Param('id') id: string): Promise<void> {
+    await this.producerService.remove(id);
   }
 }

@@ -3,7 +3,7 @@ import { ProducerRepository } from './producer.repository';
 import { hash } from 'bcryptjs';
 import { producerOutput } from './dto/producerOutput.dto';
 import {
-  changeProducerDTO,
+  UpdateProducerDTO,
   CreateProducerInput,
 } from './dto/producerInput.dto';
 
@@ -11,14 +11,14 @@ import {
 export class ProducerService {
   constructor(private readonly producerRepository: ProducerRepository) {}
 
-  async getProducers(): Promise<producerOutput[]> {
-    const producers = await this.producerRepository.getProducers();
+  async findAll(): Promise<producerOutput[]> {
+    const producers = await this.producerRepository.findAll();
 
     return producers;
   }
 
-  async getProducerById(id: string): Promise<producerOutput> {
-    const producer = await this.producerRepository.getProducerById(id);
+  async findOne(id: string): Promise<producerOutput> {
+    const producer = await this.producerRepository.findOne(id);
 
     return producer;
   }
@@ -38,17 +38,17 @@ export class ProducerService {
     return producer;
   }
 
-  async change(id: string, data: changeProducerDTO): Promise<producerOutput> {
-    const producer = await this.producerRepository.change(id, data);
+  async update(id: string, data: UpdateProducerDTO): Promise<producerOutput> {
+    const producer = await this.producerRepository.update(id, data);
 
     return producer;
   }
 
-  async delete(id: string): Promise<void> {
-    await this.producerRepository.delete(id);
+  async remove(id: string): Promise<void> {
+    await this.producerRepository.remove(id);
   }
 
-  async findOwner(id: string): Promise<{ id: string } | null> {
+  async findOwner(id: string): Promise<{ id_producer: string } | undefined> {
     const result = await this.producerRepository.findOwner(id);
 
     if (!result) {

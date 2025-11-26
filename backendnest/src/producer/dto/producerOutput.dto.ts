@@ -1,3 +1,19 @@
-import { ProducerDTO } from './producer.dto';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { CreateProducerInput } from './producerInput.dto';
+import { Role } from 'src/types/role';
 
-export type producerOutput = Omit<ProducerDTO, 'password'> & { id: string };
+export class producerOutput extends OmitType(CreateProducerInput, [
+  'password',
+] as const) {
+  @ApiProperty()
+  id_producer: string;
+
+  @ApiProperty({ enum: Role })
+  role: Role;
+
+  @ApiProperty()
+  created_at: Date;
+
+  @ApiProperty()
+  updated_at: Date | null;
+}
