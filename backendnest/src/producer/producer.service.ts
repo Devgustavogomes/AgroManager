@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { ProducerRepository } from './producer.repository';
 import { hash } from 'bcryptjs';
 import { producerOutput } from './dto/producerOutput.dto';
@@ -30,7 +34,7 @@ export class ProducerService {
 
     const parsedProducer = {
       ...rest,
-      hashedPassword,
+      password: hashedPassword,
     };
 
     const producer = await this.producerRepository.create(parsedProducer);
@@ -39,6 +43,10 @@ export class ProducerService {
   }
 
   async update(id: string, data: UpdateProducerDTO): Promise<producerOutput> {
+    if (!data.cpf_or_cnpj && !data.username) {
+      throw new BadRequestException('Nenhum campo para atualizar');
+    }
+
     const producer = await this.producerRepository.update(id, data);
 
     return producer;

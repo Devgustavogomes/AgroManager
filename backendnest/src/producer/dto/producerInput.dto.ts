@@ -2,8 +2,8 @@ import { createZodDto } from 'nestjs-zod';
 import z from 'zod';
 
 export const createProducerSchema = z.object({
-  name: z.string().min(5).max(128).trim(),
-  CPForCNPJ: z.preprocess(
+  username: z.string().min(5).max(128).trim(),
+  cpf_or_cnpj: z.preprocess(
     (val) => {
       if (typeof val !== 'string') return val;
 
@@ -18,10 +18,6 @@ export const createProducerSchema = z.object({
 });
 
 export class CreateProducerInput extends createZodDto(createProducerSchema) {}
-
-export type CreateProducerDTO = Omit<CreateProducerInput, 'password'> & {
-  hashedPassword: string;
-};
 
 export const changeProducerSchema = createProducerSchema.omit({
   password: true,
