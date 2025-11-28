@@ -24,7 +24,6 @@ import { OwnerService } from 'src/decorators/owner.decorator';
 import { ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('/producers')
-@UseGuards(AuthGuard, RolesGuards, OwnerGuard)
 export class ProducerController {
   constructor(private readonly producerService: ProducerService) {}
 
@@ -32,6 +31,7 @@ export class ProducerController {
   @Roles(Role.ADMIN)
   @HttpCode(200)
   @ApiOkResponse({ type: producerOutput })
+  @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
   async findAll(): Promise<producerOutput[]> {
     const producers = await this.producerService.findAll();
 
@@ -40,6 +40,7 @@ export class ProducerController {
 
   @Get(':id')
   @OwnerService(ProducerService)
+  @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
   @ApiOkResponse({ type: producerOutput })
   @HttpCode(200)
   async findOne(@Param('id') id: string): Promise<producerOutput> {
@@ -62,6 +63,7 @@ export class ProducerController {
   @Patch(':id')
   @ApiOkResponse({ type: producerOutput })
   @OwnerService(ProducerService)
+  @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
   @HttpCode(200)
   async update(
     @Param('id') id: string,
@@ -74,6 +76,7 @@ export class ProducerController {
 
   @Delete(':id')
   @OwnerService(ProducerService)
+  @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
   @HttpCode(204)
   async remove(@Param('id') id: string): Promise<void> {
     await this.producerService.remove(id);
