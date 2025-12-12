@@ -1,7 +1,12 @@
 version: 2
 updates:
-  - package-ecosystem: ["npm", "docker"]
+  - package-ecosystem: "npm"
     directory: "/backendnest"
     schedule:
       interval: "weekly"
 
+updates-docker:
+  - package-ecosystem: "docker"
+    directory: "/backendnest"
+    schedule:
+      interval: "weekly"
