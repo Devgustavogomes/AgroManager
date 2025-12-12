@@ -16,7 +16,7 @@ jobs:
     - name: Use Node
       uses: actions/setup-node@v4
       with:
-        node-version: 22.
+        node-version: '22.x'
         cache: 'npm'
         cache-dependency-path: ./backendnest/package-lock.json
     - run: npm ci
