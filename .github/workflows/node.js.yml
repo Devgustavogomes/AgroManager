@@ -19,19 +19,14 @@ jobs:
         node-version: '22.x'
         cache: 'npm'
         cache-dependency-path: ./backendnest/package-lock.json
-    - name: Create .env file with correct formatting
+    - name: Create .env file
       working-directory: ./backendnest
       env:
-        MY_SECRET: ${{ secrets.TEST_ENV }}
-      run: |
-        echo "$MY_SECRET" > .env.development
-        
-        echo "Listando arquivos criados:"
-        ls -la .env*
-        
-        echo "Conteúdo inicial do arquivo (seguro):"
-        head -n 10 .env.development
-    - run: npm ci
+        THE_SECRET: ${{ secrets.TEST_ENV }}
+      run: echo "$THE_SECRET" > .env.test
+    - name: Install dependencies
+      run: npm ci
       working-directory: ./backendnest
-    - run: npm test
+    - name: Run tests
+      run: npm test
       working-directory: ./backendnest
