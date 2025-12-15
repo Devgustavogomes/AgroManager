@@ -19,38 +19,17 @@ jobs:
         node-version: '22.x'
         cache: 'npm'
         cache-dependency-path: ./backendnest/package-lock.json
-    - name: Debug Supremo de Variaveis
+    - name: Create .env
+      if: github.actor != 'dependabot[bot]'
       working-directory: ./backendnest
       env:
         THE_SECRET: ${{ secrets.TEST_ENV }}
-      run: |
-        echo "=== INICIO DO DIAGNOSTICO ==="
-        
-        if [ -z "$THE_SECRET" ]; then
-          echo "❌ ERRO FATAL: A variável THE_SECRET está totalmente VAZIA."
-          echo "Causas prováveis:"
-          echo "1. O nome no GitHub Settings não é exatamente TEST_ENV"
-          echo "2. Você criou o secret em 'Environments' mas não definiu o environment no YAML"
-          echo "3. Esse PR vem de um FORK (secrets são bloqueados em forks)"
-        else
-          echo "✅ SUCESSO: A variável foi encontrada!"
-          echo "O GitHub esconde o conteúdo com ***, mas ela existe."
-          echo "Comprimento da string: ${#THE_SECRET} caracteres."
-          
-          # Se chegou aqui, vamos gravar o arquivo
-          printf "%s" "$THE_SECRET" > .env
-          cp .env .env.test
-          cp .env .env.development
-          
-          echo "Arquivos criados:"
-          ls -la .env*
-        fi
-        
-        echo "=== FIM DO DIAGNOSTICO ==="
+      run: echo "$THE_SECRET" > .env.test
     - name: Install dependencies
       run: npm ci
       working-directory: ./backendnest
     - name: Run tests
+      if: github.actor != 'dependabot[bot]'
       run: npm test
       working-directory: ./backendnest
       env:
