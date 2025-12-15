@@ -25,6 +25,7 @@ jobs:
         THE_SECRET: ${{ secrets.TEST_ENV }}
       run: |
         # 1. Cria o arquivo base usando printf (mais seguro que echo para multilinhas)
+        printf "%s" "$THE_SECRET"
         printf "%s" "$THE_SECRET" > .env
 
         # 2. Copia para TODOS os nomes possíveis que o NestJS possa inventar de procurar
