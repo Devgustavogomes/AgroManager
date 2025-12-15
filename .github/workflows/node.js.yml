@@ -23,10 +23,28 @@ jobs:
       working-directory: ./backendnest
       env:
         THE_SECRET: ${{ secrets.TEST_ENV }}
-      run: echo "$THE_SECRET" > .env.test
+      run: |
+        # 1. Cria o arquivo base usando printf (mais seguro que echo para multilinhas)
+        printf "%s" "$THE_SECRET" > .env
+
+        # 2. Copia para TODOS os nomes possíveis que o NestJS possa inventar de procurar
+        cp .env .env.test
+        cp .env .env.development
+        cp .env .env.local
+
+        # 3. DEBUG: Mostra o tamanho dos arquivos (se for 0, o secret tá vazio)
+        echo "Verificando arquivos criados:"
+        ls -la .env*
+        
+        # 4. DEBUG EXTRA: Mostra as primeiras 3 linhas do arquivo (pra ver se gravou mesmo)
+        # Não se preocupe, o GitHub vai ofuscar as senhas com ***
+        echo "Conteúdo inicial:"
+        head -n 3 .env.test
     - name: Install dependencies
       run: npm ci
       working-directory: ./backendnest
     - name: Run tests
       run: npm test
       working-directory: ./backendnest
+      env:
+        NODE_ENV: test
