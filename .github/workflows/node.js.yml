@@ -51,7 +51,9 @@ jobs:
         working-directory: ./backendnest
         env:
           THE_SECRET: ${{ secrets.TEST_ENV }}
-        run: echo "$THE_SECRET" > .env.test
+        run: |
+          echo "$THE_SECRET" > .env.test
+          echo "$THE_SECRET" > .env.development
 
       - name: Install dependencies
         working-directory: ./backendnest
