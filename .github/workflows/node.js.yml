@@ -28,9 +28,13 @@ jobs:
       if: github.actor != 'dependabot[bot]'
       run: docker compose up -d --build --wait
 
+    - name: Run migrations
+      if: github.actor != 'dependabot[bot]'
+      run: docker compose exec -T node npm run migrate:dev
+
     - name: Run tests inside container
       if: github.actor != 'dependabot[bot]'
-      run: docker compose exec -T back-agromanager npm test
+      run: docker compose exec -T node npm test
       env:
         NODE_ENV: test
 
