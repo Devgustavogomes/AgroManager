@@ -21,7 +21,7 @@ export default async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-
+  console.log('teste');
   await app.listen(PORT, () => {
     console.log(`Server running on PORT ${PORT}`);
   });
