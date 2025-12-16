@@ -13,12 +13,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Use Node
-      uses: actions/setup-node@v4
-      with:
-        node-version: '22.x'
-        cache: 'npm'
-        cache-dependency-path: ./backendnest/package-lock.json
         
     - name: Create .env
       if: github.actor != 'dependabot[bot]'
@@ -26,14 +20,20 @@ jobs:
       env:
         THE_SECRET: ${{ secrets.TEST_ENV }}
       run: echo "$THE_SECRET" > .env.test
+
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v3
       
-    - name: Install dependencies
-      run: npm ci
-      working-directory: ./backendnest
-      
-    - name: Run tests
+    - name: Start containers
       if: github.actor != 'dependabot[bot]'
-      run: npm test
-      working-directory: ./backendnest
+      run: docker compose up -d --build --wait
+
+    - name: Run tests inside container
+      if: github.actor != 'dependabot[bot]'
+      run: docker compose exec -T back-agromanager npm test
       env:
         NODE_ENV: test
+
+    - name: Down containers
+      if: always()
+      run: docker compose down -v
