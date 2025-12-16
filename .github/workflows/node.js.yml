@@ -20,7 +20,7 @@ jobs:
           POSTGRES_PASSWORD: local_password_pg
           POSTGRES_DB: local_pg
         ports:
-          - "5432"
+          - 5432:5432
         options: >-
           --health-cmd "pg_isready -U local_pg"
           --health-interval 10s
@@ -28,7 +28,7 @@ jobs:
           --health-retries 5
 
       redis:
-        image: redis:8
+        image: redis:8.2.3-alpine
         ports:
           - 6379:6379
         options: >-
