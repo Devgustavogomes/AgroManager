@@ -18,7 +18,7 @@ export default async function bootstrap() {
     .setTitle('Minha API')
     .setVersion('1.0')
     .build();
-  console.log('testando o ci');
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
