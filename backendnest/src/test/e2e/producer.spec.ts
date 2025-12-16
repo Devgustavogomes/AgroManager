@@ -13,6 +13,8 @@ beforeAll(async () => {
   await app.init();
 });
 
+test('...', () => {});
+
 afterAll(async () => {
   await app.close();
 });
