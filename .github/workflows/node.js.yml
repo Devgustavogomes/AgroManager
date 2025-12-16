@@ -19,7 +19,7 @@ jobs:
       working-directory: ./backendnest
       env:
         THE_SECRET: ${{ secrets.TEST_ENV }}
-      run: echo "$THE_SECRET" > .env.test
+      run: echo "$THE_SECRET" > .env.development
 
     - name: Set up Docker
       uses: docker/setup-buildx-action@v3
