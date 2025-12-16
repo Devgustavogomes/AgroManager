@@ -17,6 +17,7 @@ services:
       - ./backendnest/.env.development
     volumes:
       - ./backendnest:/usr/src/app
+      - /usr/src/app/node_modules
     depends_on:
       postgres:
         condition: service_healthy
