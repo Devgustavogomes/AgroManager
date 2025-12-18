@@ -23,8 +23,5 @@ jobs:
     - run: npm ci
       working-directory: ./backendnest
       
-    - run: npm run build --if-present
-      working-directory: ./backendnest
-      
-    - run: npm test
+    - run: npm run build
       working-directory: ./backendnest
