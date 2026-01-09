@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\"",
     "start": "nest start",
     "start:dev": " cross-env NODE_ENV=development nest start --watch ",
     "start:debug": "nest start --debug --watch",
@@ -28,7 +28,8 @@
     "compose:prod:build": "docker compose -f ../docker-compose.prod.yml up --build",
     "compose:prod:stop": "docker compose -f ../docker-compose.prod.yml stop",
     "compose:prod:start": "docker compose -f ../docker-compose.prod.yml start",
-    "compose:prod:down": "docker compose -f ../docker-compose.prod.yml down"
+    "compose:prod:down": "docker compose -f ../docker-compose.prod.yml down",
+    "prepare": "husky"
   },
   "dependencies": {
     "@nestjs-modules/ioredis": "^2.0.2",
@@ -64,6 +65,7 @@
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
     "globals": "^16.0.0",
+    "husky": "^9.1.7",
     "jest": "^30.0.0",
     "node-pg-migrate": "^8.0.4",
     "prettier": "^3.4.2",
