@@ -1,0 +1,27 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+on:
+  pull_request:
+    branches: ["main", "develop"]
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "25.x"
+          cache: "npm"
+          cache-dependency-path: ./backendnest/package-lock.json
+      - run: npm ci
+        working-directory: ./backendnest
+
+      - run: npm run build
+        working-directory: ./backendnest
+
