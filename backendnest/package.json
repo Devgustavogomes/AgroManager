@@ -100,5 +100,8 @@
     "modulePaths": [
       "<rootDir>"
     ]
+  },
+  "husky": {
+    "hookPath": "../.git/hooks"
   }
 }
