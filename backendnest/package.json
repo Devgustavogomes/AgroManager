@@ -13,7 +13,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "cross-env NODE_ENV=production node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
+    "test": "cross-env NODE_ENV=test jest",
     "test:watch": "cross-env NODE_ENV=test jest --watch",
     "test:cov": "cross-env NODE_ENV=test jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
@@ -24,7 +24,11 @@
     "compose:build": "docker compose -f ../docker-compose.yml up --build",
     "compose:stop": "docker compose -f ../docker-compose.yml stop",
     "compose:start": "docker compose -f ../docker-compose.yml start",
-    "compose:down": "docker compose -f ../docker-compose.yml down"
+    "compose:down": "docker compose -f ../docker-compose.yml down",
+    "compose:prod:build": "docker compose -f ../docker-compose.prod.yml up --build",
+    "compose:prod:stop": "docker compose -f ../docker-compose.prod.yml stop",
+    "compose:prod:start": "docker compose -f ../docker-compose.prod.yml start",
+    "compose:prod:down": "docker compose -f ../docker-compose.prod.yml down"
   },
   "dependencies": {
     "@nestjs-modules/ioredis": "^2.0.2",
