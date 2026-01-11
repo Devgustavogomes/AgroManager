@@ -51,3 +51,26 @@ jobs:
         run: npm run format
         working-directory: ./backendnest
 
+  commitlint:
+    name: commitlint
+
+    if: github.actor != dependabot[bot]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          cache: "npm"
+          cache-dependency-path: ./backendnest/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./backendnest
+
+      - name: Run commitlint
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
