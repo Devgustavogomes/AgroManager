@@ -54,7 +54,7 @@ jobs:
   commitlint:
     name: commitlint
 
-    if: github.actor != dependabot[bot]
+    if: github.actor != 'dependabot[bot]'
 
     runs-on: ubuntu-latest
 
@@ -74,3 +74,4 @@ jobs:
 
       - name: Run commitlint
         run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+
