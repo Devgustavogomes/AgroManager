@@ -29,7 +29,6 @@
     "compose:prod:stop": "docker compose -f ../docker-compose.prod.yml stop",
     "compose:prod:start": "docker compose -f ../docker-compose.prod.yml start",
     "compose:prod:down": "docker compose -f ../docker-compose.prod.yml down",
-    "prepare": "husky",
     "commitlint": "commitlint --edit"
   },
   "dependencies": {
@@ -100,8 +99,5 @@
     "modulePaths": [
       "<rootDir>"
     ]
-  },
-  "husky": {
-    "hookPath": "../.git/hooks"
   }
 }
