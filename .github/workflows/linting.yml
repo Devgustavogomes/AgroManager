@@ -73,5 +73,6 @@ jobs:
         working-directory: ./backendnest
 
       - name: Run commitlint
-        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
-
+        run: |
+          cd backendnest
+          npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose

@@ -10,7 +10,7 @@ export class AuthRepository {
     const sql = `SELECT *
                 FROM producers
                 WHERE cpf_or_cnpj = $1`;
-    const params = [`${CPForCNPJ}`];
+    const params = [CPForCNPJ];
     const producer = await this.databaseService.query<findProducerOutput>(
       sql,
       params,

@@ -20,7 +20,7 @@ export class ProducerRepository {
     const sql = `SELECT id_producer, username, cpf_or_cnpj,role, created_at, updated_at
                 FROM producers
                 WHERE id_producer = $1;`;
-    const params = [`${id}`];
+    const params = [id];
 
     const producer = await this.databaseService.query<producerOutput>(
       sql,

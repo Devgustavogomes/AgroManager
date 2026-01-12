@@ -7,13 +7,14 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './auth.constants';
 import { Request } from 'express';
+import { AuthenticatedRequest } from 'src/types/authenticatedRequest';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
+    const request: AuthenticatedRequest = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       throw new UnauthorizedException();
@@ -23,8 +24,7 @@ export class AuthGuard implements CanActivate {
         secret: jwtConstants.secret,
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      request['producer'] = payload;
+      request.producer = payload;
     } catch {
       throw new UnauthorizedException();
     }
