@@ -3,11 +3,12 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
   Param,
   Post,
   Patch,
   UseGuards,
+  HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { ProducerService } from './producer.service';
 import { producerOutput } from './dto/producerOutput.dto';
@@ -29,7 +30,7 @@ export class ProducerController {
 
   @Get()
   @Roles(Role.ADMIN)
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ type: producerOutput })
   @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
   async findAll(): Promise<producerOutput[]> {
@@ -42,7 +43,7 @@ export class ProducerController {
   @OwnerService(ProducerService)
   @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
   @ApiOkResponse({ type: producerOutput })
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   async findOne(@Param('id') id: string): Promise<producerOutput> {
     const producer = await this.producerService.findOne(id);
     return producer;
@@ -50,7 +51,7 @@ export class ProducerController {
 
   @Post()
   @ApiOkResponse({ type: producerOutput, isArray: true })
-  @HttpCode(201)
+  @HttpCode(HttpStatus.CREATED)
   async create(
     @Body()
     data: CreateProducerInput,
@@ -64,7 +65,7 @@ export class ProducerController {
   @ApiOkResponse({ type: producerOutput })
   @OwnerService(ProducerService)
   @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   async update(
     @Param('id') id: string,
     @Body() data: UpdateProducerDTO,
@@ -77,7 +78,7 @@ export class ProducerController {
   @Delete(':id')
   @OwnerService(ProducerService)
   @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string): Promise<void> {
     await this.producerService.remove(id);
   }
