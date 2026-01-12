@@ -14,4 +14,9 @@ export default () => ({
     REDIS_PORT: process.env.REDIS_PORT,
     REDIS_PASSWORD: process.env.REDIS_PASSWORD,
   },
+  postgresMigration: {
+    POSTGRES_USER: process.env.POSTGRES_USER,
+    POSTGRES_DB: process.env.POSTGRES_DB,
+    POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD,
+  },
 });

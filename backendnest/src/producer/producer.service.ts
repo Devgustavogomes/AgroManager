@@ -62,6 +62,7 @@ export class ProducerService {
     if (!result) {
       throw new ForbiddenException();
     }
+
     return result;
   }
 }
