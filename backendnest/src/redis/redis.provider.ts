@@ -6,9 +6,11 @@ export const redisProvider = {
   inject: [ConfigService],
   useFactory: (configService: ConfigService) => {
     const client = new Redis({
-      host: configService.get<string>('REDIS_HOST'),
-      port: Number(configService.get<string>('REDIS_PORT')),
+      username: configService.get<string>('REDIS_USERNAME'),
       password: configService.get<string>('REDIS_PASSWORD'),
+      port: Number(configService.get<string>('REDIS_PORT')),
+      host: configService.get<string>('REDIS_HOST'),
+      tls: process.env.NODE_ENV === 'production' ? {} : undefined,
       retryStrategy: (times) => Math.min(times * 50, 2000),
       enableReadyCheck: true,
     });
