@@ -19,8 +19,10 @@ export const createProducerSchema = z.object({
 
 export class CreateProducerInput extends createZodDto(createProducerSchema) {}
 
-export const changeProducerSchema = createProducerSchema.omit({
-  password: true,
-});
+export const changeProducerSchema = createProducerSchema
+  .omit({
+    password: true,
+  })
+  .partial();
 
 export class UpdateProducerDTO extends createZodDto(changeProducerSchema) {}
