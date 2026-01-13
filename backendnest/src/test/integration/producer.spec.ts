@@ -102,5 +102,4 @@ describe('Producer Good Path', () => {
 
 afterAll(async () => {
   if (redisService) await redisService.onModuleDestroy();
-  await producerController.remove(producer.id_producer);
 });
