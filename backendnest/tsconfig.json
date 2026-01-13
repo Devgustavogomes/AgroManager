@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "module": "nodenext",
+    "types": ["vitest/globals"],
     "moduleResolution": "nodenext",
     "resolvePackageJsonExports": true,
     "esModuleInterop": true,
@@ -16,6 +17,9 @@
     "incremental": true,
     "skipLibCheck": true,
     "baseUrl": "./",
+    "paths": {
+      "src/*": ["src/*"]
+    },
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,

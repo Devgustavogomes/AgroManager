@@ -7,7 +7,7 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { Pool } from 'pg';
-
+import type { PoolClient } from 'pg';
 @Injectable()
 export class DatabaseService implements OnModuleDestroy, OnModuleInit {
   constructor(@Inject('DATABASE_CLIENT') private readonly pool: Pool) {}
@@ -29,5 +29,10 @@ export class DatabaseService implements OnModuleDestroy, OnModuleInit {
   async query<T = any>(sql: string, params?: any[]): Promise<T[]> {
     const result = await this.pool.query(sql, params);
     return result.rows;
+  }
+
+  async getClient(): Promise<PoolClient> {
+    const client = await this.pool.connect();
+    return client;
   }
 }

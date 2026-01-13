@@ -6,6 +6,7 @@ import configuration from './config/configuration';
 import { envSchema } from './config/dto/env.dto';
 import { AuthModule } from './auth/auth.module';
 import { RedisModule } from './redis/redis.module';
+import { MigrationModule } from './migration/migration.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { RedisModule } from './redis/redis.module';
     DatabaseModule,
     AuthModule,
     RedisModule,
+    MigrationModule,
   ],
   controllers: [],
   providers: [],
