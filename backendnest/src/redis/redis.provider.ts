@@ -10,7 +10,7 @@ export const redisProvider = {
       password: configService.get<string>('REDIS_PASSWORD'),
       port: Number(configService.get<string>('REDIS_PORT')),
       host: configService.get<string>('REDIS_HOST'),
-      tls: {},
+      tls: process.env.NODE_ENV === 'production' ? {} : undefined,
       retryStrategy: (times) => Math.min(times * 50, 2000),
       enableReadyCheck: true,
     });
