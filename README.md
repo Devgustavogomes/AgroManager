@@ -10,7 +10,16 @@ O **AgroManager** é uma plataforma fullstack destinada ao gerenciamento de **pr
 O objetivo principal é substituir registros manuais, permitindo **cadastrar, editar e gerar relatórios detalhados** de produtores, áreas cultiváveis e culturas, facilitando o acompanhamento de dados agrícolas e decisões estratégicas.
 
 ---
+## 🌐 Acesse o site
 
+O AgroManager está disponível online! Você pode conferir o deploy ou explorar a documentação da API:
+
+- **Deploy do site:** [Clique aqui para acessar](https://agromanager-e1tb.onrender.com/)  
+- **Documentação da API:** [Veja os endpoints e exemplos](https://agromanager-e1tb.onrender.com/api)  
+
+Explore o site, teste as funcionalidades e consulte a documentação para entender todos os recursos disponíveis.
+
+---
 ## 🛠 Tecnologias e Ferramentas
 
 - **Frontend:** Next.js, React, TypeScript, Tailwind CSS (ou biblioteca de UI a definir)  
