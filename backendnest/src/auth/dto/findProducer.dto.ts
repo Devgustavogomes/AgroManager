@@ -1,5 +1,5 @@
 export interface findProducerOutput {
-  id: string;
+  id_producer: string;
   username: string;
   cpf_or_cnpj: string;
   hashed_password: string;

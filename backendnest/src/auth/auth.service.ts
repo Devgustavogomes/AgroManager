@@ -34,7 +34,7 @@ export class AuthService {
 
     try {
       const payload = {
-        id: producer.id,
+        id: producer.id_producer,
         username: producer.username,
         role: producer.role,
         CPForCNPJ: producer.cpf_or_cnpj,
@@ -46,7 +46,7 @@ export class AuthService {
       });
 
       await this.redisService.set(
-        `refresh_${producer.id}`,
+        `refresh_${producer.id_producer}`,
         refreshToken,
         604800,
       );
