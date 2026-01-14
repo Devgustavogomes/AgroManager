@@ -4,6 +4,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { RolesGuards } from 'src/authorization/roles.guard';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from 'src/types/role';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('migration')
 @UseGuards(AuthGuard, RolesGuards)
@@ -12,12 +13,14 @@ export class MigrationController {
 
   @Get()
   @Roles(Role.ADMIN)
+  @ApiBearerAuth()
   async getMigrations() {
     return await this.migrationService.getMigrations();
   }
 
   @Post()
   @Roles(Role.ADMIN)
+  @ApiBearerAuth()
   async executeMigrations() {
     await this.migrationService.executeMigrations();
   }

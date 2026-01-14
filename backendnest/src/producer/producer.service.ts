@@ -56,13 +56,15 @@ export class ProducerService {
     await this.producerRepository.remove(id);
   }
 
-  async findOwner(id: string): Promise<{ id_producer: string } | undefined> {
-    const result = await this.producerRepository.findOwner(id);
+  async isOwner(idProducer: string, idService: string): Promise<boolean> {
+    const result = await this.producerRepository.isOwner(idProducer, idService);
 
     if (!result) {
       throw new ForbiddenException();
     }
 
-    return result;
+    const isOwner = result.id_producer === idService;
+
+    return isOwner;
   }
 }
