@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import {
   Injectable,
   Inject,
@@ -26,13 +26,39 @@ export class DatabaseService implements OnModuleDestroy, OnModuleInit {
     await this.pool.end();
   }
 
-  async query<T = any>(sql: string, params?: any[]): Promise<T[]> {
-    const result = await this.pool.query(sql, params);
+  async query<T = any>(
+    sql: string,
+    params?: any[],
+    client?: PoolClient,
+  ): Promise<T[]> {
+    const exec = client || this.pool;
+    const result = await exec.query(sql, params);
     return result.rows;
   }
 
   async getClient(): Promise<PoolClient> {
     const client = await this.pool.connect();
     return client;
+  }
+
+  async transactiontransaction<T>(
+    fn: (client: PoolClient) => Promise<T>,
+  ): Promise<T> {
+    const client = await this.pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const result = await fn(client);
+
+      await client.query('COMMIT');
+
+      return result;
+    } catch (error) {
+      await client.query('ROLLBACK');
+
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 }
