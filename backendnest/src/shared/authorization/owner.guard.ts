@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ModuleRef, Reflector } from '@nestjs/core';
-import { OWNER_SERVICE_KEY } from 'src/decorators/owner.decorator';
+import { OWNER_SERVICE_KEY } from 'src/shared/decorators/owner.decorator';
 import { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
 import { Role } from 'src/shared/types/role';
 

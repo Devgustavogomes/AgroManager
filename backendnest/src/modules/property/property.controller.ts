@@ -18,7 +18,7 @@ import { PropertyService } from './property.service';
 import { IdDto } from 'src/shared/types/idParams';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import { PropertyOutputDto } from './dto/propertyOutput.dto';
-import { OwnerService } from 'src/decorators/owner.decorator';
+import { OwnerService } from 'src/shared/decorators/owner.decorator';
 import type { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
 import {
   CreatePropertyInputDto,
