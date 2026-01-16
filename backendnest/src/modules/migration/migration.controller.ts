@@ -2,7 +2,7 @@ import { Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { MigrationService } from './migration.service';
 import { AuthGuard } from 'src/infra/auth/auth.guard';
 import { RolesGuards } from 'src/shared/authorization/roles.guard';
-import { Roles } from 'src/decorators/roles.decorator';
+import { Roles } from 'src/shared/decorators/roles.decorator';
 import { Role } from 'src/shared/types/role';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
