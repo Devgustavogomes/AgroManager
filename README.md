@@ -6,7 +6,8 @@
 
 ## 🎯 Objetivo
 
-O **AgroManager** é uma plataforma fullstack destinada ao gerenciamento de **produtores rurais, propriedades, safras e culturas plantadas**.  
+O **AgroManager** é uma plataforma fullstack destinada ao gerenciamento de **produtores rurais, propriedades, safras e culturas plantadas**.
+Este repo é parte backend do projeto.
 O objetivo principal é substituir registros manuais, permitindo **cadastrar, editar e gerar relatórios detalhados** de produtores, áreas cultiváveis e culturas, facilitando o acompanhamento de dados agrícolas e decisões estratégicas.
 
 ---
@@ -22,11 +23,10 @@ Explore o site, teste as funcionalidades e consulte a documentação para entend
 ---
 ## 🛠 Tecnologias e Ferramentas
 
-- **Frontend:** Next.js, React, TypeScript, Tailwind CSS (ou biblioteca de UI a definir)  
 - **Backend:** NestJS, TypeScript, JWT (Autenticação), Swagger (Documentação da API)  
-- **Banco de Dados:** PostgreSQL (queries SQL puras ou query builder leve, sem ORM)  
-- **Infraestrutura:** Docker, Docker Compose (backend, db)  
-- **Testes:** Jest (backend unitário e integração)  
+- **Banco de Dados:** PostgreSQL 
+- **Infraestrutura:** Docker, Docker Compose, Nginx
+- **Testes:** Vitest (Unitário, Integração e E2E) 
 - **CI/CD:** GitHub Actions (testes, build e deploy automático)   
 
 ---
@@ -37,17 +37,17 @@ Explore o site, teste as funcionalidades e consulte a documentação para entend
 - Cadastro e gestão de **propriedades** de cada produtor  
 - Registro de **safras** e múltiplas **culturas plantadas** por safra  
 - Validações importantes:
-  - CPF ou CNPJ válido para produtores  
+  - CPF válido para produtores  
   - Soma das áreas agricultável e de vegetação não ultrapassando a área total da propriedade  
-- **Relatórios e dashboards**:
+- **Relatório**:
   - Total de fazendas cadastradas  
   - Total de hectares registrados  
-  - Gráficos de pizza:
+  - Gráfico:
     - Por estado  
     - Por cultura plantada  
     - Por uso do solo (área agricultável vs vegetação)  
 - API documentada com **Swagger**  
-- Testes unitários e de integração para garantir confiabilidade  
+- Testes unitários, integração e E2E para garantir confiabilidade  
 - Logs estruturados para observabilidade do sistema  
 
 ---
@@ -55,18 +55,20 @@ Explore o site, teste as funcionalidades e consulte a documentação para entend
 ## 📈 Objetivos de Aprendizado
 
 - Dominar **NestJS e TypeScript** para backend completo  
-- Construir e consultar dados com **PostgreSQL sem ORM**  
+- Construir e consultar dados para treinar SQL com **PostgreSQL**  
 - Implementar **autenticação segura e roles**  
-- Validar regras de negócio e constraints do banco  
-- Criar **testes unitários e de integração**  
+- Validar regras de negócio
+- Criar **testes unitários,integração e E2E** de todos os modulos
 - Usar **Docker + Docker Compose** para ambientes isolados  
 - Documentar a API com **Swagger**  
-- Configurar **CI/CD automatizado** e deploy em nuvem  
+- Configurar **CI/CD automatizado** e deploy em nuvem
+
+Esse projeto como um todo é feito para eu treinar minhas hard skills, com um tempo vai haver bastante modificação, oque é natural e vai demonstrar minha evolução
 
 ---
 
 ## ⚠️ Status
 
 - Projeto atualmente em **desenvolvimento inicial**.  
-- Funcionalidades de dashboard e relatórios detalhados ainda em construção.  
+- Funcionalidades de relatórios detalhados ainda em construção.  
 - README atualizado conforme o projeto evoluirá.
