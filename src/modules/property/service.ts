@@ -4,20 +4,17 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PropertyRepository } from './property.repository';
-import { PropertyOutputDto } from './dto/propertyOutput.dto';
-import {
-  CreatePropertyInputDto,
-  UpdatePropertyInputDto,
-} from './dto/propertyInput.dto';
+import { PropertyOutputDto } from './dto';
+import { CreatePropertyInputDto, UpdatePropertyInputDto } from './dto';
 import { DatabaseService } from 'src/infra/database/database.service';
 import { PoolClient } from 'pg';
 import { MAX_PROPERTIES } from 'src/config/constants';
+import { PropertyContract } from './contract';
 
 @Injectable()
 export class PropertyService {
   constructor(
-    private readonly propertyRepository: PropertyRepository,
+    private readonly propertyRepository: PropertyContract,
     private readonly db: DatabaseService,
   ) {}
 

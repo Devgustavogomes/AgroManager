@@ -1,12 +1,13 @@
 import { DatabaseService } from 'src/infra/database/database.service';
 import { Injectable } from '@nestjs/common';
-import { PropertyOutputDto } from './dto/propertyOutput.dto';
-import { propertyMapper } from './mappers/property.mapper';
+import { propertyMapper } from './mapper';
 import {
   CreatePropertyInputDto,
+  PropertyOutputDto,
   UpdatePropertyInputDto,
-} from './dto/propertyInput.dto';
+} from './dto';
 import { PoolClient } from 'pg';
+import { PropertyContract } from './contract';
 
 export interface PropertyPersistence {
   id_property: string;
@@ -22,7 +23,7 @@ export interface PropertyPersistence {
 }
 
 @Injectable()
-export class PropertyRepository {
+export class PropertyRepository implements PropertyContract {
   constructor(private readonly databaseservice: DatabaseService) {}
 
   async findById(id: string): Promise<PropertyOutputDto | undefined> {
@@ -149,7 +150,7 @@ export class PropertyRepository {
     return id[0];
   }
 
-  async count(id: string, client: PoolClient) {
+  async count(id: string, client: PoolClient): Promise<number> {
     const sql = `SELECT COUNT(*) AS TOTAL
                 FROM properties
                 WHERE id_producer = $1`;
