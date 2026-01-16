@@ -7,8 +7,8 @@ import { envSchema } from 'src/config/dto/env.dto';
 import { DatabaseModule } from 'src/infra/database/database.module';
 import { producerOutput } from 'src/modules/producer/dto/producerOutput.dto';
 import { ProducerModule } from 'src/modules/producer/producer.module';
-import { PropertyController } from 'src/modules/property/property.controller';
-import { PropertyModule } from 'src/modules/property/property.module';
+import { PropertyController } from 'src/modules/property/controller';
+import { PropertyModule } from 'src/modules/property/module';
 import { RedisModule } from 'src/infra/redis/redis.module';
 import { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
 

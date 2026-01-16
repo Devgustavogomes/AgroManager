@@ -7,7 +7,7 @@ import { envSchema } from './config/dto/env.dto';
 import { AuthModule } from './infra/auth/auth.module';
 import { RedisModule } from './infra/redis/redis.module';
 import { MigrationModule } from './infra/migration/migration.module';
-import { PropertyModule } from './modules/property/property.module';
+import { PropertyModule } from './modules/property/module';
 
 @Module({
   imports: [

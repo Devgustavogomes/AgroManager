@@ -1,5 +1,5 @@
-import { PropertyOutputDto } from '../dto/propertyOutput.dto';
-import { PropertyPersistence } from '../property.repository';
+import { PropertyOutputDto } from './dto';
+import { PropertyPersistence } from './repository';
 
 export function propertyMapper(
   data: PropertyPersistence[],
@@ -13,7 +13,7 @@ export function propertyMapper(
     totalArea: r.total_area / 100,
     arableArea: r.arable_area / 100,
     vegetationArea: r.vegetation_area / 100,
-    createdAt: r.created_at,
-    updatedAt: r.updated_at,
+    createdAt: r.created_at.toISOString(),
+    updatedAt: r.updated_at ? r.updated_at.toISOString() : null,
   }));
 }

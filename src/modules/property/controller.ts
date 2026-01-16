@@ -14,16 +14,13 @@ import {
 import { AuthGuard } from 'src/infra/auth/auth.guard';
 import { OwnerGuard } from 'src/shared/authorization/owner.guard';
 import { RolesGuards } from 'src/shared/authorization/roles.guard';
-import { PropertyService } from './property.service';
+import { PropertyService } from './service';
 import { IdDto } from 'src/shared/types/idParams';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
-import { PropertyOutputDto } from './dto/propertyOutput.dto';
+import { PropertyOutputDto } from './dto';
 import { OwnerService } from 'src/shared/decorators/owner.decorator';
 import type { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
-import {
-  CreatePropertyInputDto,
-  UpdatePropertyInputDto,
-} from './dto/propertyInput.dto';
+import { CreatePropertyInputDto, UpdatePropertyInputDto } from './dto';
 
 @Controller('property')
 @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
