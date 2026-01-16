@@ -17,15 +17,12 @@ jobs:
         with:
           node-version: "25.x"
           cache: "npm"
-          cache-dependency-path: ./backendnest/package-lock.json
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ./backendnest
 
       - name: Run Eslint
         run: npm run lint
-        working-directory: ./backendnest
 
   prettier:
     name: prettier
@@ -41,15 +38,12 @@ jobs:
         with:
           node-version: "25.x"
           cache: npm
-          cache-dependency-path: ./backendnest/package-lock.json
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ./backendnest
 
       - name: Run Prettier
         run: npm run format
-        working-directory: ./backendnest
 
   commitlint:
     name: commitlint
@@ -66,14 +60,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           cache: "npm"
-          cache-dependency-path: ./backendnest/package-lock.json
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ./backendnest
 
       - name: Run commitlint
-        run: |
-          cd backendnest
-
-          npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose

@@ -44,10 +44,8 @@ jobs:
         with:
           node-version: "25.x"
           cache: "npm"
-          cache-dependency-path: ./backendnest/package-lock.json
 
       - name: Create .env
-        working-directory: ./backendnest
         env:
           THE_SECRET: ${{ secrets.TEST_ENV }}
         run: |
@@ -55,16 +53,12 @@ jobs:
           echo "$THE_SECRET" > .env.development
 
       - name: Install dependencies
-        working-directory: ./backendnest
         run: npm ci
 
       - name: Run migrations
-        working-directory: ./backendnest
         run: npm run migrate:dev
 
       - name: Run tests
-        working-directory: ./backendnest
         run: npm run test
         env:
           NODE_ENV: test
-
