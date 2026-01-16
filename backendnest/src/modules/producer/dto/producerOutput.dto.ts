@@ -1,6 +1,6 @@
 import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { CreateProducerInput } from './producerInput.dto';
-import { Role } from 'src/types/role';
+import { Role } from 'src/shared/types/role';
 
 export class producerOutput extends OmitType(CreateProducerInput, [
   'password',

@@ -13,7 +13,7 @@ import { loginInputDto } from './dto/login.dto';
 import { AuthService } from './auth.service';
 import type { Response } from 'express';
 import { AuthGuard } from './auth.guard';
-import type { AuthenticatedRequest } from 'src/types/authenticatedRequest';
+import type { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
 import { ApiOkResponse } from '@nestjs/swagger';
 @Controller('auth')
 export class AuthController {

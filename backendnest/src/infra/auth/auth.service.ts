@@ -5,8 +5,8 @@ import { AuthRepository } from './auth.repository';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { loginInputDto } from './dto/login.dto';
 import { compare } from 'bcryptjs';
-import { RedisService } from 'src/redis/redis.service';
-import { AuthenticatedRequest } from 'src/types/authenticatedRequest';
+import { RedisService } from 'src/infra/redis/redis.service';
+import { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
 import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AuthService {

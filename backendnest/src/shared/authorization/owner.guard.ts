@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { ModuleRef, Reflector } from '@nestjs/core';
 import { OWNER_SERVICE_KEY } from 'src/decorators/owner.decorator';
-import { AuthenticatedRequest } from 'src/types/authenticatedRequest';
-import { Role } from 'src/types/role';
+import { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
+import { Role } from 'src/shared/types/role';
 
 interface Service {
   isOwner(idProducer: string, idService: string): Promise<boolean>;

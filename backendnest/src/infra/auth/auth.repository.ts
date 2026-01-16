@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from 'src/infra/database/database.service';
 import type { findProducerOutput } from './dto/findProducer.dto';
 
 @Injectable()

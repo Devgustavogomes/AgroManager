@@ -9,6 +9,9 @@ export class PropertyOutputDto extends CreatePropertyInputDto {
   idProducer: string;
 
   @ApiProperty()
+  totalArea: number;
+
+  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()
