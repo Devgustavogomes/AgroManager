@@ -9,14 +9,14 @@ services:
       - node
   node:
     build:
-      context: ./backendnest
+      context: .
       dockerfile: Dockerfile
     ports:
       - "3000"
     env_file:
-      - ./backendnest/.env.development
+      - ./.env.development
     volumes:
-      - ./backendnest:/usr/src/app
+      - .:/usr/src/app
       - /usr/src/app/node_modules
     depends_on:
       postgres:
@@ -30,7 +30,7 @@ services:
     ports:
       - "5432"
     env_file:
-      - ./backendnest/.env.development
+      - ./.env.development
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -46,7 +46,7 @@ services:
     ports:
       - "6379"
     env_file:
-      - ./backendnest/.env.development
+      - ./.env.development
     volumes:
       - redis-data:/data
 
