@@ -20,6 +20,7 @@
     "paths": {
       "src/*": ["src/*"]
     },
+    "noErrorTruncation": true,
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,

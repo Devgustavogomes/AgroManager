@@ -12,11 +12,12 @@ CREATE TABLE "producers" (
 CREATE TABLE "properties" (
   "id_property" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   "id_producer" UUID NOT NULL,
+  "name" varchar NOT NULL,
   "city" varchar NOT NULL,
   "state" varchar NOT NULL,
-  "total_area" float NOT NULL,
-  "arable_area" float NOT NULL,
-  "vegetation_area" float NOT NULL,
+  "total_area" integer NOT NULL,
+  "arable_area" integer NOT NULL,
+  "vegetation_area" integer NOT NULL,
   "created_at" timestamp DEFAULT NOW(),
   "updated_at" timestamp,
 

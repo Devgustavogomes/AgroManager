@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { ProducerModule } from './producer/producer.module';
-import { DatabaseModule } from './database/database.module';
+import { ProducerModule } from './modules/producer/producer.module';
+import { DatabaseModule } from './infra/database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { envSchema } from './config/dto/env.dto';
-import { AuthModule } from './auth/auth.module';
-import { RedisModule } from './redis/redis.module';
-import { MigrationModule } from './migration/migration.module';
+import { AuthModule } from './infra/auth/auth.module';
+import { RedisModule } from './infra/redis/redis.module';
+import { MigrationModule } from './modules/migration/migration.module';
+import { PropertyModule } from './modules/property/property.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MigrationModule } from './migration/migration.module';
     AuthModule,
     RedisModule,
     MigrationModule,
+    PropertyModule,
   ],
   controllers: [],
   providers: [],
