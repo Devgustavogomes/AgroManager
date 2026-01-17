@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { PropertyOutputDto } from './dto';
 import { CreatePropertyInputDto, UpdatePropertyInputDto } from './dto';
-import { DatabaseService } from 'src/infra/database/database.service';
+import { DatabaseService } from 'src/infra/database/service';
 import { PoolClient } from 'pg';
 import { MAX_PROPERTIES } from 'src/config/constants';
 import { PropertyContract } from './contract';

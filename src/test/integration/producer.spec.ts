@@ -1,12 +1,12 @@
-import { RedisModule } from 'src/infra/redis/redis.module';
+import { RedisModule } from 'src/infra/redis/module';
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { AuthModule } from 'src/infra/auth/auth.module';
+import { AuthModule } from 'src/infra/auth/module';
 import configuration from 'src/config/configuration';
 import { envSchema } from 'src/config/dto/env.dto';
-import { DatabaseModule } from 'src/infra/database/database.module';
+import { DatabaseModule } from 'src/infra/database/module';
 import { ProducerModule } from 'src/modules/producer/producer.module';
-import { RedisService } from 'src/infra/redis/redis.service';
+import { RedisService } from 'src/infra/redis/service';
 import { ProducerController } from 'src/modules/producer/producer.controller';
 import { producerOutput } from 'src/modules/producer/dto/producerOutput.dto';
 

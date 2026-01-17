@@ -1,4 +1,4 @@
-import { DatabaseService } from 'src/infra/database/database.service';
+import { DatabaseService } from 'src/infra/database/service';
 import { Injectable } from '@nestjs/common';
 import { propertyMapper } from './mapper';
 import {

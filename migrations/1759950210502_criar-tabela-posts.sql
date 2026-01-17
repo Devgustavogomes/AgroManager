@@ -2,8 +2,8 @@
 CREATE TABLE "producers" (
   "id_producer" UUID  PRIMARY KEY DEFAULT gen_random_uuid(),
   "username" varchar NOT NULL,
-  "cpf_or_cnpj" varchar UNIQUE NOT NULL,
-  "hashed_password" varchar NOT NULL,
+  "email" varchar UNIQUE NOT NULL,
+  "password_hash" varchar NOT NULL,
   "role" varchar NOT NULL DEFAULT 'USER',
   "created_at" timestamp DEFAULT NOW(),
   "updated_at" timestamp

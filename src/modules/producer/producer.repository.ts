@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from 'src/infra/database/database.service';
+import { DatabaseService } from 'src/infra/database/service';
 import { producerOutput } from './dto/producerOutput.dto';
 import {
   UpdateProducerDTO,

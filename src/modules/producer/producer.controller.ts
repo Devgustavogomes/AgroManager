@@ -16,11 +16,11 @@ import {
   UpdateProducerDTO,
   CreateProducerInput,
 } from './dto/producerInput.dto';
-import { AuthGuard } from 'src/infra/auth/auth.guard';
-import { RolesGuards } from 'src/shared/authorization/roles.guard';
+import { AuthGuard } from 'src/shared/guards/auth.guard';
+import { RolesGuards } from 'src/shared/guards/roles.guard';
 import { Roles } from 'src/shared/decorators/roles.decorator';
 import { Role } from 'src/shared/types/role';
-import { OwnerGuard } from 'src/shared/authorization/owner.guard';
+import { OwnerGuard } from 'src/shared/guards/owner.guard';
 import { OwnerService } from 'src/shared/decorators/owner.decorator';
 import { ApiOkResponse } from '@nestjs/swagger';
 

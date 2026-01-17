@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { MigrationController } from './migration.controller';
-import { MigrationService } from './migration.service';
+import { MigrationController } from './controller';
+import { MigrationService } from './service';
 
 @Module({
   controllers: [MigrationController],

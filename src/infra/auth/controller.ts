@@ -9,10 +9,10 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { loginInputDto } from './dto/login.dto';
-import { AuthService } from './auth.service';
+import { loginInputDto } from './dto';
+import { AuthService } from './service';
 import type { Response } from 'express';
-import { AuthGuard } from './auth.guard';
+import { AuthGuard } from '../../shared/guards/auth.guard';
 import type { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
 import { ApiOkResponse } from '@nestjs/swagger';
 @Controller('auth')
