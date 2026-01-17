@@ -78,7 +78,7 @@ describe('Property Good Path', () => {
       totalArea: (input.arableArea * 100 + input.vegetationArea * 100) / 100,
       idProperty: expect.any(String),
       idProducer: producer1.id_producer,
-      createdAt: expect.any(Date),
+      createdAt: expect.any(String),
       updatedAt: null,
     });
   });
