@@ -20,7 +20,7 @@ import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import { PropertyOutputDto } from './dto';
 import { OwnerService } from 'src/shared/decorators/owner.decorator';
 import type { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
-import { CreatePropertyInputDto, UpdatePropertyInputDto } from './dto';
+import { CreatePropertyDto, UpdatePropertyDto } from './dto';
 
 @Controller('property')
 @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
@@ -42,7 +42,7 @@ export class PropertyController {
   @HttpCode(HttpStatus.CREATED)
   async create(
     @Req() req: AuthenticatedRequest,
-    @Body() dto: CreatePropertyInputDto,
+    @Body() dto: CreatePropertyDto,
   ) {
     return await this.propertyService.create(req.producer.id, dto);
   }
@@ -52,7 +52,7 @@ export class PropertyController {
   @ApiOkResponse({ type: PropertyOutputDto })
   @HttpCode(HttpStatus.OK)
   @OwnerService(PropertyService)
-  async update(@Param() params: IdDto, @Body() dto: UpdatePropertyInputDto) {
+  async update(@Param() params: IdDto, @Body() dto: UpdatePropertyDto) {
     return await this.propertyService.update(params.id, dto);
   }
 

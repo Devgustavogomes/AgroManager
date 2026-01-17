@@ -2,32 +2,27 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
-import { ProducerRepository } from './producer.repository';
 import { hash } from 'bcryptjs';
-import { producerOutput } from './dto/producerOutput.dto';
-import {
-  UpdateProducerDTO,
-  CreateProducerInput,
-} from './dto/producerInput.dto';
+import { UpdateProducerDTO, CreateProducerInput, ProducerOutput } from './dto';
+import { ProducerContract } from './contract';
 
 @Injectable()
 export class ProducerService {
-  constructor(private readonly producerRepository: ProducerRepository) {}
+  constructor(private readonly producerRepository: ProducerContract) {}
 
-  async findAll(): Promise<producerOutput[]> {
-    const producers = await this.producerRepository.findAll();
+  async findById(id: string): Promise<ProducerOutput> {
+    const producer = await this.producerRepository.findById(id);
 
-    return producers;
-  }
-
-  async findOne(id: string): Promise<producerOutput> {
-    const producer = await this.producerRepository.findOne(id);
+    if (!producer) {
+      throw new NotFoundException('Producer not found');
+    }
 
     return producer;
   }
 
-  async create(data: CreateProducerInput): Promise<producerOutput> {
+  async create(data: CreateProducerInput): Promise<ProducerOutput> {
     const { password, ...rest } = data;
 
     const hashedPassword = await hash(password, 10);
@@ -42,9 +37,9 @@ export class ProducerService {
     return producer;
   }
 
-  async update(id: string, data: UpdateProducerDTO): Promise<producerOutput> {
-    if (!data.cpf_or_cnpj && !data.username) {
-      throw new BadRequestException('Nenhum campo para atualizar');
+  async update(id: string, data: UpdateProducerDTO): Promise<ProducerOutput> {
+    if (!data.email && !data.username) {
+      throw new BadRequestException('No fields to update');
     }
 
     const producer = await this.producerRepository.update(id, data);

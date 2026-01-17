@@ -10,16 +10,10 @@ import {
   HttpStatus,
   HttpCode,
 } from '@nestjs/common';
-import { ProducerService } from './producer.service';
-import { producerOutput } from './dto/producerOutput.dto';
-import {
-  UpdateProducerDTO,
-  CreateProducerInput,
-} from './dto/producerInput.dto';
+import { ProducerService } from './service';
+import { UpdateProducerDTO, CreateProducerInput, ProducerOutput } from './dto';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { RolesGuards } from 'src/shared/guards/roles.guard';
-import { Roles } from 'src/shared/decorators/roles.decorator';
-import { Role } from 'src/shared/types/role';
 import { OwnerGuard } from 'src/shared/guards/owner.guard';
 import { OwnerService } from 'src/shared/decorators/owner.decorator';
 import { ApiOkResponse } from '@nestjs/swagger';
@@ -28,48 +22,37 @@ import { ApiOkResponse } from '@nestjs/swagger';
 export class ProducerController {
   constructor(private readonly producerService: ProducerService) {}
 
-  @Get()
-  @Roles(Role.ADMIN)
-  @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ type: producerOutput })
-  @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
-  async findAll(): Promise<producerOutput[]> {
-    const producers = await this.producerService.findAll();
-
-    return producers;
-  }
-
   @Get(':id')
   @OwnerService(ProducerService)
   @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
-  @ApiOkResponse({ type: producerOutput })
+  @ApiOkResponse({ type: ProducerOutput })
   @HttpCode(HttpStatus.OK)
-  async findOne(@Param('id') id: string): Promise<producerOutput> {
-    const producer = await this.producerService.findOne(id);
+  async findById(@Param('id') id: string): Promise<ProducerOutput> {
+    const producer = await this.producerService.findById(id);
     return producer;
   }
 
   @Post()
-  @ApiOkResponse({ type: producerOutput, isArray: true })
+  @ApiOkResponse({ type: ProducerOutput, isArray: true })
   @HttpCode(HttpStatus.CREATED)
   async create(
     @Body()
     data: CreateProducerInput,
-  ): Promise<producerOutput> {
+  ): Promise<ProducerOutput> {
     const producer = await this.producerService.create(data);
 
     return producer;
   }
 
   @Patch(':id')
-  @ApiOkResponse({ type: producerOutput })
+  @ApiOkResponse({ type: ProducerOutput })
   @OwnerService(ProducerService)
   @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
   @HttpCode(HttpStatus.OK)
   async update(
     @Param('id') id: string,
     @Body() data: UpdateProducerDTO,
-  ): Promise<producerOutput> {
+  ): Promise<ProducerOutput> {
     const producer = await this.producerService.update(id, data);
 
     return producer;

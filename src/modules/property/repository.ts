@@ -1,11 +1,7 @@
 import { DatabaseService } from 'src/infra/database/service';
 import { Injectable } from '@nestjs/common';
 import { propertyMapper } from './mapper';
-import {
-  CreatePropertyInputDto,
-  PropertyOutputDto,
-  UpdatePropertyInputDto,
-} from './dto';
+import { CreatePropertyDto, PropertyOutputDto, UpdatePropertyDto } from './dto';
 import { PoolClient } from 'pg';
 import { PropertyContract } from './contract';
 
@@ -44,7 +40,7 @@ export class PropertyRepository implements PropertyContract {
 
   async create(
     id: string,
-    dto: CreatePropertyInputDto,
+    dto: CreatePropertyDto,
     totalArea: number,
     client: PoolClient,
   ): Promise<PropertyOutputDto> {
@@ -87,7 +83,7 @@ export class PropertyRepository implements PropertyContract {
 
   async update(
     id: string,
-    dto: UpdatePropertyInputDto,
+    dto: UpdatePropertyDto,
     totalArea: number | undefined,
   ): Promise<PropertyOutputDto> {
     const sql = `UPDATE properties
