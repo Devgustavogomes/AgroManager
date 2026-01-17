@@ -1,12 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/infra/database/service';
-
-interface findProducerOutput {
-  id_producer: string;
-  username: string;
-  password_hash: string;
-  role: string;
-}
+import { findProducerOutput } from './constract';
 
 @Injectable()
 export class AuthRepository {

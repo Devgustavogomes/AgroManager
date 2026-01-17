@@ -1,19 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/infra/database/service';
 import { UpdateProducerDTO, CreateProducerInput, ProducerOutput } from './dto';
-import { Role } from 'src/shared/types/role';
 import { producerMapper } from './mapper';
-import { ProducerContract } from './contract';
+import { ProducerContract, ProducerPersistence } from './contract';
 
-export interface ProducerPersistence {
-  id_producer: string;
-  username: string;
-  email: string;
-  password_hash: string;
-  role: Role;
-  created_at: Date;
-  updated_at: Date | null;
-}
 @Injectable()
 export class ProducerRepository implements ProducerContract {
   constructor(private readonly databaseService: DatabaseService) {}
@@ -46,6 +36,7 @@ export class ProducerRepository implements ProducerContract {
                 $2,
                 $3)
                 RETURNING *;`;
+
     const params = [username, email, password];
 
     const producer = await this.databaseService.query<ProducerPersistence>(
@@ -64,6 +55,9 @@ export class ProducerRepository implements ProducerContract {
                 WHERE id_producer = $3
                 RETURNING *;
                 `;
+
+    console.log(data.email);
+    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
     const params = [data.username, data.email, id];
     const producer = await this.databaseService.query<ProducerPersistence>(
       sql,
