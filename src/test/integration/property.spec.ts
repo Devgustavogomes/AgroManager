@@ -1,15 +1,15 @@
 import { ProducerController } from '../../modules/producer/producer.controller';
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { AuthModule } from 'src/infra/auth/auth.module';
+import { AuthModule } from 'src/infra/auth/module';
 import configuration from 'src/config/configuration';
 import { envSchema } from 'src/config/dto/env.dto';
-import { DatabaseModule } from 'src/infra/database/database.module';
+import { DatabaseModule } from 'src/infra/database/module';
 import { producerOutput } from 'src/modules/producer/dto/producerOutput.dto';
 import { ProducerModule } from 'src/modules/producer/producer.module';
 import { PropertyController } from 'src/modules/property/controller';
 import { PropertyModule } from 'src/modules/property/module';
-import { RedisModule } from 'src/infra/redis/redis.module';
+import { RedisModule } from 'src/infra/redis/module';
 import { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
 
 let propertyController: PropertyController;

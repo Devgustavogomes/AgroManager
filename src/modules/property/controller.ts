@@ -11,9 +11,9 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from 'src/infra/auth/auth.guard';
-import { OwnerGuard } from 'src/shared/authorization/owner.guard';
-import { RolesGuards } from 'src/shared/authorization/roles.guard';
+import { AuthGuard } from 'src/shared/guards/auth.guard';
+import { OwnerGuard } from 'src/shared/guards/owner.guard';
+import { RolesGuards } from 'src/shared/guards/roles.guard';
 import { PropertyService } from './service';
 import { IdDto } from 'src/shared/types/idParams';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
