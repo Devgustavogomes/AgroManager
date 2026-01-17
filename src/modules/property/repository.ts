@@ -3,20 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { propertyMapper } from './mapper';
 import { CreatePropertyDto, PropertyOutputDto, UpdatePropertyDto } from './dto';
 import { PoolClient } from 'pg';
-import { PropertyContract } from './contract';
-
-export interface PropertyPersistence {
-  id_property: string;
-  id_producer: string;
-  name: string;
-  city: string;
-  state: string;
-  total_area: number;
-  arable_area: number;
-  vegetation_area: number;
-  created_at: Date;
-  updated_at: Date | null;
-}
+import { PropertyContract, PropertyPersistence } from './contract';
 
 @Injectable()
 export class PropertyRepository implements PropertyContract {

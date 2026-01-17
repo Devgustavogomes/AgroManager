@@ -8,11 +8,12 @@ import { DatabaseModule } from 'src/infra/database/module';
 import { ProducerModule } from 'src/modules/producer/module';
 import { RedisService } from 'src/infra/redis/service';
 import { ProducerController } from 'src/modules/producer/controller';
-import { producerOutput } from 'src/modules/producer/dto/producerOutput.dto';
+import { ProducerOutput } from 'src/modules/producer/dto';
+import { NotFoundException } from '@nestjs/common';
 
 let producerController: ProducerController;
 let redisService: RedisService;
-let producer: producerOutput;
+let producer: ProducerOutput;
 
 beforeAll(async () => {
   const moduleRef = await Test.createTestingModule({
@@ -43,60 +44,50 @@ describe('Producer Good Path', () => {
   test('Create a new producer', async () => {
     const input = {
       username: 'GustavoTeste',
-      cpf_or_cnpj: '06438212383',
+      email: 'testtt@gmail.com',
       password: 'DevTest311*',
     };
     producer = await producerController.create(input);
 
     expect(producer).toStrictEqual({
-      id_producer: expect.any(String),
-      username: expect.any(String),
-      cpf_or_cnpj: expect.any(String),
+      idProducer: expect.any(String),
+      username: input.username,
+      email: input.email,
       role: 'USER',
-      created_at: expect.any(Date),
-      updated_at: null,
+      createdAt: expect.any(String),
+      updatedAt: null,
     });
   });
-  test('Find all producer', async () => {
-    const result = await producerController.findAll();
 
-    expect(result).toContainEqual({
-      id_producer: expect.any(String),
-      username: expect.any(String),
-      cpf_or_cnpj: expect.any(String),
-      role: 'USER',
-      created_at: expect.any(Date),
-      updated_at: null,
-    });
-  });
   test('Find one producer', async () => {
-    const result = await producerController.findOne(producer.id_producer);
+    const result = await producerController.findById(producer.idProducer);
 
     expect(result).toStrictEqual({
-      id_producer: expect.any(String),
+      idProducer: expect.any(String),
       username: expect.any(String),
-      cpf_or_cnpj: expect.any(String),
+      email: expect.any(String),
       role: 'USER',
-      created_at: expect.any(Date),
-      updated_at: null,
+      createdAt: expect.any(String),
+      updatedAt: null,
     });
   });
+
   test('Update producer', async () => {
     const input = {
       username: 'GusTestC',
-      cpf_or_cnpj: '09329472512',
+      email: '09329@gmail.com',
     };
-    const result = await producerController.update(producer.id_producer, input);
+    const result = await producerController.update(producer.idProducer, input);
 
     expect(result.username).toBe(input.username);
-    expect(result.cpf_or_cnpj).toBe(input.cpf_or_cnpj);
+    expect(result.email).toBe(input.email);
   });
   test('Delete producer', async () => {
-    await producerController.remove(producer.id_producer);
+    await producerController.remove(producer.idProducer);
 
-    const result = await producerController.findOne(producer.id_producer);
-
-    expect(result).toBeUndefined();
+    await expect(
+      producerController.findById(producer.idProducer),
+    ).rejects.toThrow(NotFoundException);
   });
 });
 

@@ -1,5 +1,5 @@
+import { PropertyPersistence } from './contract';
 import { PropertyOutputDto } from './dto';
-import { PropertyPersistence } from './repository';
 
 export function propertyMapper(
   data: PropertyPersistence[],
