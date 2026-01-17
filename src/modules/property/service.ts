@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PropertyOutputDto } from './dto';
-import { CreatePropertyInputDto, UpdatePropertyInputDto } from './dto';
+import { CreatePropertyDto, UpdatePropertyDto } from './dto';
 import { DatabaseService } from 'src/infra/database/service';
 import { PoolClient } from 'pg';
 import { MAX_PROPERTIES } from 'src/config/constants';
@@ -28,10 +28,7 @@ export class PropertyService {
     return property;
   }
 
-  async create(
-    id: string,
-    dto: CreatePropertyInputDto,
-  ): Promise<PropertyOutputDto> {
+  async create(id: string, dto: CreatePropertyDto): Promise<PropertyOutputDto> {
     const { arableArea, totalArea, vegetationArea } = this.normalizeAreas(
       dto.arableArea,
       dto.vegetationArea,
@@ -59,7 +56,7 @@ export class PropertyService {
     });
   }
 
-  async update(id: string, dto: UpdatePropertyInputDto) {
+  async update(id: string, dto: UpdatePropertyDto) {
     if (
       (dto.arableArea && !dto.vegetationArea) ||
       (!dto.arableArea && dto.vegetationArea)

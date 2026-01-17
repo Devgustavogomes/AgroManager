@@ -19,12 +19,8 @@ const propertyOutputDto = createPropertySchema.extend({
   updatedAt: z.string().datetime().nullable(),
 });
 
-export class CreatePropertyInputDto extends createZodDto(
-  createPropertySchema,
-) {}
+export class CreatePropertyDto extends createZodDto(createPropertySchema) {}
 
-export class UpdatePropertyInputDto extends createZodDto(
-  updatePropertySchema,
-) {}
+export class UpdatePropertyDto extends createZodDto(updatePropertySchema) {}
 
 export class PropertyOutputDto extends createZodDto(propertyOutputDto) {}

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ProducerModule } from './modules/producer/producer.module';
+import { ProducerModule } from './modules/producer/module';
 import { DatabaseModule } from './infra/database/module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
