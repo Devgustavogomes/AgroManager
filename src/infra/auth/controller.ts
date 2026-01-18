@@ -14,7 +14,7 @@ import { AuthService } from './service';
 import type { Response } from 'express';
 import { AuthGuard } from '../../shared/guards/auth.guard';
 import type { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
-import { ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -49,6 +49,7 @@ export class AuthController {
   }
 
   @Post('refresh')
+  @ApiBearerAuth()
   @ApiOkResponse({
     schema: {
       type: 'object',
@@ -60,6 +61,7 @@ export class AuthController {
       },
     },
   })
+  @ApiBearerAuth()
   async refresh(
     @Req() req: AuthenticatedRequest,
     @Res({ passthrough: true }) res: Response,
