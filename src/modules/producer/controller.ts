@@ -16,7 +16,7 @@ import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { RolesGuards } from 'src/shared/guards/roles.guard';
 import { OwnerGuard } from 'src/shared/guards/owner.guard';
 import { OwnerService } from 'src/shared/decorators/owner.decorator';
-import { ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('/producers')
 export class ProducerController {
@@ -26,6 +26,7 @@ export class ProducerController {
   @OwnerService(ProducerService)
   @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
   @ApiOkResponse({ type: ProducerOutput })
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   async findById(@Param('id') id: string): Promise<ProducerOutput> {
     const producer = await this.producerService.findById(id);
@@ -49,6 +50,7 @@ export class ProducerController {
   @OwnerService(ProducerService)
   @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
   @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
   async update(
     @Param('id') id: string,
     @Body() data: UpdateProducerDTO,
@@ -62,6 +64,7 @@ export class ProducerController {
   @OwnerService(ProducerService)
   @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth()
   async remove(@Param('id') id: string): Promise<void> {
     await this.producerService.remove(id);
   }

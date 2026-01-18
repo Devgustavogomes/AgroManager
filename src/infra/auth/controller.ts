@@ -49,7 +49,6 @@ export class AuthController {
   }
 
   @Post('refresh')
-  @ApiBearerAuth()
   @ApiOkResponse({
     schema: {
       type: 'object',
@@ -82,6 +81,7 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('logout')
   @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
   async logout(
     @Req() req: AuthenticatedRequest,
     @Res({ passthrough: true }) res: Response,
