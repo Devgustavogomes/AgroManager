@@ -9,12 +9,12 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { loginInputDto } from './dto/login.dto';
-import { AuthService } from './auth.service';
+import { loginInputDto } from './dto';
+import { AuthService } from './service';
 import type { Response } from 'express';
-import { AuthGuard } from './auth.guard';
+import { AuthGuard } from '../../shared/guards/auth.guard';
 import type { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
-import { ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -60,6 +60,7 @@ export class AuthController {
       },
     },
   })
+  @ApiBearerAuth()
   async refresh(
     @Req() req: AuthenticatedRequest,
     @Res({ passthrough: true }) res: Response,
@@ -80,6 +81,7 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('logout')
   @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
   async logout(
     @Req() req: AuthenticatedRequest,
     @Res({ passthrough: true }) res: Response,
