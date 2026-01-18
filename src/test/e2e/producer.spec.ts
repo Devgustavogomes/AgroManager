@@ -5,8 +5,6 @@ import { Test } from '@nestjs/testing';
 import { AppModule } from 'src/app.module';
 
 let app: INestApplication;
-let token: string;
-let idProducer: string;
 
 beforeAll(async () => {
   const moduleRef = await Test.createTestingModule({
@@ -18,10 +16,13 @@ beforeAll(async () => {
 });
 
 describe('Producer Good Path', () => {
+  let token: string;
+  let idProducer: string;
+
   test('Create producer', async () => {
     const payload = {
       username: 'string',
-      cpf_or_cnpj: '52610775397389',
+      email: 'teste4@gmail.com',
       password: '<ApA$Xwmm<CvL8JVH',
     };
 
@@ -30,12 +31,12 @@ describe('Producer Good Path', () => {
       .send(payload)
       .expect(HttpStatus.CREATED);
 
-    idProducer = response.body.id_producer as string;
+    idProducer = response.body.idProducer as string;
   });
 
   test('Login producer to get token', async () => {
     const loginPayload = {
-      CPForCNPJ: '52610775397389',
+      email: 'teste4@gmail.com',
       password: '<ApA$Xwmm<CvL8JVH',
     };
 
@@ -47,10 +48,17 @@ describe('Producer Good Path', () => {
     token = response.body.accessToken as string;
   });
 
+  test('Find by id producer', async () => {
+    await request(app.getHttpServer())
+      .get(`/producers/${idProducer}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(HttpStatus.OK);
+  });
+
   test('Update producer', async () => {
     const payload = {
       username: 'striing',
-      cpf_or_cnpj: '52610775317348',
+      email: 'testup4@gmail.com',
     };
 
     await request(app.getHttpServer())
@@ -76,7 +84,7 @@ describe('Producer Intruder Bad Path', () => {
   beforeAll(async () => {
     const payload1 = {
       username: 'string',
-      cpf_or_cnpj: '52610775397390',
+      email: 'vi@gmail.com',
       password: '<ApA$Xwmm<CvL8JVH',
     };
 
@@ -85,11 +93,11 @@ describe('Producer Intruder Bad Path', () => {
       .send(payload1)
       .expect(HttpStatus.CREATED);
 
-    idProducer1 = response1.body.id_producer as string;
+    idProducer1 = response1.body.idProducer as string;
 
     const payload2 = {
       username: 'string',
-      cpf_or_cnpj: '52610775397334',
+      email: 'vi2@gmail.com',
       password: '<ApA$Xwmm<CvL8JVH',
     };
 
@@ -98,10 +106,10 @@ describe('Producer Intruder Bad Path', () => {
       .send(payload2)
       .expect(HttpStatus.CREATED);
 
-    idProducer2 = response2.body.id_producer as string;
+    idProducer2 = response2.body.idProducer as string;
 
     const loginPayload1 = {
-      CPForCNPJ: '52610775397390',
+      email: 'vi@gmail.com',
       password: '<ApA$Xwmm<CvL8JVH',
     };
 
@@ -113,7 +121,7 @@ describe('Producer Intruder Bad Path', () => {
     tokenProducer1 = responseLogin1.body.accessToken as string;
 
     const loginPayload2 = {
-      CPForCNPJ: '52610775397334',
+      email: 'vi2@gmail.com',
       password: '<ApA$Xwmm<CvL8JVH',
     };
 
@@ -128,13 +136,20 @@ describe('Producer Intruder Bad Path', () => {
   test('Intruder try to update a producer', async () => {
     const payload = {
       username: 'striing',
-      cpf_or_cnpj: '52610775317395',
+      email: 'emailup10@gmail.com',
     };
 
     await request(app.getHttpServer())
       .patch(`/producers/${idProducer1}`)
       .set('Authorization', `Bearer ${tokenProducer2}`)
       .send(payload)
+      .expect(HttpStatus.FORBIDDEN);
+  });
+
+  test('Intruder try to get another producer', async () => {
+    await request(app.getHttpServer())
+      .get(`/producers/${idProducer1}`)
+      .set('Authorization', `Bearer ${tokenProducer2}`)
       .expect(HttpStatus.FORBIDDEN);
   });
 
@@ -161,5 +176,3 @@ describe('Producer Intruder Bad Path', () => {
 afterAll(async () => {
   await app.close();
 });
-
-// falta eu fazer o test dos get do producer

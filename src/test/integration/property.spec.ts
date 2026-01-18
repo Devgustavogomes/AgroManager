@@ -1,21 +1,21 @@
-import { ProducerController } from '../../modules/producer/producer.controller';
+import { ProducerController } from '../../modules/producer/controller';
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { AuthModule } from 'src/infra/auth/auth.module';
+import { AuthModule } from 'src/infra/auth/module';
 import configuration from 'src/config/configuration';
 import { envSchema } from 'src/config/dto/env.dto';
-import { DatabaseModule } from 'src/infra/database/database.module';
-import { producerOutput } from 'src/modules/producer/dto/producerOutput.dto';
-import { ProducerModule } from 'src/modules/producer/producer.module';
-import { PropertyController } from 'src/modules/property/property.controller';
-import { PropertyModule } from 'src/modules/property/property.module';
-import { RedisModule } from 'src/infra/redis/redis.module';
+import { DatabaseModule } from 'src/infra/database/module';
+import { ProducerModule } from 'src/modules/producer/module';
+import { PropertyController } from 'src/modules/property/controller';
+import { PropertyModule } from 'src/modules/property/module';
+import { RedisModule } from 'src/infra/redis/module';
 import { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
+import { ProducerOutput } from 'src/modules/producer/dto';
 
 let propertyController: PropertyController;
 let producerController: ProducerController;
-let producer1: producerOutput;
-let producer2: producerOutput;
+let producer1: ProducerOutput;
+let producer2: ProducerOutput;
 
 beforeAll(async () => {
   const moduleRef = await Test.createTestingModule({
@@ -40,13 +40,13 @@ beforeAll(async () => {
 
   producer1 = await producerController.create({
     username: 'string',
-    cpf_or_cnpj: '13203567854',
+    email: '13203567854',
     password: "^%B'aQqRxsgq>-U1^",
   });
 
   producer2 = await producerController.create({
     username: 'string',
-    cpf_or_cnpj: '13203567855',
+    email: '13203567855',
     password: "^%B'aQqRxsgq>-U1^",
   });
 });
@@ -63,7 +63,7 @@ describe('Property Good Path', () => {
 
     const auth = {
       producer: {
-        id: producer1.id_producer,
+        id: producer1.idProducer,
       },
     } as AuthenticatedRequest;
 
@@ -77,14 +77,14 @@ describe('Property Good Path', () => {
       vegetationArea: input.vegetationArea,
       totalArea: (input.arableArea * 100 + input.vegetationArea * 100) / 100,
       idProperty: expect.any(String),
-      idProducer: producer1.id_producer,
-      createdAt: expect.any(Date),
+      idProducer: producer1.idProducer,
+      createdAt: expect.any(String),
       updatedAt: null,
     });
   });
 });
 
 afterAll(async () => {
-  await producerController.remove(producer1.id_producer);
-  await producerController.remove(producer2.id_producer);
+  await producerController.remove(producer1.idProducer);
+  await producerController.remove(producer2.idProducer);
 });

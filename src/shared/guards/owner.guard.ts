@@ -48,7 +48,6 @@ export class OwnerGuard implements CanActivate {
     });
 
     const owner = await service.isOwner(producer.id, id);
-
     if (!owner) {
       throw new ForbiddenException('You do not own this resource.');
     }

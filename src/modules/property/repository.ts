@@ -1,28 +1,12 @@
-import { DatabaseService } from 'src/infra/database/database.service';
+import { DatabaseService } from 'src/infra/database/service';
 import { Injectable } from '@nestjs/common';
-import { PropertyOutputDto } from './dto/propertyOutput.dto';
-import { propertyMapper } from './mappers/property.mapper';
-import {
-  CreatePropertyInputDto,
-  UpdatePropertyInputDto,
-} from './dto/propertyInput.dto';
+import { propertyMapper } from './mapper';
+import { CreatePropertyDto, PropertyOutputDto, UpdatePropertyDto } from './dto';
 import { PoolClient } from 'pg';
-
-export interface PropertyPersistence {
-  id_property: string;
-  id_producer: string;
-  name: string;
-  city: string;
-  state: string;
-  total_area: number;
-  arable_area: number;
-  vegetation_area: number;
-  created_at: Date;
-  updated_at: Date | null;
-}
+import { PropertyContract, PropertyPersistence } from './contract';
 
 @Injectable()
-export class PropertyRepository {
+export class PropertyRepository implements PropertyContract {
   constructor(private readonly databaseservice: DatabaseService) {}
 
   async findById(id: string): Promise<PropertyOutputDto | undefined> {
@@ -43,7 +27,7 @@ export class PropertyRepository {
 
   async create(
     id: string,
-    dto: CreatePropertyInputDto,
+    dto: CreatePropertyDto,
     totalArea: number,
     client: PoolClient,
   ): Promise<PropertyOutputDto> {
@@ -86,7 +70,7 @@ export class PropertyRepository {
 
   async update(
     id: string,
-    dto: UpdatePropertyInputDto,
+    dto: UpdatePropertyDto,
     totalArea: number | undefined,
   ): Promise<PropertyOutputDto> {
     const sql = `UPDATE properties
@@ -149,7 +133,7 @@ export class PropertyRepository {
     return id[0];
   }
 
-  async count(id: string, client: PoolClient) {
+  async count(id: string, client: PoolClient): Promise<number> {
     const sql = `SELECT COUNT(*) AS TOTAL
                 FROM properties
                 WHERE id_producer = $1`;

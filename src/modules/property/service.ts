@@ -3,21 +3,19 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
-import { PropertyRepository } from './property.repository';
-import { PropertyOutputDto } from './dto/propertyOutput.dto';
-import {
-  CreatePropertyInputDto,
-  UpdatePropertyInputDto,
-} from './dto/propertyInput.dto';
-import { DatabaseService } from 'src/infra/database/database.service';
+import { PropertyOutputDto } from './dto';
+import { CreatePropertyDto, UpdatePropertyDto } from './dto';
+import { DatabaseService } from 'src/infra/database/service';
 import { PoolClient } from 'pg';
 import { MAX_PROPERTIES } from 'src/config/constants';
+import { PropertyContract } from './contract';
 
 @Injectable()
 export class PropertyService {
   constructor(
-    private readonly propertyRepository: PropertyRepository,
+    private readonly propertyRepository: PropertyContract,
     private readonly db: DatabaseService,
   ) {}
 
@@ -31,10 +29,7 @@ export class PropertyService {
     return property;
   }
 
-  async create(
-    id: string,
-    dto: CreatePropertyInputDto,
-  ): Promise<PropertyOutputDto> {
+  async create(id: string, dto: CreatePropertyDto): Promise<PropertyOutputDto> {
     const { arableArea, totalArea, vegetationArea } = this.normalizeAreas(
       dto.arableArea,
       dto.vegetationArea,
@@ -62,12 +57,12 @@ export class PropertyService {
     });
   }
 
-  async update(id: string, dto: UpdatePropertyInputDto) {
+  async update(id: string, dto: UpdatePropertyDto) {
     if (
       (dto.arableArea && !dto.vegetationArea) ||
       (!dto.arableArea && dto.vegetationArea)
     ) {
-      throw new BadRequestException(
+      throw new UnprocessableEntityException(
         'arable area and vegetation area must be provided together',
       );
     }
