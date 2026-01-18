@@ -1,5 +1,5 @@
-import { MAX_PROPERTIES } from 'src/config/constants';
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import { MAX_PROPERTIES } from 'src/config/constants';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { Test } from '@nestjs/testing';
