@@ -27,7 +27,8 @@
     "compose:prod:stop": "docker compose -f ./docker-compose.prod.yml stop",
     "compose:prod:start": "docker compose -f ./docker-compose.prod.yml start",
     "compose:prod:down": "docker compose -f ./docker-compose.prod.yml down",
-    "commitlint": "commitlint --edit"
+    "commitlint": "commitlint --edit",
+    "prepare": "husky"
   },
   "dependencies": {
     "@nestjs-modules/ioredis": "^2.0.2",
