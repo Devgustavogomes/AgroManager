@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { PropertyOutputDto } from './dto';
 import { CreatePropertyDto, UpdatePropertyDto } from './dto';
@@ -61,7 +62,7 @@ export class PropertyService {
       (dto.arableArea && !dto.vegetationArea) ||
       (!dto.arableArea && dto.vegetationArea)
     ) {
-      throw new BadRequestException(
+      throw new UnprocessableEntityException(
         'arable area and vegetation area must be provided together',
       );
     }

@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JwtService } from '@nestjs/jwt';
-import { AuthRepository } from './repository';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { loginInputDto } from './dto';
 import { compare } from 'bcryptjs';
 import { RedisService } from 'src/infra/redis/service';
 import { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
 import { ConfigService } from '@nestjs/config';
+import { AuthContract } from './constract';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly authRepository: AuthRepository,
+    private readonly authRepository: AuthContract,
     private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
     private readonly configService: ConfigService,

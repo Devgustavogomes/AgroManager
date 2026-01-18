@@ -4,6 +4,7 @@ import { AuthService } from './service';
 import { AuthRepository } from './repository';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { AuthContract } from './constract';
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -16,6 +17,6 @@ import { ConfigService } from '@nestjs/config';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthRepository],
+  providers: [AuthService, { provide: AuthContract, useClass: AuthRepository }],
 })
 export class AuthModule {}
