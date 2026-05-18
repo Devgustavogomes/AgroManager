@@ -1,3 +1,4 @@
+import { Entity } from 'src/shared/entities/entity';
 import { Role } from 'src/shared/types/role';
 
 export interface ProducerProps {
@@ -10,40 +11,14 @@ export interface ProducerProps {
   updated_at?: Date | null;
 }
 
-export class ProducerEntity {
-  private id_producer?: string;
-  private username: string;
-  private email: string;
-  private role: Role;
-  private password_hash: string;
-  private created_at: Date;
-  private updated_at: Date | null;
-
-  constructor({
-    id_producer,
-    username,
-    email,
-    password_hash,
-    created_at,
-    updated_at,
-    role,
-  }: ProducerProps) {
-    this.id_producer = id_producer;
-    this.username = username;
-    this.email = email;
-    this.role = role ?? Role.USER;
-    this.password_hash = password_hash;
-    this.created_at = created_at ?? new Date();
-    this.updated_at = updated_at ?? null;
-  }
-
+export class ProducerEntity extends Entity<ProducerProps> {
   getEmail(): string {
-    return this.email;
+    return this.props.email;
   }
   getPassword(): string {
-    return this.password_hash;
+    return this.props.password_hash;
   }
   getUsername(): string {
-    return this.username;
+    return this.props.username;
   }
 }
