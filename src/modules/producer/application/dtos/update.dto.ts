@@ -1,5 +1,5 @@
 import { createZodDto } from 'nestjs-zod';
-import { createProducerSchema } from './createProducer.dto';
+import { createProducerSchema } from './create.dto';
 
 const changeProducerSchema = createProducerSchema
   .omit({

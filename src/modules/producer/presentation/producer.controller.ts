@@ -10,17 +10,25 @@ import {
   HttpCode,
   Req,
 } from '@nestjs/common';
-import { ProducerService } from './service';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import type { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
-import { ProducerOutput } from './DTOs/producerOutput.dto';
-import { CreateProducerInput } from './DTOs/createProducer.dto';
-import { UpdateProducerDTO } from './DTOs/updateProducer.dto';
+import { ProducerOutput } from '../application/dtos/output.dto';
+import { CreateProducerInput } from '../application/dtos/create.dto';
+import { UpdateProducerDTO } from '../application/dtos/update.dto';
+import { CreateProducerUseCase } from '../application/use-cases/create-producer.use-case';
+import { DeleteProducerUseCase } from '../application/use-cases/delete-producer.use-case';
+import { UpdateProducerUseCase } from '../application/use-cases/update-producer.use-case';
+import { FindByIdProducerUseCase } from '../application/use-cases/find-by-id-producer.use-case';
 
 @Controller('/producers')
 export class ProducerController {
-  constructor(private readonly producerService: ProducerService) {}
+  constructor(
+    private readonly createProducer: CreateProducerUseCase,
+    private readonly updateProducer: UpdateProducerUseCase,
+    private readonly deleteProducer: DeleteProducerUseCase,
+    private readonly findByIdProducer: FindByIdProducerUseCase,
+  ) {}
 
   @Get('')
   @UseGuards(AuthGuard)
@@ -28,7 +36,7 @@ export class ProducerController {
   @ApiOkResponse({ type: ProducerOutput })
   @ApiBearerAuth()
   async findById(@Req() req: AuthenticatedRequest): Promise<ProducerOutput> {
-    return await this.producerService.findById(req.producer.id);
+    return await this.findByIdProducer.execute(req.producer.id);
   }
 
   @Post()
@@ -38,7 +46,7 @@ export class ProducerController {
     @Body()
     data: CreateProducerInput,
   ): Promise<ProducerOutput> {
-    return await this.producerService.create(data);
+    return await this.createProducer.execute(data);
   }
 
   @Patch('')
@@ -50,7 +58,7 @@ export class ProducerController {
     @Req() req: AuthenticatedRequest,
     @Body() data: UpdateProducerDTO,
   ): Promise<ProducerOutput> {
-    return await this.producerService.update(req.producer.id, data);
+    return await this.updateProducer.execute(req.producer.id, data);
   }
 
   @Delete('')
@@ -58,6 +66,6 @@ export class ProducerController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiBearerAuth()
   async remove(@Req() req: AuthenticatedRequest): Promise<void> {
-    await this.producerService.remove(req.producer.id);
+    await this.deleteProducer.execute(req.producer.id);
   }
 }

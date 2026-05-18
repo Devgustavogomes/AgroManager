@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/infra/database/service';
-import { producerMapper } from './mapper';
-import { ProducerContract, ProducerPersistence } from './contract';
-import { ProducerOutput } from './DTOs/producerOutput.dto';
-import { CreateProducerInput } from './DTOs/createProducer.dto';
-import { UpdateProducerDTO } from './DTOs/updateProducer.dto';
+import {
+  ProducerContract,
+  ProducerPersistence,
+} from '../../domain/repositories/producer.repository.interface';
+
+import { ProducerEntity } from '../../domain/entities/producer.entity';
+import { ProducerMapper } from './producer.mapper';
+import { ProducerOutput } from '../../application/dtos/output.dto';
+import { UpdateProducerDTO } from '../../application/dtos/update.dto';
 
 @Injectable()
 export class ProducerRepository implements ProducerContract {
@@ -21,14 +25,10 @@ export class ProducerRepository implements ProducerContract {
       sql,
       params,
     );
-    return producerMapper(producer)[0];
+    return ProducerMapper.toOutput(producer)[0];
   }
 
-  async create({
-    username,
-    password,
-    email,
-  }: CreateProducerInput): Promise<ProducerOutput> {
+  async create(producer: ProducerEntity): Promise<ProducerOutput> {
     const sql = `INSERT INTO producers 
                 (username, 
                 email, 
@@ -39,14 +39,18 @@ export class ProducerRepository implements ProducerContract {
                 $3)
                 RETURNING *;`;
 
-    const params = [username, email, password];
+    const params = [
+      producer.getUsername(),
+      producer.getEmail(),
+      producer.getPassword(),
+    ];
 
-    const producer = await this.databaseService.query<ProducerPersistence>(
+    const result = await this.databaseService.query<ProducerPersistence>(
       sql,
       params,
     );
 
-    return producerMapper(producer)[0];
+    return ProducerMapper.toOutput(result)[0];
   }
 
   async update(id: string, data: UpdateProducerDTO): Promise<ProducerOutput> {
@@ -64,7 +68,7 @@ export class ProducerRepository implements ProducerContract {
       params,
     );
 
-    return producerMapper(producer)[0];
+    return ProducerMapper.toOutput(producer)[0];
   }
 
   async remove(id: string): Promise<void> {
