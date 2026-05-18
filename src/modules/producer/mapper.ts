@@ -1,5 +1,5 @@
 import { ProducerPersistence } from './contract';
-import { ProducerOutput } from './dto';
+import { ProducerOutput } from './DTOs/producerOutput.dto';
 
 export function producerMapper(data: ProducerPersistence[]): ProducerOutput[] {
   return data

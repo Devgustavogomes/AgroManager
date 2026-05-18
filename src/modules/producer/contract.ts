@@ -1,5 +1,7 @@
 import { Role } from 'src/shared/types/role';
-import { CreateProducerInput, ProducerOutput, UpdateProducerDTO } from './dto';
+import { CreateProducerInput } from './DTOs/createProducer.dto';
+import { ProducerOutput } from './DTOs/producerOutput.dto';
+import { UpdateProducerDTO } from './DTOs/updateProducer.dto';
 export interface ProducerPersistence {
   id_producer: string;
   username: string;
@@ -14,8 +16,4 @@ export abstract class ProducerContract {
   abstract create(dto: CreateProducerInput): Promise<ProducerOutput>;
   abstract update(id: string, dto: UpdateProducerDTO): Promise<ProducerOutput>;
   abstract remove(id: string): Promise<void>;
-  abstract isOwner(
-    idProducer: string,
-    _idService: string,
-  ): Promise<{ id_producer: string } | undefined>;
 }

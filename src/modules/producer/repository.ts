@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/infra/database/service';
-import { UpdateProducerDTO, CreateProducerInput, ProducerOutput } from './dto';
 import { producerMapper } from './mapper';
 import { ProducerContract, ProducerPersistence } from './contract';
+import { ProducerOutput } from './DTOs/producerOutput.dto';
+import { CreateProducerInput } from './DTOs/createProducer.dto';
+import { UpdateProducerDTO } from './DTOs/updateProducer.dto';
 
 @Injectable()
 export class ProducerRepository implements ProducerContract {
@@ -71,22 +73,5 @@ export class ProducerRepository implements ProducerContract {
     const params = [id];
 
     await this.databaseService.query(sql, params);
-  }
-
-  async isOwner(
-    idProducer: string,
-    _idService: string,
-  ): Promise<{ id_producer: string } | undefined> {
-    const sql = `SELECT id_producer FROM producers
-                  WHERE id_producer = $1`;
-
-    const params = [idProducer];
-
-    const result = await this.databaseService.query<{ id_producer: string }>(
-      sql,
-      params,
-    );
-
-    return result[0];
   }
 }
