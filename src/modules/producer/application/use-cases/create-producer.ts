@@ -14,7 +14,7 @@ export class CreateProducerUseCase {
 
     const hashedPassword = await hash(password, 10);
 
-    const producer = new ProducerEntity({
+    const producer = ProducerEntity.create({
       ...rest,
       password_hash: hashedPassword,
     });
