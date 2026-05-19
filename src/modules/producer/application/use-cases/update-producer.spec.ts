@@ -1,13 +1,13 @@
-import { DeleteProducerUseCase } from './delete-producer';
 import { InMemoryProducerRepository } from './../../infrastructure/persistence/in-memory/in-memory-producer.repository';
 import { ProducerEntity } from '../../domain/entities/producer.entity';
+import { UpdateProducerUseCase } from './update-producer';
 describe('UpdateProducerUseCase', () => {
   let inMemoryProducerRepository: InMemoryProducerRepository;
-  let deleteProducerUseCase: DeleteProducerUseCase;
+  let updateProducerUseCase: UpdateProducerUseCase;
 
   beforeAll(() => {
     inMemoryProducerRepository = new InMemoryProducerRepository();
-    deleteProducerUseCase = new DeleteProducerUseCase(
+    updateProducerUseCase = new UpdateProducerUseCase(
       inMemoryProducerRepository,
     );
   });
@@ -23,7 +23,7 @@ describe('UpdateProducerUseCase', () => {
 
     const producerUpdatePayload = { username: 'producer2' };
 
-    const producerUpdated = await inMemoryProducerRepository.update(
+    const producerUpdated = await updateProducerUseCase.execute(
       producerResult.idProducer,
       producerUpdatePayload,
     );
