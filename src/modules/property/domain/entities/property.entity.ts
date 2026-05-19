@@ -3,6 +3,7 @@ import { Optional } from 'src/shared/types/optional';
 import { Area } from '../value-object/area';
 import { Slug } from '../value-object/slug';
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
+import { UpdatePropertyDto } from '../../application/dtos/update.dto';
 
 export interface PropertyProps {
   propertyId?: string;
@@ -36,6 +37,42 @@ export class PropertyEntity extends Entity<PropertyProps> {
     });
   }
 
+  update(data: UpdatePropertyDto) {
+    if (data.name !== undefined) {
+      this.props.name = data.name;
+
+      this.props.slug = Slug.createFromText(data.name);
+    }
+
+    if (data.city !== undefined) {
+      this.props.city = data.city;
+    }
+
+    if (data.state !== undefined) {
+      this.props.state = data.state;
+    }
+
+    if (data.slug !== undefined) {
+      this.props.slug = Slug.createFromText(data.slug);
+    }
+
+    if (data.totalArea !== undefined) {
+      this.props.totalArea = Area.create(data.totalArea);
+    }
+
+    if (data.arableArea !== undefined) {
+      this.props.arableArea = Area.create(data.arableArea);
+    }
+
+    if (data.vegetationArea !== undefined) {
+      this.props.vegetationArea = Area.create(data.vegetationArea);
+    }
+
+    this.validateAreas();
+
+    this.touch();
+  }
+
   private validateAreas() {
     const sum = this.props.arableArea.sum(this.props.vegetationArea);
 
@@ -44,6 +81,10 @@ export class PropertyEntity extends Entity<PropertyProps> {
         'Arable area plus vegetation area cannot exceed total area',
       );
     }
+  }
+
+  private touch() {
+    this.props.updatedAt = new Date();
   }
 
   get getProducerId() {

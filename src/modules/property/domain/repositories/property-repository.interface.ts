@@ -1,5 +1,4 @@
 import { PoolClient } from 'pg';
-import { UpdatePropertyDto } from '../../application/dtos/update.dto';
 import { PropertyEntity } from '../entities/property.entity';
 
 export interface PropertyPersistence {
@@ -28,9 +27,9 @@ export abstract class PropertyContract {
   ): Promise<PropertyEntity>;
 
   abstract update(
-    id: string,
-    dto: UpdatePropertyDto,
-    totalArea: number | undefined,
+    slug: string,
+    producerId: string,
+    property: PropertyEntity,
   ): Promise<PropertyEntity>;
 
   abstract delete(slug: string, producerId: string): Promise<void>;

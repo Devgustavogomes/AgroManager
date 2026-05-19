@@ -75,38 +75,41 @@ export class PropertyRepository implements PropertyContract {
   }
 
   async update(
-    id: string,
-    dto: UpdatePropertyDto,
-    totalArea: number | undefined,
+    slug: string,
+    producerId: string,
+    property: PropertyEntity,
   ): Promise<PropertyEntity> {
     const sql = `UPDATE properties
                 SET
-                NAME = COALESCE($1, NAME),
-                CITY = COALESCE($2, CITY),
-                STATE = COALESCE($3, STATE),
-                ARABLE_AREA = COALESCE($4, ARABLE_AREA),
-                VEGETATION_AREA = COALESCE($5, VEGETATION_AREA),
-                TOTAL_AREA = COALESCE($6, TOTAL_AREA),
-                UPDATED_AT = NOW()
-                WHERE id_property = $7
+                "name" = COALESCE($1, "name"),
+                "city" = COALESCE($2, "city"),
+                "state" = COALESCE($3, "state"),
+                "arableArea" = COALESCE($4, "arableArea"),
+                "vegetationArea" = COALESCE($5, "vegetationArea"),
+                "totalArea" = COALESCE($6, "totalArea"),
+                "updatedAt" = $7
+                WHERE "slug" = $8
+                AND "producerId" = $9
                 RETURNING *`;
 
     const params = [
-      dto.name ?? null,
-      dto.city ?? null,
-      dto.state ?? null,
-      dto.arableArea ?? null,
-      dto.vegetationArea ?? null,
-      totalArea ?? null,
-      id,
+      property.getName,
+      property.getCity,
+      property.getState,
+      property.getArableArea,
+      property.getVegetationArea,
+      property.getTotalArea,
+      property.getUpdatedAt,
+      slug,
+      producerId,
     ];
 
-    const property = await this.databaseservice.query<PropertyPersistence>(
+    const result = await this.databaseservice.query<PropertyPersistence>(
       sql,
       params,
     );
 
-    return PropertyMapper.toDomain(property)[0];
+    return PropertyMapper.toDomain(result)[0];
   }
 
   async delete(slug: string, producerId: string) {

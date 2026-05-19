@@ -5,6 +5,7 @@ import { PropertyController } from '../presentation/controller';
 import { CreatePropertyUseCase } from '../application/use-cases/create-property.service';
 import { FindBySlugUseCase } from '../application/use-cases/find-property-by-slug.service';
 import { DeletePropertyUseCase } from '../application/use-cases/delete-property.service';
+import { UpdateProducerUseCase } from 'src/modules/producer/application/use-cases/update-producer';
 
 @Module({
   controllers: [PropertyController],
@@ -13,6 +14,7 @@ import { DeletePropertyUseCase } from '../application/use-cases/delete-property.
     CreatePropertyUseCase,
     FindBySlugUseCase,
     DeletePropertyUseCase,
+    UpdateProducerUseCase,
   ],
 })
 export class PropertyModule {}
