@@ -43,20 +43,4 @@ export class PropertyService {
 
     return await this.propertyRepository.update(id, parsedDto, totalArea);
   }
-
-  async delete(id: string) {
-    await this.propertyRepository.delete(id);
-  }
-
-  async isOwner(idProducer: string, idService: string): Promise<boolean> {
-    const result = await this.propertyRepository.isOwner(idProducer, idService);
-
-    if (!result) {
-      throw new ForbiddenException(`You don't own this resource`);
-    }
-
-    const isOwner = result.id_property === idService;
-
-    return isOwner;
-  }
 }

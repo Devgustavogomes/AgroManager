@@ -109,34 +109,14 @@ export class PropertyRepository implements PropertyContract {
     return PropertyMapper.toDomain(property)[0];
   }
 
-  async delete(id: string) {
+  async delete(slug: string, producerId: string) {
     const sql = `DELETE FROM properties
-              WHERE id_property = $1`;
+              WHERE "slug" = $1
+              AND "producerId" = $2`;
 
-    const params = [id];
+    const params = [slug, producerId];
 
     await this.databaseservice.query(sql, params);
-  }
-
-  async isOwner(
-    idProducer: string,
-    idService: string,
-  ): Promise<{ id_property: string } | undefined> {
-    const sql = `SELECT id_property
-                FROM properties
-                WHERE id_producer = $1
-                AND id_property = $2`;
-
-    const params = [idProducer, idService];
-
-    const id = await this.databaseservice.query<
-      | {
-          id_property: string;
-        }
-      | undefined
-    >(sql, params);
-
-    return id[0];
   }
 
   async count(property: PropertyEntity, client: PoolClient): Promise<number> {

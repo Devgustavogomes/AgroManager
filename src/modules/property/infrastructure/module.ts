@@ -4,6 +4,7 @@ import { PropertyRepository } from './persistence/repository';
 import { PropertyController } from '../presentation/controller';
 import { CreatePropertyUseCase } from '../application/use-cases/create-property.service';
 import { FindBySlugUseCase } from '../application/use-cases/find-property-by-slug.service';
+import { DeletePropertyUseCase } from '../application/use-cases/delete-property.service';
 
 @Module({
   controllers: [PropertyController],
@@ -11,6 +12,7 @@ import { FindBySlugUseCase } from '../application/use-cases/find-property-by-slu
     { provide: PropertyContract, useClass: PropertyRepository },
     CreatePropertyUseCase,
     FindBySlugUseCase,
+    DeletePropertyUseCase,
   ],
 })
 export class PropertyModule {}

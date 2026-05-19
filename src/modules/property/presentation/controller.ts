@@ -22,6 +22,7 @@ import { PropertyOutputDto } from '../application/dtos/output.dto';
 import { CreatePropertyDto } from '../application/dtos/create.dto';
 import { UpdatePropertyDto } from '../application/dtos/update.dto';
 import { CreatePropertyUseCase } from '../application/use-cases/create-property.service';
+import { DeletePropertyUseCase } from '../application/use-cases/delete-property.service';
 
 @Controller('property')
 @UseGuards(AuthGuard)
@@ -29,6 +30,7 @@ export class PropertyController {
   constructor(
     private readonly createPropertyUseCase: CreatePropertyUseCase,
     private readonly findBySlugUseCase: FindBySlugUseCase,
+    private readonly deletePropertyUseCase: DeletePropertyUseCase,
   ) {}
 
   @Get(':slug')
@@ -67,7 +69,7 @@ export class PropertyController {
   @ApiOkResponse()
   @HttpCode(HttpStatus.NO_CONTENT)
   @OwnerService(PropertyService)
-  async delete(@Param('slug') slug: string) {
-    await this.propertyService.delete(slug);
+  async delete(@Req() req: AuthenticatedRequest, @Param('slug') slug: string) {
+    await this.deletePropertyUseCase.execute(slug, req.producer.id);
   }
 }
