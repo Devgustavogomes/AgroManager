@@ -18,7 +18,7 @@ export const DatabaseClientProvider = {
     if (!dbConfig) {
       throw new Error('Database configuration is empty');
     }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+
     return new Pool({
       user: dbConfig.user,
       password: dbConfig.password,
