@@ -1,32 +1,36 @@
 -- Up Migration
 CREATE TABLE "producers" (
-  "id_producer" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "producerId" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   "username" varchar NOT NULL,
   "email" varchar UNIQUE NOT NULL,
-  "password_hash" varchar NOT NULL,
+  "hashedPassword" varchar NOT NULL,
   "role" varchar NOT NULL DEFAULT 'USER',
-  "created_at" timestamp DEFAULT NOW(),
-  "updated_at" timestamp
+  "createdAt" timestamp DEFAULT NOW(),
+  "updatedAt" timestamp
 );
-
 
 CREATE TABLE "properties" (
-  "id_property" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  "id_producer" UUID NOT NULL,
+  "propertyId" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "producerId" UUID NOT NULL,
   "name" varchar NOT NULL,
+  "slug" varchar UNIQUE NOT NULL,
   "city" varchar NOT NULL,
   "state" varchar NOT NULL,
-  "total_area" integer NOT NULL, 
-  "arable_area" integer NOT NULL,
-  "vegetation_area" integer NOT NULL,
-  "created_at" timestamp DEFAULT NOW(),
-  "updated_at" timestamp,
+  "totalArea" NUMERIC(10,2) NOT NULL, 
+  "arableArea" NUMERIC(10,2) NOT NULL,
+  "vegetationArea" NUMERIC(10,2) NOT NULL,
+  "createdAt" timestamp DEFAULT NOW(),
+  "updatedAt" timestamp,
 
   CONSTRAINT fk_properties_producers
-    FOREIGN KEY ("id_producer")
-    REFERENCES "producers" ("id_producer")
+    FOREIGN KEY ("producerId")
+    REFERENCES "producers" ("producerId")
     ON DELETE CASCADE
 );
+
+
+
+
 
 
 CREATE TABLE "cultures" (

@@ -20,7 +20,7 @@ import {
   IdCultureDto,
   UpdateCultureInput,
 } from './dto';
-import { PropertyService } from '../property/service';
+import { PropertyService } from '../property/application/use-cases/service';
 
 @Controller(':id_property/cultures')
 @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
