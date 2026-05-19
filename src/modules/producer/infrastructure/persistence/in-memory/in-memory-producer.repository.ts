@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/require-await */
 import { ProducerContract } from '../../../domain/repositories/producer.repository.interface';
 import { ProducerEntity } from '../../../domain/entities/producer.entity';
-
 import { Role } from 'src/shared/types/role';
 import { ProducerMapper } from '../producer.mapper';
 import { ProducerOutput } from 'src/modules/producer/application/dtos/output.dto';
@@ -18,7 +18,7 @@ export class InMemoryProducerRepository implements ProducerContract {
   }> = [];
 
   async findById(id: string): Promise<ProducerOutput | undefined> {
-    const producer = await this.items.find((item) => item.id_producer === id);
+    const producer = this.items.find((item) => item.id_producer === id);
     if (!producer) return undefined;
 
     return ProducerMapper.toOutput([producer])[0];
@@ -35,13 +35,13 @@ export class InMemoryProducerRepository implements ProducerContract {
       updated_at: null,
     };
 
-    await this.items.push(newProducer);
+    this.items.push(newProducer);
 
     return ProducerMapper.toOutput([newProducer])[0];
   }
 
   async update(id: string, data: UpdateProducerDTO): Promise<ProducerOutput> {
-    const index = await this.items.findIndex((item) => item.id_producer === id);
+    const index = this.items.findIndex((item) => item.id_producer === id);
     if (index === -1) {
       throw new Error('Producer not found');
     }
@@ -60,7 +60,7 @@ export class InMemoryProducerRepository implements ProducerContract {
   }
 
   async remove(id: string): Promise<void> {
-    const index = await this.items.findIndex((item) => item.id_producer === id);
+    const index = this.items.findIndex((item) => item.id_producer === id);
     if (index !== -1) {
       this.items.splice(index, 1);
     }
