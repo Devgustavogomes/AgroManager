@@ -1,6 +1,6 @@
 import { Entity } from 'src/shared/domain/entities/entity';
 import { Optional } from 'src/shared/types/optional';
-import { Area } from '../value-object/area';
+import { Area } from '../../../../shared/domain/value-object/area';
 import { Slug } from '../value-object/slug';
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
 import { UpdatePropertyDto } from '../../application/dtos/update.dto';

@@ -1,7 +1,7 @@
 import { PropertyMapper } from './../../infrastructure/persistence/mapper';
 import { DatabaseService } from 'src/infra/database/service';
 import { PropertyEntity } from '../../domain/entities/property.entity';
-import { Area } from '../../domain/value-object/area';
+import { Area } from '../../../../shared/domain/value-object/area';
 import { Slug } from '../../domain/value-object/slug';
 import { CreatePropertyDto } from '../dtos/create.dto';
 import { PropertyRepository } from './../../infrastructure/persistence/repository';
