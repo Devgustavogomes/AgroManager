@@ -1,10 +1,10 @@
-import { PropertyMapper } from './../../infrastructure/persistence/mapper';
+import { PropertyMapper } from '../../infrastructure/persistence/property.mapper';
 import { DatabaseService } from 'src/infra/database/service';
 import { PropertyEntity } from '../../domain/entities/property.entity';
 import { Area } from '../../../../shared/domain/value-object/area';
 import { Slug } from '../../domain/value-object/slug';
 import { CreatePropertyDto } from '../dtos/create.dto';
-import { PropertyRepository } from './../../infrastructure/persistence/repository';
+import { PropertyRepository } from '../../infrastructure/persistence/property.repository';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PoolClient } from 'pg';
 import { PropertyOutputDto } from '../dtos/output.dto';

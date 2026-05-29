@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PropertyRepository } from '../../infrastructure/persistence/repository';
+import { PropertyRepository } from '../../infrastructure/persistence/property.repository';
 
 @Injectable()
 export class DeletePropertyUseCase {

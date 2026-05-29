@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PropertyRepository } from '../../infrastructure/persistence/repository';
+import { PropertyRepository } from '../../infrastructure/persistence/property.repository';
 import { UpdatePropertyDto } from '../dtos/update.dto';
 
 @Injectable()
