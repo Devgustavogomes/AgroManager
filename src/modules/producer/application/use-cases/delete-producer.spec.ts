@@ -1,33 +1,28 @@
-import { ProducerEntity } from '../../domain/entities/producer.entity';
-import { InMemoryProducerRepository } from '../../infrastructure/persistence/in-memory/in-memory-producer.repository';
+import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { DeleteProducerUseCase } from './delete-producer';
+import { ProducerContract } from '../../domain/repositories/producer.repository.interface';
 
 describe('DeleteProducerUseCase', () => {
-  let inMemoryProducerRepository: InMemoryProducerRepository;
-  let producerDeleteUseCase: DeleteProducerUseCase;
+  let useCase: DeleteProducerUseCase;
+  let mockProducerRepository: Mocked<ProducerContract>;
 
-  beforeAll(() => {
-    inMemoryProducerRepository = new InMemoryProducerRepository();
-    producerDeleteUseCase = new DeleteProducerUseCase(
-      inMemoryProducerRepository,
-    );
+  beforeEach(() => {
+    mockProducerRepository = {
+      create: vi.fn(),
+      findById: vi.fn(),
+      update: vi.fn(),
+      remove: vi.fn(),
+    };
+
+    useCase = new DeleteProducerUseCase(mockProducerRepository);
   });
 
-  test('should be delete a producer', async () => {
-    const producer = ProducerEntity.create({
-      username: 'deleted',
-      password_hash: 'senha123#!',
-      email: 'deletedemail@gmail.com',
-    });
+  it('should delete a producer', async () => {
+    mockProducerRepository.remove.mockResolvedValue();
 
-    const newProducer = await inMemoryProducerRepository.create(producer);
+    await useCase.execute('some-id');
 
-    await producerDeleteUseCase.execute(newProducer.idProducer);
-
-    const result = await inMemoryProducerRepository.findById(
-      newProducer.idProducer,
-    );
-
-    expect(result).toBeUndefined();
+    expect(mockProducerRepository.remove).toHaveBeenCalledWith('some-id');
+    expect(mockProducerRepository.remove).toHaveBeenCalledOnce();
   });
 });

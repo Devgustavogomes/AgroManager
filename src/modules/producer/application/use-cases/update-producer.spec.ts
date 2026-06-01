@@ -1,34 +1,50 @@
-import { InMemoryProducerRepository } from './../../infrastructure/persistence/in-memory/in-memory-producer.repository';
-import { ProducerEntity } from '../../domain/entities/producer.entity';
+import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { UpdateProducerUseCase } from './update-producer';
-describe('UpdateProducerUseCase', () => {
-  let inMemoryProducerRepository: InMemoryProducerRepository;
-  let updateProducerUseCase: UpdateProducerUseCase;
+import { ProducerContract } from '../../domain/repositories/producer.repository.interface';
+import { BadRequestException } from '@nestjs/common';
+import { ProducerOutput } from '../dtos/output.dto';
+import { Role } from '../../../../shared/types/role';
 
-  beforeAll(() => {
-    inMemoryProducerRepository = new InMemoryProducerRepository();
-    updateProducerUseCase = new UpdateProducerUseCase(
-      inMemoryProducerRepository,
-    );
+describe('UpdateProducerUseCase', () => {
+  let useCase: UpdateProducerUseCase;
+  let mockProducerRepository: Mocked<ProducerContract>;
+
+  beforeEach(() => {
+    mockProducerRepository = {
+      create: vi.fn(),
+      findById: vi.fn(),
+      update: vi.fn(),
+      remove: vi.fn(),
+    };
+
+    useCase = new UpdateProducerUseCase(mockProducerRepository);
   });
 
-  test('shoul update a producer', async () => {
-    const producer = ProducerEntity.create({
-      email: 'producer@gmail.com',
-      password_hash: 'asasas!23@',
-      username: 'producer1',
-    });
-
-    const producerResult = await inMemoryProducerRepository.create(producer);
-
+  it('should update a producer', async () => {
     const producerUpdatePayload = { username: 'producer2' };
+    const mockProducerOutput: ProducerOutput = {
+      idProducer: 'some-id',
+      username: 'producer2',
+      email: 'producer@gmail.com',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      role: Role.USER,
+    };
 
-    const producerUpdated = await updateProducerUseCase.execute(
-      producerResult.idProducer,
+    mockProducerRepository.update.mockResolvedValue(mockProducerOutput);
+
+    await useCase.execute('some-id', producerUpdatePayload);
+
+    expect(mockProducerRepository.update).toHaveBeenCalledWith(
+      'some-id',
       producerUpdatePayload,
     );
+    expect(mockProducerRepository.update).toHaveBeenCalledOnce();
+  });
 
-    expect(producerUpdated.username).toBe(producerUpdatePayload.username);
-    expect(producerUpdated.updatedAt).toEqual(expect.any(String));
+  it('should throw BadRequestException if no fields are provided', async () => {
+    await expect(useCase.execute('some-id', {})).rejects.toThrow(
+      BadRequestException,
+    );
   });
 });
