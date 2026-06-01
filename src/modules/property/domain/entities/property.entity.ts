@@ -37,39 +37,43 @@ export class PropertyEntity extends Entity<PropertyProps> {
     });
   }
 
-  update(data: UpdatePropertyDto) {
-    if (data.name !== undefined) {
-      this.props.name = data.name;
+  set changeName(name: string) {
+    this.props.name = name;
 
-      this.props.slug = Slug.createFromText(data.name);
-    }
+    this.props.slug = Slug.createFromText(name);
+    this.touch();
+  }
 
-    if (data.city !== undefined) {
-      this.props.city = data.city;
-    }
+  set changeCity(city: string) {
+    this.props.city = city;
+    this.touch();
+  }
 
-    if (data.state !== undefined) {
-      this.props.state = data.state;
-    }
+  set changeState(state: string) {
+    this.props.state = state;
+    this.touch();
+  }
 
-    if (data.slug !== undefined) {
-      this.props.slug = Slug.createFromText(data.slug);
-    }
+  set changeSlug(slug: string) {
+    this.props.slug = Slug.createFromText(slug);
+    this.touch();
+  }
 
-    if (data.totalArea !== undefined) {
-      this.props.totalArea = Area.create(data.totalArea);
-    }
-
-    if (data.arableArea !== undefined) {
-      this.props.arableArea = Area.create(data.arableArea);
-    }
-
-    if (data.vegetationArea !== undefined) {
-      this.props.vegetationArea = Area.create(data.vegetationArea);
-    }
-
+  set changeTotalArea(area: number) {
+    this.props.totalArea = Area.create(area);
     this.validateAreas();
+    this.touch();
+  }
 
+  set changeArableArea(area: number) {
+    this.props.arableArea = Area.create(area);
+    this.validateAreas();
+    this.touch();
+  }
+
+  set changeVegetationArea(area: number) {
+    this.props.vegetationArea = Area.create(area);
+    this.validateAreas();
     this.touch();
   }
 
@@ -97,7 +101,7 @@ export class PropertyEntity extends Entity<PropertyProps> {
     return this.props.slug.getSlug;
   }
   get getCity() {
-    return this.props.name;
+    return this.props.city;
   }
   get getState() {
     return this.props.state;

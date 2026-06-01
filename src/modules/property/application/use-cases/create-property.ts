@@ -4,15 +4,15 @@ import { PropertyEntity } from '../../domain/entities/property.entity';
 import { Area } from '../../../../shared/domain/value-object/area';
 import { Slug } from '../../domain/value-object/slug';
 import { CreatePropertyDto } from '../dtos/create.dto';
-import { PropertyRepository } from '../../infrastructure/persistence/property.repository';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PoolClient } from 'pg';
 import { PropertyOutputDto } from '../dtos/output.dto';
+import { PropertyContract } from '../../domain/repositories/property-repository.interface';
 
 @Injectable()
 export class CreatePropertyUseCase {
   constructor(
-    private propertyRepository: PropertyRepository,
+    private propertyRepository: PropertyContract,
     private dbService: DatabaseService,
   ) {}
 

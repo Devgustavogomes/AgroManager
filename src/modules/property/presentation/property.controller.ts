@@ -20,7 +20,7 @@ import { CreatePropertyDto } from '../application/dtos/create.dto';
 import { UpdatePropertyDto } from '../application/dtos/update.dto';
 import { CreatePropertyUseCase } from '../application/use-cases/create-property';
 import { DeletePropertyUseCase } from '../application/use-cases/delete-property';
-import { UpdatePropertyUseCase } from '../application/use-cases/update-property.service';
+import { UpdatePropertyUseCase } from '../application/use-cases/update-property';
 
 @Controller('property')
 @UseGuards(AuthGuard)

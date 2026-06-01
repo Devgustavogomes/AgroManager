@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PropertyRepository } from '../../infrastructure/persistence/property.repository';
+import { PropertyContract } from '../../domain/repositories/property-repository.interface';
 
 @Injectable()
 export class DeletePropertyUseCase {
-  constructor(private readonly propertyRepository: PropertyRepository) {}
+  constructor(private readonly propertyRepository: PropertyContract) {}
 
   async execute(slug: string, producerId: string) {
     await this.propertyRepository.delete(slug, producerId);
