@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   Injectable,
   UnauthorizedException,
+  Type,
 } from '@nestjs/common';
 import { ModuleRef, Reflector } from '@nestjs/core';
 import { OWNER_SERVICE_KEY } from 'src/shared/decorators/owner.decorator';
@@ -11,7 +12,7 @@ import { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
 import { Role } from 'src/shared/types/role';
 
 interface Service {
-  isOwner(idProducer: string, idService: string): Promise<boolean>;
+  execute(idProducer: string, idService: string): Promise<boolean>;
 }
 
 @Injectable()
@@ -34,8 +35,8 @@ export class OwnerGuard implements CanActivate {
     }
 
     const serviceToken = this.reflector.getAllAndOverride<{
-      service: any;
-      paramKey?: string;
+      service: Type<Service>;
+      paramsKey?: string;
     }>(OWNER_SERVICE_KEY, [context.getHandler(), context.getClass()]);
 
     if (!serviceToken) {
@@ -46,11 +47,11 @@ export class OwnerGuard implements CanActivate {
       strict: false,
     });
 
-    const resourceId = serviceToken.paramKey
-      ? request.params[serviceToken.paramKey]
+    const resourceId = serviceToken.paramsKey
+      ? request.params[serviceToken.paramsKey]
       : request.params.id;
 
-    const owner = await service.isOwner(producer.id, resourceId);
+    const owner = await service.execute(producer.id, resourceId);
 
     if (!owner) {
       throw new ForbiddenException('You do not own this resource.');
