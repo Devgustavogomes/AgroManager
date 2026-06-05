@@ -17,6 +17,7 @@ describe('Create Property', () => {
       update: vi.fn(),
       delete: vi.fn(),
       count: vi.fn(),
+      isOwner: vi.fn(),
     };
 
     mockDatabaseService = {
