@@ -1,8 +1,8 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ProducerContract } from '../../domain/repositories/producer.repository.interface';
 import { ProducerOutput } from '../dtos/output.dto';
 import { UpdateProducerDTO } from '../dtos/update.dto';
-
+@Injectable()
 export class UpdateProducerUseCase {
   constructor(private readonly producerRepository: ProducerContract) {}
   async execute(id: string, data: UpdateProducerDTO): Promise<ProducerOutput> {
