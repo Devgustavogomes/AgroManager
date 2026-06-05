@@ -43,7 +43,7 @@ CREATE TABLE "cultures" (
 
   CONSTRAINT fk_cultures_producers
     FOREIGN KEY ("id_property")
-    REFERENCES "properties" ("id_property")
+    REFERENCES "properties" ("propertyId")
     ON DELETE CASCADE
 );
 
