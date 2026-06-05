@@ -28,41 +28,37 @@ CREATE TABLE "properties" (
     ON DELETE CASCADE
 );
 
-
-
-
-
-
 CREATE TABLE "cultures" (
-  "id_culture" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  "id_property" UUID NOT NULL,
+  "cultureId" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "propertyId" UUID NOT NULL,
   "name" varchar NOT NULL,
-  "allocated_area" integer DEFAULT 0,
-  "created_at" timestamp DEFAULT NOW(),
-  "updated_at" timestamp,
+  "allocatedArea" integer DEFAULT 0,
+  "createdAt" timestamp DEFAULT NOW(),
+  "updatedAt" timestamp,
 
   CONSTRAINT fk_cultures_producers
-    FOREIGN KEY ("id_property")
+    FOREIGN KEY ("propertyId")
     REFERENCES "properties" ("propertyId")
     ON DELETE CASCADE
 );
 
 
 CREATE TABLE "crops" (
-  "id_crop" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  "id_culture" UUID NOT NULL,
+  "cropId" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "cultureId" UUID NOT NULL,
   "name" varchar NOT NULL,
   "status" varchar NOT NULL,
-  "allocated_area" integer NOT NULL,
-  "harvest_date_expected" varchar NOT NULL,
-  "harvest_date_actual" varchar,
-  "pest_status" varchar NOT NULL,
-  "created_at" timestamp DEFAULT NOW(),
-  "updated_at" timestamp,
+  "allocatedArea" integer NOT NULL,
+  "plantingDate" date NOT NULL,
+  "harvestDateExpected" date NOT NULL,
+  "harvestDateActual" date,
+  "pestsStatus" varchar NOT NULL,
+  "createdAt" timestamp DEFAULT NOW(),
+  "updatedAt" timestamp,
 
   CONSTRAINT fk_crops_cultures
-    FOREIGN KEY ("id_culture")
-    REFERENCES "cultures" ("id_culture")
+    FOREIGN KEY ("cultureId")
+    REFERENCES "cultures" ("cultureId")
     ON DELETE CASCADE
 );
 -- Down Migration
