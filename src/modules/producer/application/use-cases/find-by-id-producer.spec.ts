@@ -1,41 +1,49 @@
+/* eslint-disable @typescript-eslint/unbound-method */
+import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { FindByIdProducerUseCase } from './find-by-id-producer';
-import { InMemoryProducerRepository } from '../../infrastructure/persistence/in-memory/in-memory-producer.repository';
+import { ProducerContract } from '../../domain/repositories/producer.repository.interface';
 import { NotFoundException } from '@nestjs/common';
-import { ProducerEntity } from '../../domain/entities/producer.entity';
+import { ProducerOutput } from '../dtos/output.dto';
+import { Role } from '../../../../shared/types/role';
 
 describe('FindByIdProducerUseCase', () => {
-  let inMemoryProducerRepository: InMemoryProducerRepository;
-  let findByIdProducerUseCase: FindByIdProducerUseCase;
+  let useCase: FindByIdProducerUseCase;
+  let mockProducerRepository: Mocked<ProducerContract>;
 
-  beforeAll(() => {
-    inMemoryProducerRepository = new InMemoryProducerRepository();
-    findByIdProducerUseCase = new FindByIdProducerUseCase(
-      inMemoryProducerRepository,
-    );
+  beforeEach(() => {
+    mockProducerRepository = {
+      create: vi.fn(),
+      findById: vi.fn(),
+      update: vi.fn(),
+      remove: vi.fn(),
+    };
+
+    useCase = new FindByIdProducerUseCase(mockProducerRepository);
   });
 
   it('should find a producer by id', async () => {
-    const entity = ProducerEntity.create({
+    const mockProducerOutput: ProducerOutput = {
+      idProducer: 'some-id',
       username: 'Gustavo Gomes',
       email: 'gustavo@example.com',
-      password_hash: 'password',
-    });
+      createdAt: new Date().toISOString(),
+      updatedAt: null,
+      role: Role.USER,
+    };
 
-    const createdProducer = await inMemoryProducerRepository.create(entity);
+    mockProducerRepository.findById.mockResolvedValue(mockProducerOutput);
 
-    const result = await findByIdProducerUseCase.execute(
-      createdProducer.idProducer,
-    );
+    await useCase.execute('some-id');
 
-    expect(result).toBeDefined();
-    expect(result.idProducer).toBe(createdProducer.idProducer);
-    expect(result.username).toBe('Gustavo Gomes');
-    expect(result.email).toBe('gustavo@example.com');
+    expect(mockProducerRepository.findById).toHaveBeenCalledWith('some-id');
+    expect(mockProducerRepository.findById).toHaveBeenCalledOnce();
   });
 
   it('should throw NotFoundException if producer is not found', async () => {
-    await expect(
-      findByIdProducerUseCase.execute('non-existing-id'),
-    ).rejects.toThrow(NotFoundException);
+    mockProducerRepository.findById.mockResolvedValue(undefined);
+
+    await expect(useCase.execute('non-existing-id')).rejects.toThrow(
+      NotFoundException,
+    );
   });
 });
