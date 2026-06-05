@@ -6,6 +6,5 @@ export interface AuthenticatedRequest extends Request {
     id: string;
     username: string;
     role: Role;
-    CPForCNPJ: string;
   };
 }

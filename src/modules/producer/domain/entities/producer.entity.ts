@@ -1,4 +1,4 @@
-import { Entity } from 'src/shared/entities/entity';
+import { Entity } from 'src/shared/domain/entities/entity';
 import { Optional } from 'src/shared/types/optional';
 import { Role } from 'src/shared/types/role';
 
