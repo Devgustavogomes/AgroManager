@@ -1,7 +1,6 @@
 import { DatabaseService } from 'src/infra/database/service';
 import { Injectable } from '@nestjs/common';
 import { PoolClient } from 'pg';
-import { UpdatePropertyDto } from '../../application/dtos/update.dto';
 import {
   PropertyContract,
   PropertyPersistence,

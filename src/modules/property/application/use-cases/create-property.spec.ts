@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { DatabaseService } from 'src/infra/database/service';
 import { PropertyContract } from '../../domain/repositories/property-repository.interface';
@@ -19,8 +20,9 @@ describe('Create Property', () => {
     };
 
     mockDatabaseService = {
-      transaction: vi.fn().mockImplementation(async (callback) => {
-        return await callback({});
+      transaction: vi.fn().mockImplementation((callback: any) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return callback({});
       }),
     } as unknown as Mocked<DatabaseService>;
 
@@ -42,9 +44,9 @@ describe('Create Property', () => {
 
     mockPropertyRepository.count.mockResolvedValue(0);
 
-    mockPropertyRepository.create.mockImplementation(async (p) => p);
+    mockPropertyRepository.create.mockImplementation((p) => Promise.resolve(p));
 
-    const result = await useCase.execute('123', dto);
+    await useCase.execute('123', dto);
 
     expect(mockDatabaseService.transaction).toHaveBeenCalledOnce();
     expect(mockPropertyRepository.count).toHaveBeenCalledOnce();
@@ -62,7 +64,7 @@ describe('Create Property', () => {
 
     mockPropertyRepository.count.mockResolvedValue(5);
 
-    mockPropertyRepository.create.mockImplementation(async (p) => p);
+    mockPropertyRepository.create.mockImplementation((p) => Promise.resolve(p));
 
     await expect(() => useCase.execute('123', dto)).rejects.toThrow(
       BadRequestException,

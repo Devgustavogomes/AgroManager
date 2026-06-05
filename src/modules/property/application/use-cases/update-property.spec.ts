@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Mocked } from 'vitest';
 import { PropertyContract } from '../../domain/repositories/property-repository.interface';
 import { UpdatePropertyUseCase } from './update-property';

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Mocked } from 'vitest';
 import { FindBySlugUseCase } from './find-property-by-slug';
 import { PropertyContract } from '../../domain/repositories/property-repository.interface';
@@ -46,7 +47,7 @@ describe('Find property by Slug', () => {
   it('Should thrown a NotFoundException if property doesnt exist', async () => {
     mockRepository.findBySlug.mockResolvedValue(undefined);
 
-    expect(useCase.execute('slug', 'producer-id')).rejects.toThrow(
+    await expect(useCase.execute('slug', 'producer-id')).rejects.toThrow(
       NotFoundException,
     );
   });
