@@ -13,6 +13,7 @@
     "compose:stop": "docker compose -f ./docker-compose.yml stop",
     "compose:start": "docker compose -f ./docker-compose.yml start",
     "compose:down": "docker compose -f ./docker-compose.yml down",
+    "build": "npm run build -ws --if-present",
     "test": "npm run test -ws --if-present",
     "lint": "npm run lint -ws --if-present",
     "format": "npm run format -ws --if-present",

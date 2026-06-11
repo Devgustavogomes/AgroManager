@@ -22,7 +22,7 @@ jobs:
         run: npm ci
 
       - name: Run Eslint
-        run: npm run lint -w api
+        run: npm run lint
 
   prettier:
     name: prettier
@@ -43,7 +43,7 @@ jobs:
         run: npm ci
 
       - name: Run Prettier
-        run: npm run format -w api
+        run: npm run format
 
   commitlint:
     name: commitlint
