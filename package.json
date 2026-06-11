@@ -17,7 +17,7 @@
     "test": "npm run test -ws --if-present",
     "lint": "npm run lint -ws --if-present",
     "format": "npm run format -ws --if-present",
-    "migrate": "node-pg-migrate up --envPath .env",
+    "migrate": "node-pg-migrate up --envPath .env.development",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -29,5 +29,14 @@
     "husky": "^9.1.7",
     "node-pg-migrate": "^8.0.4",
     "pg": "^8.21.0"
+  },
+  "supportedArchitectures": {
+    "os": [
+      "win32",
+      "linux"
+    ],
+    "cpu": [
+      "x64"
+    ]
   }
 }
