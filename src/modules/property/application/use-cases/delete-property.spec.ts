@@ -14,6 +14,7 @@ describe('Delete Property', () => {
       delete: vi.fn(),
       findBySlug: vi.fn(),
       update: vi.fn(),
+      isOwner: vi.fn(),
     };
 
     useCase = new DeletePropertyUseCase(mockRepository);

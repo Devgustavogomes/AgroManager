@@ -34,5 +34,7 @@ export abstract class PropertyContract {
 
   abstract delete(slug: string, producerId: string): Promise<void>;
 
+  abstract isOwner(producerId: string, propertyId: string): Promise<boolean>;
+
   abstract count(property: PropertyEntity, client: PoolClient): Promise<number>;
 }
