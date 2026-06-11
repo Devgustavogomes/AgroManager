@@ -58,6 +58,6 @@ jobs:
         run: npm run migrate
 
       - name: Run tests
-        run: npm run test -w api
+        run: npm run test
         env:
           NODE_ENV: test
