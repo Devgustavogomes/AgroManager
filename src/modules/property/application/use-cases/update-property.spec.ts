@@ -16,6 +16,7 @@ describe('Update Property', () => {
       delete: vi.fn(),
       findBySlug: vi.fn(),
       update: vi.fn(),
+      isOwner: vi.fn(),
     };
 
     useCase = new UpdatePropertyUseCase(mockRepository);

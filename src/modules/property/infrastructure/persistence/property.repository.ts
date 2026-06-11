@@ -136,4 +136,21 @@ export class PropertyRepository implements PropertyContract {
 
     return result[0].total;
   }
+
+  async isOwner(producerId: string, propertyId: string): Promise<boolean> {
+    const sql = `SELECT EXISTS (
+      SELECT 1
+      FROM properties
+      WHERE "producerId" = $1
+      AND "propertyId" = $2
+    ) AS "hasProperty";`;
+    const params = [producerId, propertyId];
+
+    const result = await this.databaseservice.query<{ hasProperty: boolean }>(
+      sql,
+      params,
+    );
+
+    return result[0].hasProperty;
+  }
 }
