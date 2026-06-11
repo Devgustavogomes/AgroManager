@@ -4,9 +4,6 @@
 on:
   pull_request:
     branches: ["main", "develop"]
-    paths:
-      - "api/**"
-      - ".github/workflows/build-api.yml"
 
 jobs:
   build:
@@ -24,4 +21,4 @@ jobs:
       - run: npm ci
 
       - name: Build app
-        run: npm run build -w api
+        run: npm run build

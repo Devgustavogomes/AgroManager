@@ -13,6 +13,9 @@
     "compose:stop": "docker compose -f ./docker-compose.yml stop",
     "compose:start": "docker compose -f ./docker-compose.yml start",
     "compose:down": "docker compose -f ./docker-compose.yml down",
+    "test": "npm run test -ws --if-present",
+    "lint": "npm run lint -ws --if-present",
+    "format": "npm run format -ws --if-present",
     "migrate": "node-pg-migrate up --envPath .env",
     "prepare": "husky"
   },
