@@ -16,9 +16,10 @@ export class UpdateCultureUseCase {
     return await this.databaseService.transaction(async (client) => {
       const culture = await this.cultureRepository.findById(id, client);
 
-      if (dto.name) culture.changeName = dto.name;
+      if (dto.name !== undefined) culture.changeName = dto.name;
 
-      if (dto.allocatedArea) culture.changeAllocatedArea = dto.allocatedArea;
+      if (dto.allocatedArea !== undefined)
+        culture.changeAllocatedArea = dto.allocatedArea;
 
       const sumCrops = await this.cultureRepository.cropSum(id, client);
 

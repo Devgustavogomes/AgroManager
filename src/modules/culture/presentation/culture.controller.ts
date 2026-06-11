@@ -13,15 +13,15 @@ import { RolesGuards } from 'src/shared/guards/roles.guard';
 import { OwnerGuard } from 'src/shared/guards/owner.guard';
 import { OwnerService } from 'src/shared/decorators/owner.decorator';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
-import { CreateCultureUseCase } from '../aplication/use-cases/create-culture.service';
+import { CreateCultureUseCase } from '../aplication/use-cases/create-culture';
 import { CultureIdParams } from '../aplication/dto/cultureIdParams.dto';
-import { IsCultureOwnerUseCase } from '../aplication/use-cases/is-culture-owner.service';
-import { FindByIdCultureUseCase } from '../aplication/use-cases/find-by-id.service';
+import { IsCultureOwnerUseCase } from '../aplication/use-cases/is-culture-owner';
+import { FindByIdCultureUseCase } from '../aplication/use-cases/find-by-id';
 import { CultureOutput } from '../aplication/dto/cultureOutput.dto';
 import { CreateCultureInput } from '../aplication/dto/createCulture.dto';
 import { UpdateCultureInput } from '../aplication/dto/updateCulture.dto';
-import { UpdateCultureUseCase } from '../aplication/use-cases/update-culture.service';
-import { DeleteCultureUseCase } from '../aplication/use-cases/delete-culture.service';
+import { UpdateCultureUseCase } from '../aplication/use-cases/update-culture';
+import { DeleteCultureUseCase } from '../aplication/use-cases/delete-culture';
 import { IsPropertyOwnerUseCase } from 'src/modules/property/application/use-cases/is-property-owner';
 
 @Controller(':propertyId/cultures')
