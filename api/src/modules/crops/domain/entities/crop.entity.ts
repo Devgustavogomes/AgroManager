@@ -3,6 +3,7 @@ import { CropStatus } from '../constants/crop-status.enum';
 import { PestStatus } from '../constants/pest-status';
 import { Optional } from 'src/shared/types/optional';
 import { Area } from 'src/shared/domain/value-object/area';
+import { BadRequestException } from '@nestjs/common';
 
 interface CreateCropEntity {
   cropId: string;
@@ -43,7 +44,7 @@ export class Crop extends Entity<CreateCropEntity> {
 
   private validateArea() {
     if (this.props.allocatedArea.getValue <= 0) {
-      throw new Error('Allocated area must be greater than 0');
+      throw new BadRequestException('Allocated area must be greater than 0');
     }
   }
 
