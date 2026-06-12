@@ -6,7 +6,7 @@ import configuration from './config/configuration';
 import { envSchema } from './config/dto/env.dto';
 import { AuthModule } from './modules/auth/module';
 import { RedisModule } from './infra/redis/module';
-import { MigrationModule } from './infra/migration/module';
+import { MigrationModule } from './modules/migration/module';
 import { CultureModule } from './modules/culture/infrastructure/culture.module';
 import { CropModule } from './modules/crops/module';
 import { PropertyModule } from './modules/property/infrastructure/property.module';
