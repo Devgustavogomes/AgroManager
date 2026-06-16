@@ -5,10 +5,3 @@ export enum CropStatus {
   HARVESTED = 'HARVESTED',
   FAILED = 'FAILED',
 }
-
-export enum PestStatus {
-  NONE = 'NONE',
-  LOW = 'LOW',
-  MEDIUM = 'MEDIUM',
-  HIGH = 'HIGH',
-}

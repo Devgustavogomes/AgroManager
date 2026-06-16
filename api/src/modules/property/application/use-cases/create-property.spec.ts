@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { DatabaseService } from 'src/infra/database/service';
 import { PropertyContract } from '../../domain/repositories/property-repository.interface';

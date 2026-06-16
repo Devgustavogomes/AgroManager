@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { Mocked } from 'vitest';
 import { CultureContract } from '../../domain/repositories/culture.repository.interface';
 import { UpdateCultureUseCase } from './update-culture';

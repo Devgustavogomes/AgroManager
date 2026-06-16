@@ -29,14 +29,5 @@
     "husky": "^9.1.7",
     "node-pg-migrate": "^8.0.4",
     "pg": "^8.21.0"
-  },
-  "supportedArchitectures": {
-    "os": [
-      "win32",
-      "linux"
-    ],
-    "cpu": [
-      "x64"
-    ]
   }
 }

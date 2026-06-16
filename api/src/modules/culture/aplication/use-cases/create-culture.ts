@@ -17,7 +17,7 @@ export class CreateCultureUseCase {
     const allocatedArea = Area.create(dto.allocatedArea);
 
     const culture = Culture.create({ ...dto, allocatedArea, propertyId });
-
+    // colocar locks
     const result = await this.cultureRepository.create(culture);
 
     return CultureMapper.toResponse([result])[0];

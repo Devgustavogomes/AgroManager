@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { Mocked } from 'vitest';
 import { FindBySlugUseCase } from './find-property-by-slug';
 import { PropertyContract } from '../../domain/repositories/property-repository.interface';
