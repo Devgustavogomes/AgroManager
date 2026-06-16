@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { UpdateProducerUseCase } from './update-producer';
 import { ProducerContract } from '../../domain/repositories/producer.repository.interface';

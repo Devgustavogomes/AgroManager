@@ -47,17 +47,15 @@ export class OwnerGuard implements CanActivate {
       strict: false,
     });
 
-    const resourceId = (serviceToken.paramsKey
-      ? request.params[serviceToken.paramsKey]
-      : request.params.id) as string;
+    const resourceId = (
+      serviceToken.paramsKey
+        ? request.params[serviceToken.paramsKey]
+        : request.params.id
+    ) as string;
 
-    if (!resourceId) {
-      throw new ForbiddenException('You do not own this resource.');
-    }
+    const isOwner = await service.execute(producer.id, resourceId);
 
-    const owner = await service.execute(producer.id, resourceId);
-
-    if (!owner) {
+    if (!isOwner) {
       throw new ForbiddenException('You do not own this resource.');
     }
 

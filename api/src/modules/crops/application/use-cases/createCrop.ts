@@ -1,0 +1,53 @@
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { CropContract } from '../../domain/repositories/crops-repository.contract';
+import { CreateCropInput } from '../dto/createCrop.dto';
+import { DatabaseService } from 'src/infra/database/service';
+import { Crop } from '../../domain/entities/crop.entity';
+import { Area } from 'src/shared/domain/value-object/area';
+import { CropMapper } from '../../infrastructure/crop.mapper';
+
+@Injectable()
+export class CreateCropUseCase {
+  constructor(
+    private readonly repository: CropContract,
+    private readonly databaseService: DatabaseService,
+  ) {}
+
+  async execute(cultureId: string, dto: CreateCropInput) {
+    const allocatedArea = Area.create(dto.allocatedArea);
+
+    const plantingDate = new Date(dto.plantingDate);
+
+    const harvestDateExpected = new Date(dto.harvestDateExpected);
+
+    const harvestDateActual = dto.harvestDateActual
+      ? new Date(dto.harvestDateActual)
+      : null;
+
+    const crop = Crop.create({
+      ...dto,
+      cultureId,
+      allocatedArea,
+      plantingDate,
+      harvestDateExpected,
+      harvestDateActual,
+    });
+
+    return await this.databaseService.transaction(async (client) => {
+      const cultureArea = await this.repository.getCultureArea(
+        crop.cultureId,
+        client,
+      );
+
+      if (cultureArea < crop.allocatedArea.getValue) {
+        throw new BadRequestException(
+          'Allocated area must be less than or equal to culture area',
+        );
+      }
+
+      const result = await this.repository.create(crop, client);
+
+      return CropMapper.toResponse([result])[0];
+    });
+  }
+}
