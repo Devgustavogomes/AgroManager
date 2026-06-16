@@ -1,6 +1,6 @@
 import { Entity } from 'src/shared/domain/entities/entity';
 import { CropStatus } from '../constants/crop-status.enum';
-import { PestStatus } from '../constants/pest-status';
+import { PestStatus } from '../constants/pest-status.enum';
 import { Optional } from 'src/shared/types/optional';
 import { Area } from 'src/shared/domain/value-object/area';
 import { BadRequestException } from '@nestjs/common';
@@ -48,6 +48,11 @@ export class Crop extends Entity<CreateCropEntity> {
     }
   }
 
+  set name(name: string) {
+    this.props.name = name;
+    this.touch();
+  }
+
   set allocatedArea(allocatedArea: number) {
     this.props.allocatedArea = Area.create(allocatedArea);
     this.touch();
@@ -64,7 +69,7 @@ export class Crop extends Entity<CreateCropEntity> {
     this.touch();
   }
 
-  set harvestDateActual(harvestDateActual: Date) {
+  set harvestDateActual(harvestDateActual: Date | null) {
     this.props.harvestDateActual = harvestDateActual;
     this.touch();
   }
