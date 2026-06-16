@@ -9,7 +9,7 @@ import { RedisModule } from './infra/redis/module';
 import { MigrationModule } from './modules/migration/module';
 import { CultureModule } from './modules/culture/infrastructure/culture.module';
 import { PropertyModule } from './modules/property/infrastructure/property.module';
-import { CropModule } from './modules/crops/infrastructure/module';
+import { CropModule } from './modules/crops/infrastructure/crop.module';
 
 @Module({
   imports: [

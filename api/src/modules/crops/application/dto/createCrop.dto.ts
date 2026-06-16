@@ -1,6 +1,6 @@
 import z from 'zod';
 import { CropStatus } from '../../domain/constants/crop-status.enum';
-import { PestStatus } from '../../domain/constants/pest-status';
+import { PestStatus } from '../../domain/constants/pest-status.enum';
 import { createZodDto } from 'nestjs-zod';
 
 export const createCropSchema = z.object({
