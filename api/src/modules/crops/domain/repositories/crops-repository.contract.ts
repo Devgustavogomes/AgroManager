@@ -1,6 +1,4 @@
 import { PoolClient } from 'pg';
-import { CropOutput } from '../../application/dto/cropOutput.dto';
-import { UpdateCropInput } from '../../application/dto/updateCrop.dto';
 import { Crop } from '../entities/crop.entity';
 import { CropStatus } from '../constants/crop-status.enum';
 import { PestStatus } from '../constants/pest-status.enum';
