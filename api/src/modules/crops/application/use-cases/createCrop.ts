@@ -4,6 +4,7 @@ import { CreateCropInput } from '../dto/createCrop.dto';
 import { DatabaseService } from 'src/infra/database/service';
 import { Crop } from '../../domain/entities/crop.entity';
 import { Area } from 'src/shared/domain/value-object/area';
+import { CropMapper } from '../../infrastructure/crop.mapper';
 
 @Injectable()
 export class CreateCropUseCase {
@@ -34,7 +35,7 @@ export class CreateCropUseCase {
 
     return await this.databaseService.transaction(async (client) => {
       const cultureArea = await this.repository.getCultureArea(
-        cultureId,
+        crop.cultureId,
         client,
       );
 
@@ -44,7 +45,9 @@ export class CreateCropUseCase {
         );
       }
 
-      return await this.repository.create(cultureId, crop, client);
+      const result = await this.repository.create(crop, client);
+
+      return CropMapper.toResponse([result])[0];
     });
   }
 }
