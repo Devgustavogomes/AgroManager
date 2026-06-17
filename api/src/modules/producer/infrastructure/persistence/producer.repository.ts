@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from 'src/infra/database/service';
 import {
   ProducerContract,
   ProducerPersistence,
@@ -9,6 +8,7 @@ import { ProducerEntity } from '../../domain/entities/producer.entity';
 import { ProducerMapper } from './producer.mapper';
 import { ProducerOutput } from '../../application/dtos/output.dto';
 import { UpdateProducerDTO } from '../../application/dtos/update.dto';
+import { DatabaseService } from 'src/infra/database/service';
 
 @Injectable()
 export class ProducerRepository implements ProducerContract {
