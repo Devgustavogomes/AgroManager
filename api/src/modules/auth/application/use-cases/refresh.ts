@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthContract } from '../../domain/repositories/auth-repository.constract';
 import { TTL_REFRESH_TOKEN } from '../../domain/constants/ttlRefreshToken.constants';
@@ -33,7 +34,7 @@ export class RefreshUseCase {
       throw new UnauthorizedException(`Token not found`);
     }
 
-    const { iat, exp, ...payload } = refreshTokenPayload;
+    const { iat, exp, ...payload } = { ...refreshTokenPayload };
 
     const accessToken = await this.jwtService.signAsync(payload);
 

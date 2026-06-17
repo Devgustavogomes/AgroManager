@@ -72,7 +72,8 @@ export class AuthController {
     @Req() req: AuthenticatedRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const refreshToken = req.cookies['refresh_token'];
+    const cookies = req.cookies as Record<string, string> | undefined;
+    const refreshToken = cookies?.['refresh_token'] ?? '';
 
     const tokens = await this.refreshUseCase.execute(refreshToken);
 
