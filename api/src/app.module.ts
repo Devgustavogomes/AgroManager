@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ProducerModule } from './modules/producer/infrastructure/producer.module';
-import { DatabaseModule } from './infra/database/module';
+import { DatabaseModule } from 'src/infra/database/module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { envSchema } from './config/dto/env.dto';
 import { AuthModule } from './modules/auth/module';
-import { RedisModule } from './infra/redis/module';
+import { RedisModule } from 'src/infra/redis/module';
 import { MigrationModule } from './modules/migration/module';
 import { CultureModule } from './modules/culture/infrastructure/culture.module';
 import { PropertyModule } from './modules/property/infrastructure/property.module';
