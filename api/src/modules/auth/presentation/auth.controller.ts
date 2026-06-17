@@ -9,15 +9,22 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { loginInputDto } from './dto';
-import { AuthService } from './service';
 import type { Response } from 'express';
-import { AuthGuard } from '../../shared/guards/auth.guard';
 import type { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
+import { loginInputDto } from '../application/dto/login.dto';
+import { AuthGuard } from 'src/shared/guards/auth.guard';
+import { LoginUseCase } from '../application/use-cases/login';
+import { RefreshUseCase } from '../application/use-cases/refresh';
+import { LogoutUseCase } from '../application/use-cases/logout';
+import { TTL_REFRESH_TOKEN } from '../domain/constants/ttlRefreshToken.constants';
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly loginUseCase: LoginUseCase,
+    private readonly refreshUseCase: RefreshUseCase,
+    private readonly logoutUseCase: LogoutUseCase,
+  ) {}
 
   @Post('login')
   @ApiOkResponse({
@@ -35,14 +42,14 @@ export class AuthController {
     @Body() data: loginInputDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const tokens = await this.authService.login(data);
+    const tokens = await this.loginUseCase.execute(data);
 
     res.cookie('refresh_token', tokens.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       path: '/auth/refresh',
-      maxAge: 604800,
+      maxAge: TTL_REFRESH_TOKEN,
     });
 
     return { accessToken: tokens.accessToken };
@@ -65,14 +72,16 @@ export class AuthController {
     @Req() req: AuthenticatedRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const tokens = await this.authService.refresh(req);
+    const refreshToken = req.cookies['refresh_token'];
+
+    const tokens = await this.refreshUseCase.execute(refreshToken);
 
     res.cookie('refresh_token', tokens.newRefreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       path: '/auth/refresh',
-      maxAge: 604800,
+      maxAge: TTL_REFRESH_TOKEN,
     });
 
     return { accessToken: tokens.accessToken };
@@ -86,7 +95,7 @@ export class AuthController {
     @Req() req: AuthenticatedRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
-    await this.authService.logout(req.producer);
+    await this.logoutUseCase.execute(req.producer.id);
 
     res.clearCookie('refresh_token', {
       httpOnly: true,
@@ -95,6 +104,6 @@ export class AuthController {
       path: '/auth/refresh',
     });
 
-    return { message: 'Logout realizado com sucesso' };
+    return { message: 'Logout done successfully' };
   }
 }
