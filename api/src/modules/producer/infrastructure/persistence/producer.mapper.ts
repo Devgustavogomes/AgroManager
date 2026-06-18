@@ -6,12 +6,12 @@ export class ProducerMapper {
     return data
       .values()
       .map((r) => ({
-        idProducer: r.id_producer,
+        idProducer: r.producerId,
         username: r.username,
         email: r.email,
         role: r.role,
-        createdAt: r.created_at.toISOString(),
-        updatedAt: r.updated_at ? r.updated_at.toISOString() : null,
+        createdAt: r.createdAt.toISOString(),
+        updatedAt: r.updatedAt ? r.updatedAt.toISOString() : null,
       }))
       .toArray();
   }

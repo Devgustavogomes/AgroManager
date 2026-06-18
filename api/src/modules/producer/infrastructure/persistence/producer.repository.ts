@@ -18,7 +18,7 @@ export class ProducerRepository implements ProducerContract {
     const sql = `SELECT
                   *
                 FROM producers
-                WHERE id_producer = $1;`;
+                WHERE "producerId" = $1;`;
     const params = [id];
 
     const producer = await this.databaseService.query<ProducerPersistence>(
@@ -32,7 +32,7 @@ export class ProducerRepository implements ProducerContract {
     const sql = `INSERT INTO producers 
                 (username, 
                 email, 
-                password_hash)
+                "hashedPassword")
                 VALUES
                 ($1,
                 $2,
@@ -58,7 +58,7 @@ export class ProducerRepository implements ProducerContract {
                 SET 
                 username = COALESCE($1, username),
                 email = COALESCE($2, email)
-                WHERE id_producer = $3
+                WHERE "producerId" = $3
                 RETURNING *;
                 `;
 
@@ -73,7 +73,7 @@ export class ProducerRepository implements ProducerContract {
 
   async remove(id: string): Promise<void> {
     const sql = `DELETE FROM producers
-                WHERE id_producer = $1`;
+                WHERE "producerId" = $1`;
     const params = [id];
 
     await this.databaseService.query(sql, params);

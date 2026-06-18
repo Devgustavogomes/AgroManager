@@ -4,13 +4,13 @@ import { UpdateProducerDTO } from '../../application/dtos/update.dto';
 import { Producer } from '../entities/producer.entity';
 
 export interface ProducerPersistence {
-  id_producer: string;
+  producerId: string;
   username: string;
   email: string;
-  password_hash: string;
+  hashedPassword: string;
   role: Role;
-  created_at: Date;
-  updated_at: Date | null;
+  createdAt: Date;
+  updatedAt: Date | null;
 }
 
 export abstract class ProducerContract {

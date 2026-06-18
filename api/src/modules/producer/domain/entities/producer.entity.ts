@@ -3,24 +3,28 @@ import { Optional } from 'src/shared/types/optional';
 import { Role } from 'src/shared/types/role';
 
 export interface ProducerProps {
-  id_producer?: string;
+  producerId: string;
   username: string;
   email: string;
   role: Role;
-  password_hash: string;
-  created_at: Date;
-  updated_at: Date | null;
+  hashedPassword: string;
+  createdAt: Date;
+  updatedAt: Date | null;
 }
 
 export class Producer extends Entity<ProducerProps> {
   static create(
-    props: Optional<ProducerProps, 'role' | 'created_at' | 'updated_at'>,
+    props: Optional<
+      ProducerProps,
+      'role' | 'createdAt' | 'updatedAt' | 'producerId'
+    >,
   ): Producer {
     return new Producer({
       ...props,
-      role: Role.USER,
-      created_at: new Date(),
-      updated_at: null,
+      role: props.role ?? Role.USER,
+      createdAt: props.createdAt ?? new Date(),
+      updatedAt: props.updatedAt ?? null,
+      producerId: props.producerId ?? 'non-registered',
     });
   }
 
@@ -28,7 +32,7 @@ export class Producer extends Entity<ProducerProps> {
     return this.props.email;
   }
   getPassword(): string {
-    return this.props.password_hash;
+    return this.props.hashedPassword;
   }
   getUsername(): string {
     return this.props.username;

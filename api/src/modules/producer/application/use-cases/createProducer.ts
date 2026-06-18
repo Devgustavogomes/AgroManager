@@ -16,7 +16,7 @@ export class CreateProducerUseCase {
 
     const producer = Producer.create({
       ...rest,
-      password_hash: hashedPassword,
+      hashedPassword,
     });
 
     return await this.producerRepository.create(producer);
