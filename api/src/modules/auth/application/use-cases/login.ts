@@ -1,4 +1,4 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { loginInputDto } from '../dto/login.dto';
 import { compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
@@ -7,6 +7,7 @@ import { JwtPayload } from 'src/shared/types/jwtPayload';
 import { TTL_REFRESH_TOKEN } from '../../domain/constants/ttlRefreshToken.constants';
 import { AuthContract } from '../../domain/repositories/auth-repository.contract';
 
+@Injectable()
 export class LoginUseCase {
   constructor(
     private readonly repository: AuthContract,
