@@ -1,7 +1,7 @@
 import { PropertyMapper } from '../../infrastructure/persistence/property.mapper';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PropertyOutputDto } from '../dtos/output.dto';
-import { PropertyContract } from '../../domain/repositories/property-repository.interface';
+import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
 
 @Injectable()
 export class FindBySlugUseCase {

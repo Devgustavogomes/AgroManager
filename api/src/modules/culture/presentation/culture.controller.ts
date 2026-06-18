@@ -22,7 +22,7 @@ import { CreateCultureInput } from '../application/dto/createCulture.dto';
 import { UpdateCultureInput } from '../application/dto/updateCulture.dto';
 import { UpdateCultureUseCase } from '../application/use-cases/update-culture';
 import { DeleteCultureUseCase } from '../application/use-cases/delete-culture';
-import { IsPropertyOwnerUseCase } from 'src/modules/property/application/use-cases/is-property-owner';
+import { IsPropertyOwnerUseCase } from 'src/modules/property/application/use-cases/isPropertyOwner';
 
 @Controller(':slug/cultures')
 @UseGuards(AuthGuard, RolesGuards, OwnerGuard)

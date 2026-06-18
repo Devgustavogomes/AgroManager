@@ -1,7 +1,7 @@
 import { Mocked } from 'vitest';
-import { FindBySlugUseCase } from './find-property-by-slug';
-import { PropertyContract } from '../../domain/repositories/property-repository.interface';
-import { PropertyEntity } from '../../domain/entities/property.entity';
+import { FindBySlugUseCase } from './findPropertyBySlug';
+import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
+import { Property } from '../../domain/entities/property.entity';
 import { Area } from 'src/shared/domain/value-object/area';
 import { NotFoundException } from '@nestjs/common';
 
@@ -23,7 +23,7 @@ describe('Find property by Slug', () => {
   });
 
   it('Should find property by slug successfully', async () => {
-    const propertyMock = PropertyEntity.create({
+    const propertyMock = Property.create({
       arableArea: Area.create(60),
       city: 'City',
       name: 'Name',

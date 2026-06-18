@@ -1,13 +1,13 @@
 import { PropertyMapper } from '../../infrastructure/persistence/property.mapper';
 import { DatabaseService } from '@agromanager/infra/database/service';
-import { PropertyEntity } from '../../domain/entities/property.entity';
+import { Property } from '../../domain/entities/property.entity';
 import { Area } from '../../../../shared/domain/value-object/area';
 import { Slug } from '../../domain/value-object/slug';
 import { CreatePropertyDto } from '../dtos/create.dto';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PoolClient } from 'pg';
 import { PropertyOutputDto } from '../dtos/output.dto';
-import { PropertyContract } from '../../domain/repositories/property-repository.interface';
+import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
 
 @Injectable()
 export class CreatePropertyUseCase {
@@ -30,7 +30,7 @@ export class CreatePropertyUseCase {
       ? Slug.createFromText(dto.slug)
       : Slug.createFromText(dto.name);
 
-    const property = PropertyEntity.create({
+    const property = Property.create({
       ...dto,
       producerId,
       slug,

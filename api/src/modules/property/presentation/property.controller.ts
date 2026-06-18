@@ -1,4 +1,4 @@
-import { FindBySlugUseCase } from '../application/use-cases/find-property-by-slug';
+import { FindBySlugUseCase } from '../application/use-cases/findPropertyBySlug';
 import {
   Body,
   Controller,
@@ -18,9 +18,9 @@ import type { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest
 import { PropertyOutputDto } from '../application/dtos/output.dto';
 import { CreatePropertyDto } from '../application/dtos/create.dto';
 import { UpdatePropertyDto } from '../application/dtos/update.dto';
-import { CreatePropertyUseCase } from '../application/use-cases/create-property';
-import { DeletePropertyUseCase } from '../application/use-cases/delete-property';
-import { UpdatePropertyUseCase } from '../application/use-cases/update-property';
+import { CreatePropertyUseCase } from '../application/use-cases/createProperty';
+import { DeletePropertyUseCase } from '../application/use-cases/deleteProperty';
+import { UpdatePropertyUseCase } from '../application/use-cases/updateProperty';
 
 @Controller('property')
 @UseGuards(AuthGuard)

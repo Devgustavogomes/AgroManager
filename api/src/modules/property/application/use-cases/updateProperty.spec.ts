@@ -1,7 +1,7 @@
 import { Mocked } from 'vitest';
-import { PropertyContract } from '../../domain/repositories/property-repository.interface';
-import { UpdatePropertyUseCase } from './update-property';
-import { PropertyEntity } from '../../domain/entities/property.entity';
+import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
+import { UpdatePropertyUseCase } from './updateProperty';
+import { Property } from '../../domain/entities/property.entity';
 import { Area } from 'src/shared/domain/value-object/area';
 
 describe('Update Property', () => {
@@ -25,7 +25,7 @@ describe('Update Property', () => {
     const dto = {
       name: 'New Name',
     };
-    const propertyMock = PropertyEntity.create({
+    const propertyMock = Property.create({
       arableArea: Area.create(60),
       city: 'City',
       name: 'Name',

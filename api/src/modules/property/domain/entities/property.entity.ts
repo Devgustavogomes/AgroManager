@@ -18,7 +18,7 @@ export interface PropertyProps {
   updatedAt: Date | null;
 }
 
-export class PropertyEntity extends Entity<PropertyProps> {
+export class Property extends Entity<PropertyProps> {
   private constructor(props: PropertyProps) {
     super(props);
 
@@ -28,7 +28,7 @@ export class PropertyEntity extends Entity<PropertyProps> {
   static create(
     props: Optional<PropertyProps, 'slug' | 'createdAt' | 'updatedAt'>,
   ) {
-    return new PropertyEntity({
+    return new Property({
       ...props,
       slug: props.slug ?? Slug.createFromText(props.name),
       createdAt: props.createdAt ?? new Date(),

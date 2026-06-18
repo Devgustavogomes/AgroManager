@@ -1,5 +1,5 @@
 import { PoolClient } from 'pg';
-import { PropertyEntity } from '../entities/property.entity';
+import { Property } from '../entities/property.entity';
 
 export interface PropertyPersistence {
   propertyId: string;
@@ -19,22 +19,19 @@ export abstract class PropertyContract {
   abstract findBySlug(
     slug: string,
     producerId: string,
-  ): Promise<PropertyEntity | undefined>;
+  ): Promise<Property | undefined>;
 
-  abstract create(
-    property: PropertyEntity,
-    client: PoolClient,
-  ): Promise<PropertyEntity>;
+  abstract create(property: Property, client: PoolClient): Promise<Property>;
 
   abstract update(
     slug: string,
     producerId: string,
-    property: PropertyEntity,
-  ): Promise<PropertyEntity>;
+    property: Property,
+  ): Promise<Property>;
 
   abstract delete(slug: string, producerId: string): Promise<void>;
 
   abstract isOwner(producerId: string, propertyId: string): Promise<boolean>;
 
-  abstract count(property: PropertyEntity, client: PoolClient): Promise<number>;
+  abstract count(property: Property, client: PoolClient): Promise<number>;
 }

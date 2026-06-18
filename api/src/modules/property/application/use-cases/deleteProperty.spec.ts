@@ -1,6 +1,6 @@
 import { Mocked } from 'vitest';
-import { PropertyContract } from '../../domain/repositories/property-repository.interface';
-import { DeletePropertyUseCase } from './delete-property';
+import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
+import { DeletePropertyUseCase } from './deleteProperty';
 
 describe('Delete Property', () => {
   let useCase: DeletePropertyUseCase;
