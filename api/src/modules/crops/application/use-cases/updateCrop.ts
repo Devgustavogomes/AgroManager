@@ -7,7 +7,7 @@ import { CropContract } from '../../domain/repositories/crops-repository.contrac
 import { UpdateCropInput } from '../dto/updateCrop.dto';
 import { CropOutput } from '../dto/cropOutput.dto';
 import { CropMapper } from '../../infrastructure/crop.mapper';
-import { DatabaseService } from 'src/infra/database/service';
+import { DatabaseService } from '@agromanager/infra/database/service';
 
 @Injectable()
 export class UpdateCropUseCase {

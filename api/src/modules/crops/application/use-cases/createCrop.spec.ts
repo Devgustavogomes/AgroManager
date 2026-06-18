@@ -4,7 +4,7 @@ import { CreateCropUseCase } from './createCrop';
 import { PestStatus } from '../../domain/constants/pest-status.enum';
 import { CropStatus } from '../../domain/constants/crop-status.enum';
 import { Crop } from '../../domain/entities/crop.entity';
-import { DatabaseService } from 'src/infra/database/service';
+import { DatabaseService } from '@agromanager/infra/database/service';
 import { Area } from 'src/shared/domain/value-object/area';
 
 describe('CreateCropUseCase', () => {

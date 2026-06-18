@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { runner } from 'node-pg-migrate';
 import { join } from 'node:path';
 import { PoolClient } from 'pg';
-import { DatabaseService } from 'src/infra/database/service';
+import { DatabaseService } from '@agromanager/infra/database/service';
 
 @Injectable()
 export class MigrationService {

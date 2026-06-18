@@ -1,7 +1,7 @@
 import { Mocked } from 'vitest';
 import { CultureContract } from '../../domain/repositories/culture.repository.interface';
 import { UpdateCultureUseCase } from './update-culture';
-import { DatabaseService } from 'src/infra/database/service';
+import { DatabaseService } from '@agromanager/infra/database/service';
 import { Culture } from '../../domain/entities/culture.entity';
 import { Area } from 'src/shared/domain/value-object/area';
 import { BadRequestException } from '@nestjs/common';

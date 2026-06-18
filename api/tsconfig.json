@@ -19,8 +19,7 @@
     "skipLibCheck": true,
     "baseUrl": "./",
     "paths": {
-      "src/*": ["src/*"],
-      "src/infra/*": ["../infra/*"]
+      "src/*": ["src/*"]
     },
     "noErrorTruncation": true,
     "strictNullChecks": true,

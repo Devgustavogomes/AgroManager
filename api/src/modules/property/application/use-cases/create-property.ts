@@ -1,5 +1,5 @@
 import { PropertyMapper } from '../../infrastructure/persistence/property.mapper';
-import { DatabaseService } from 'src/infra/database/service';
+import { DatabaseService } from '@agromanager/infra/database/service';
 import { PropertyEntity } from '../../domain/entities/property.entity';
 import { Area } from '../../../../shared/domain/value-object/area';
 import { Slug } from '../../domain/value-object/slug';

@@ -1,4 +1,4 @@
-import { DatabaseService } from 'src/infra/database/service';
+import { DatabaseService } from '@agromanager/infra/database/service';
 import { CropContract } from '../../domain/repositories/crops-repository.contract';
 import { UpdateCropUseCase } from './updateCrop';
 import { Mocked } from 'vitest';

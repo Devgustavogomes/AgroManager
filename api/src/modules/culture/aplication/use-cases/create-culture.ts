@@ -5,7 +5,7 @@ import { CultureOutput } from '../dto/cultureOutput.dto';
 import { Culture } from '../../domain/entities/culture.entity';
 import { Area } from 'src/shared/domain/value-object/area';
 import { CultureMapper } from '../../infrastructure/culture.mapper';
-import { DatabaseService } from 'src/infra/database/service';
+import { DatabaseService } from '@agromanager/infra/database/service';
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
 
 @Injectable()

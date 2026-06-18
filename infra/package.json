@@ -1,0 +1,19 @@
+{
+  "name": "@agromanager/infra",
+  "version": "1.0.0",
+  "private": true,
+  "exports": {
+    "./database/module": "./database/module.ts",
+    "./database/service": "./database/service.ts",
+    "./database/provider": "./database/provider.ts",
+    "./redis/module": "./redis/module.ts",
+    "./redis/service": "./redis/service.ts",
+    "./redis/provider": "./redis/provider.ts"
+  },
+  "dependencies": {
+    "pg": "^8.21.0",
+    "ioredis": "^5.11.0",
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.0"
+  }
+}

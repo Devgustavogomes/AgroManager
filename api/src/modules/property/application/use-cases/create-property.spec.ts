@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
-import { DatabaseService } from 'src/infra/database/service';
+import { DatabaseService } from '@agromanager/infra/database/service';
 import { PropertyContract } from '../../domain/repositories/property-repository.interface';
 import { CreatePropertyUseCase } from './create-property';
 import { BadRequestException } from '@nestjs/common';

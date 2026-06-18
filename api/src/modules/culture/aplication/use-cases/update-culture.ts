@@ -3,7 +3,7 @@ import { CultureContract } from '../../domain/repositories/culture.repository.in
 import { UpdateCultureInput } from '../dto/updateCulture.dto';
 import { CultureOutput } from '../dto/cultureOutput.dto';
 import { CultureMapper } from '../../infrastructure/culture.mapper';
-import { DatabaseService } from 'src/infra/database/service';
+import { DatabaseService } from '@agromanager/infra/database/service';
 
 @Injectable()
 export class UpdateCultureUseCase {

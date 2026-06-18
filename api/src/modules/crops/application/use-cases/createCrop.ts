@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CropContract } from '../../domain/repositories/crops-repository.contract';
 import { CreateCropInput } from '../dto/createCrop.dto';
-import { DatabaseService } from 'src/infra/database/service';
+import { DatabaseService } from '@agromanager/infra/database/service';
 import { Crop } from '../../domain/entities/crop.entity';
 import { Area } from 'src/shared/domain/value-object/area';
 import { CropMapper } from '../../infrastructure/crop.mapper';
