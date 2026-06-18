@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ProducerContract } from '../../domain/repositories/producer.repository.interface';
+import { ProducerContract } from '../../domain/repositories/producer.repository.contract';
 import { ProducerOutput } from '../dtos/output.dto';
 import { UpdateProducerDTO } from '../dtos/update.dto';
 @Injectable()

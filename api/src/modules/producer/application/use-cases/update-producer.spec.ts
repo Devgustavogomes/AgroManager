@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { UpdateProducerUseCase } from './update-producer';
-import { ProducerContract } from '../../domain/repositories/producer.repository.interface';
+import { ProducerContract } from '../../domain/repositories/producer.repository.contract';
 import { BadRequestException } from '@nestjs/common';
 import { ProducerOutput } from '../dtos/output.dto';
 import { Role } from '../../../../shared/types/role';

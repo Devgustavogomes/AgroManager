@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ProducerContract } from '../../domain/repositories/producer.repository.interface';
+import { ProducerContract } from '../../domain/repositories/producer.repository.contract';
 import { CreateProducerInput } from '../dtos/create.dto';
 import { ProducerOutput } from '../dtos/output.dto';
 import { hash } from 'bcryptjs';

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { DeleteProducerUseCase } from './delete-producer';
-import { ProducerContract } from '../../domain/repositories/producer.repository.interface';
+import { ProducerContract } from '../../domain/repositories/producer.repository.contract';
 
 describe('DeleteProducerUseCase', () => {
   let useCase: DeleteProducerUseCase;

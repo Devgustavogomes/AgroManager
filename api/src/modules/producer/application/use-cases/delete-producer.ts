@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ProducerContract } from '../../domain/repositories/producer.repository.interface';
+import { ProducerContract } from '../../domain/repositories/producer.repository.contract';
 
 @Injectable()
 export class DeleteProducerUseCase {
