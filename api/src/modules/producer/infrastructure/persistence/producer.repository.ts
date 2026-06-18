@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   ProducerContract,
   ProducerPersistence,
-} from '../../domain/repositories/producer.repository.contract';
+} from '../../domain/repositories/producerRepository.contract';
 
 import { ProducerEntity } from '../../domain/entities/producer.entity';
 import { ProducerMapper } from './producer.mapper';

@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ProducerContract } from '../../domain/repositories/producer.repository.contract';
+import { ProducerContract } from '../../domain/repositories/producerRepository.contract';
 import { ProducerOutput } from '../dtos/output.dto';
 @Injectable()
 export class FindByIdProducerUseCase {

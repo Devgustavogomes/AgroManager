@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
-import { FindByIdProducerUseCase } from './find-by-id-producer';
-import { ProducerContract } from '../../domain/repositories/producer.repository.contract';
+import { FindByIdProducerUseCase } from './findByIdProducer';
+import { ProducerContract } from '../../domain/repositories/producerRepository.contract';
 import { NotFoundException } from '@nestjs/common';
 import { ProducerOutput } from '../dtos/output.dto';
 import { Role } from '../../../../shared/types/role';

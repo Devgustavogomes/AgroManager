@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
-import { CreateProducerUseCase } from './create-producer';
-import { ProducerContract } from '../../domain/repositories/producer.repository.contract';
+import { CreateProducerUseCase } from './createProducer';
+import { ProducerContract } from '../../domain/repositories/producerRepository.contract';
 import { ProducerOutput } from '../dtos/output.dto';
 import { Role } from '../../../../shared/types/role';
 

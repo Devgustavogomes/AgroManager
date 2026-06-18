@@ -1,5 +1,5 @@
 import { ProducerOutput } from '../../application/dtos/output.dto';
-import { ProducerPersistence } from '../../domain/repositories/producer.repository.contract';
+import { ProducerPersistence } from '../../domain/repositories/producerRepository.contract';
 
 export class ProducerMapper {
   static toOutput(data: ProducerPersistence[]): ProducerOutput[] {
