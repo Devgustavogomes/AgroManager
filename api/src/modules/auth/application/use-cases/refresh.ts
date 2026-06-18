@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthContract } from '../../domain/repositories/auth-repository.constract';
+import { AuthContract } from '../../domain/repositories/auth-repository.contract';
 import { TTL_REFRESH_TOKEN } from '../../domain/constants/ttlRefreshToken.constants';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'src/shared/types/jwtPayload';

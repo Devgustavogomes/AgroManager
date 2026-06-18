@@ -4,7 +4,7 @@ import { ProducerLogin } from '../../domain/entities/producerLogin.entity';
 import {
   AuthContract,
   ProducerLoginPersistence,
-} from '../../domain/repositories/auth-repository.constract';
+} from '../../domain/repositories/auth-repository.contract';
 import { AuthMapper } from '../auth.mapper';
 import { RedisService } from '@agromanager/infra/redis/service';
 
