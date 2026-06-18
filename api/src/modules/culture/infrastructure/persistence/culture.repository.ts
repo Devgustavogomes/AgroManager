@@ -8,6 +8,7 @@ import {
   CulturePersistence,
 } from '../../domain/repositories/culture.repository.interface';
 import { PoolClient } from 'pg';
+import { Area } from 'src/shared/domain/value-object/area';
 
 @Injectable()
 export class CultureRepository implements CultureContract {
@@ -95,6 +96,40 @@ export class CultureRepository implements CultureContract {
     );
 
     return result[0].sum;
+  }
+
+  async getPropertyArea(slug: string, client: PoolClient): Promise<Area> {
+    const sql = `SELECT "totalArea"
+                FROM properties
+                WHERE slug = $1
+                FOR UPDATE`;
+
+    const params = [slug];
+
+    const result = await this.databaseService.query<{ totalArea: number }>(
+      sql,
+      params,
+      client,
+    );
+
+    return Area.create(result[0].totalArea);
+  }
+
+  async cultureAreaSum(propertyId: string, client: PoolClient): Promise<Area> {
+    const sql = `SELECT SUM("allocatedArea") as sum
+                FROM cultures
+                WHERE "propertyId" = $1
+                FOR UPDATE`;
+
+    const params = [propertyId];
+
+    const result = await this.databaseService.query<{ sum: number }>(
+      sql,
+      params,
+      client,
+    );
+
+    return Area.create(result[0].sum);
   }
 
   async isOwner(producerId: string, cultureId: string): Promise<boolean> {
