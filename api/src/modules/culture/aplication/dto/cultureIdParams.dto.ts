@@ -3,7 +3,7 @@ import z from 'zod';
 
 const idSchema = z.object({
   id: z.uuid().optional(),
-  propertyId: z.uuid(),
+  slug: z.string(),
 });
 
 export class CultureIdParams extends createZodDto(idSchema) {}

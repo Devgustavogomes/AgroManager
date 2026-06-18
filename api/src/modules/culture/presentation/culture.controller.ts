@@ -24,7 +24,7 @@ import { UpdateCultureUseCase } from '../aplication/use-cases/update-culture';
 import { DeleteCultureUseCase } from '../aplication/use-cases/delete-culture';
 import { IsPropertyOwnerUseCase } from 'src/modules/property/application/use-cases/is-property-owner';
 
-@Controller(':propertyId/cultures')
+@Controller(':slug/cultures')
 @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
 export class CultureController {
   constructor(
@@ -45,12 +45,16 @@ export class CultureController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: CultureOutput })
   @Post()
-  @OwnerService(IsPropertyOwnerUseCase, 'propertyId')
+  @OwnerService(IsPropertyOwnerUseCase, 'slug')
   async create(
     @Param() params: CultureIdParams,
     @Body() dto: CreateCultureInput,
   ) {
-    return await this.createCultureUseCase.execute(params.propertyId, dto);
+    return await this.createCultureUseCase.execute(
+      params.slug,
+      params.id!,
+      dto,
+    );
   }
 
   @ApiBearerAuth()
