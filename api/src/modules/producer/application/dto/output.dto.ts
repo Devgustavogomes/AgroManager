@@ -6,10 +6,10 @@ import { createZodDto } from 'nestjs-zod';
 const producerOutputSchema = createProducerSchema
   .omit({ password: true })
   .extend({
-    idProducer: z.string(),
+    producerId: z.string(),
     role: z.enum(Role),
-    createdAt: z.string().datetime(),
-    updatedAt: z.string().datetime().nullable(),
+    createdAt: z.string(),
+    updatedAt: z.string().nullable(),
   });
 
 export class ProducerOutput extends createZodDto(producerOutputSchema) {}

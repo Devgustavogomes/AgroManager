@@ -13,9 +13,9 @@ import {
 import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import type { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
-import { ProducerOutput } from '../application/dtos/output.dto';
-import { CreateProducerInput } from '../application/dtos/create.dto';
-import { UpdateProducerDTO } from '../application/dtos/update.dto';
+import { ProducerOutput } from '../application/dto/output.dto';
+import { CreateProducerInput } from '../application/dto/create.dto';
+import { UpdateProducerDTO } from '../application/dto/update.dto';
 import { CreateProducerUseCase } from '../application/use-cases/createProducer';
 import { DeleteProducerUseCase } from '../application/use-cases/deleteProducer';
 import { UpdateProducerUseCase } from '../application/use-cases/updateProducer';

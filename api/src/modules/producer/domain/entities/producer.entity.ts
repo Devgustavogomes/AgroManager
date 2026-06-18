@@ -8,8 +8,8 @@ export interface ProducerProps {
   email: string;
   role: Role;
   hashedPassword: string;
-  createdAt: Date;
-  updatedAt: Date | null;
+  createdAt: Date | string;
+  updatedAt: Date | string | null;
 }
 
 export class Producer extends Entity<ProducerProps> {
@@ -28,13 +28,39 @@ export class Producer extends Entity<ProducerProps> {
     });
   }
 
-  getEmail(): string {
+  private touch() {
+    this.props.updatedAt = new Date();
+  }
+
+  set email(email: string) {
+    this.props.email = email;
+    this.touch();
+  }
+
+  set username(username: string) {
+    this.props.username = username;
+    this.touch();
+  }
+
+  get email(): string {
     return this.props.email;
   }
-  getPassword(): string {
+  get hashedPassword(): string {
     return this.props.hashedPassword;
   }
-  getUsername(): string {
+  get username(): string {
     return this.props.username;
+  }
+  get role(): Role {
+    return this.props.role;
+  }
+  get createdAt(): Date | string {
+    return this.props.createdAt;
+  }
+  get updatedAt(): Date | string | null {
+    return this.props.updatedAt;
+  }
+  get producerId(): string {
+    return this.props.producerId;
   }
 }

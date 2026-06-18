@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
-import { UpdatePropertyDto } from '../dtos/update.dto';
+import { UpdatePropertyDto } from '../dto/update.dto';
 
 @Injectable()
 export class UpdatePropertyUseCase {

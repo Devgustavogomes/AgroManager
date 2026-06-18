@@ -1,15 +1,28 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProducerContract } from '../../domain/repositories/producerRepository.contract';
-import { ProducerOutput } from '../dtos/output.dto';
-import { UpdateProducerDTO } from '../dtos/update.dto';
+import { ProducerOutput } from '../dto/output.dto';
+import { UpdateProducerDTO } from '../dto/update.dto';
+import { ProducerMapper } from '../../infrastructure/persistence/producer.mapper';
 @Injectable()
 export class UpdateProducerUseCase {
   constructor(private readonly producerRepository: ProducerContract) {}
   async execute(id: string, data: UpdateProducerDTO): Promise<ProducerOutput> {
-    if (!data.email && !data.username) {
-      throw new BadRequestException('No fields to update');
+    const producer = await this.producerRepository.findById(id);
+
+    if (!producer) {
+      throw new NotFoundException('Producer not found');
     }
 
-    return await this.producerRepository.update(id, data);
+    if (data.email) {
+      producer.email = data.email;
+    }
+
+    if (data.username) {
+      producer.username = data.username;
+    }
+
+    const result = await this.producerRepository.update(id, producer);
+
+    return ProducerMapper.toResponse([result])[0];
   }
 }

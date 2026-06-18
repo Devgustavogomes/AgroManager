@@ -1,4 +1,4 @@
-import { PropertyOutputDto } from '../../application/dtos/output.dto';
+import { PropertyOutputDto } from '../../application/dto/output.dto';
 import { Property } from '../../domain/entities/property.entity';
 import { PropertyPersistence } from '../../domain/repositories/propertyRepository.contract';
 import { Area } from '../../../../shared/domain/value-object/area';

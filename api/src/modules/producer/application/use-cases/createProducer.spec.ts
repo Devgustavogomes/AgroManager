@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { CreateProducerUseCase } from './createProducer';
 import { ProducerContract } from '../../domain/repositories/producerRepository.contract';
-import { ProducerOutput } from '../dtos/output.dto';
+import { ProducerOutput } from '../dto/output.dto';
 import { Role } from '../../../../shared/types/role';
 
 vi.mock('bcryptjs', () => ({
@@ -18,23 +18,12 @@ describe('CreateProducerUseCase', () => {
       findById: vi.fn(),
       update: vi.fn(),
       remove: vi.fn(),
-    };
+    } as unknown as Mocked<ProducerContract>;
 
     useCase = new CreateProducerUseCase(mockProducerRepository);
   });
 
   it('should create a producer', async () => {
-    const mockProducerOutput: ProducerOutput = {
-      idProducer: 'some-id',
-      username: 'Gustavo',
-      email: 'gustavo@example.com',
-      createdAt: new Date().toISOString(),
-      updatedAt: null,
-      role: Role.USER,
-    };
-
-    mockProducerRepository.create.mockResolvedValue(mockProducerOutput);
-
     await useCase.execute({
       username: 'Gustavo',
       email: 'gustavo@example.com',

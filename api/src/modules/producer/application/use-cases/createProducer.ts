@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ProducerContract } from '../../domain/repositories/producerRepository.contract';
-import { CreateProducerInput } from '../dtos/create.dto';
-import { ProducerOutput } from '../dtos/output.dto';
+import { CreateProducerInput } from '../dto/create.dto';
+import { ProducerOutput } from '../dto/output.dto';
 import { hash } from 'bcryptjs';
 import { Producer } from '../../domain/entities/producer.entity';
+import { ProducerMapper } from '../../infrastructure/persistence/producer.mapper';
 
 @Injectable()
 export class CreateProducerUseCase {
@@ -19,6 +20,8 @@ export class CreateProducerUseCase {
       hashedPassword,
     });
 
-    return await this.producerRepository.create(producer);
+    const result = await this.producerRepository.create(producer);
+
+    return ProducerMapper.toResponse([result])[0];
   }
 }

@@ -1,6 +1,6 @@
 import { PropertyMapper } from '../../infrastructure/persistence/property.mapper';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PropertyOutputDto } from '../dtos/output.dto';
+import { PropertyOutputDto } from '../dto/output.dto';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
 
 @Injectable()

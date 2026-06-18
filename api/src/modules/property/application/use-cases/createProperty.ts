@@ -3,10 +3,10 @@ import { DatabaseService } from '@agromanager/infra/database/service';
 import { Property } from '../../domain/entities/property.entity';
 import { Area } from '../../../../shared/domain/value-object/area';
 import { Slug } from '../../domain/value-object/slug';
-import { CreatePropertyDto } from '../dtos/create.dto';
+import { CreatePropertyDto } from '../dto/create.dto';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PoolClient } from 'pg';
-import { PropertyOutputDto } from '../dtos/output.dto';
+import { PropertyOutputDto } from '../dto/output.dto';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
 
 @Injectable()
