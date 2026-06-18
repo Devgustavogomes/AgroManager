@@ -12,11 +12,11 @@ export interface ProducerProps {
   updated_at: Date | null;
 }
 
-export class ProducerEntity extends Entity<ProducerProps> {
+export class Producer extends Entity<ProducerProps> {
   static create(
     props: Optional<ProducerProps, 'role' | 'created_at' | 'updated_at'>,
-  ): ProducerEntity {
-    return new ProducerEntity({
+  ): Producer {
+    return new Producer({
       ...props,
       role: Role.USER,
       created_at: new Date(),

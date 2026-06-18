@@ -4,7 +4,7 @@ import {
   ProducerPersistence,
 } from '../../domain/repositories/producerRepository.contract';
 
-import { ProducerEntity } from '../../domain/entities/producer.entity';
+import { Producer } from '../../domain/entities/producer.entity';
 import { ProducerMapper } from './producer.mapper';
 import { ProducerOutput } from '../../application/dtos/output.dto';
 import { UpdateProducerDTO } from '../../application/dtos/update.dto';
@@ -28,7 +28,7 @@ export class ProducerRepository implements ProducerContract {
     return ProducerMapper.toOutput(producer)[0];
   }
 
-  async create(producer: ProducerEntity): Promise<ProducerOutput> {
+  async create(producer: Producer): Promise<ProducerOutput> {
     const sql = `INSERT INTO producers 
                 (username, 
                 email, 

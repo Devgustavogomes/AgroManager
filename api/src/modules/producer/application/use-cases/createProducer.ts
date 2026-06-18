@@ -3,7 +3,7 @@ import { ProducerContract } from '../../domain/repositories/producerRepository.c
 import { CreateProducerInput } from '../dtos/create.dto';
 import { ProducerOutput } from '../dtos/output.dto';
 import { hash } from 'bcryptjs';
-import { ProducerEntity } from '../../domain/entities/producer.entity';
+import { Producer } from '../../domain/entities/producer.entity';
 
 @Injectable()
 export class CreateProducerUseCase {
@@ -14,7 +14,7 @@ export class CreateProducerUseCase {
 
     const hashedPassword = await hash(password, 10);
 
-    const producer = ProducerEntity.create({
+    const producer = Producer.create({
       ...rest,
       password_hash: hashedPassword,
     });

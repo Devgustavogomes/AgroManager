@@ -1,7 +1,7 @@
 import { Role } from 'src/shared/types/role';
 import { ProducerOutput } from '../../application/dtos/output.dto';
 import { UpdateProducerDTO } from '../../application/dtos/update.dto';
-import { ProducerEntity } from '../entities/producer.entity';
+import { Producer } from '../entities/producer.entity';
 
 export interface ProducerPersistence {
   id_producer: string;
@@ -15,7 +15,7 @@ export interface ProducerPersistence {
 
 export abstract class ProducerContract {
   abstract findById(id: string): Promise<ProducerOutput | undefined>;
-  abstract create(dto: ProducerEntity): Promise<ProducerOutput>;
+  abstract create(dto: Producer): Promise<ProducerOutput>;
   abstract update(id: string, dto: UpdateProducerDTO): Promise<ProducerOutput>;
   abstract remove(id: string): Promise<void>;
 }
