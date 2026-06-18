@@ -9,7 +9,7 @@ import { RedisModule } from '@agromanager/infra/redis/module';
 import { MigrationModule } from './modules/migration/module';
 import { CultureModule } from './modules/culture/infrastructure/culture.module';
 import { PropertyModule } from './modules/property/infrastructure/property.module';
-import { CropModule } from './modules/crops/infrastructure/crop.module';
+import { CropModule } from './modules/crop/infrastructure/crop.module';
 
 @Module({
   imports: [
