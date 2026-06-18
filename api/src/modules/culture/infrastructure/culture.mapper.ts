@@ -1,5 +1,5 @@
 import { Area } from 'src/shared/domain/value-object/area';
-import { CultureOutput } from '../aplication/dto/cultureOutput.dto';
+import { CultureOutput } from '../application/dto/cultureOutput.dto';
 import { Culture } from '../domain/entities/culture.entity';
 import { CulturePersistence } from '../domain/repositories/culture.repository.interface';
 
