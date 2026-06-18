@@ -1,7 +1,7 @@
 import { Area } from 'src/shared/domain/value-object/area';
 import { CultureOutput } from '../application/dto/cultureOutput.dto';
 import { Culture } from '../domain/entities/culture.entity';
-import { CulturePersistence } from '../domain/repositories/culture.repository.interface';
+import { CulturePersistence } from '../domain/repositories/cultureRepository.interface';
 
 export class CultureMapper {
   static toDomain(data: CulturePersistence[]): Culture[] {
