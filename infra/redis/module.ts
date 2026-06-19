@@ -1,10 +1,14 @@
-import { Global, Module } from '@nestjs/common';
-import { redisProvider } from './provider';
-import { RedisService } from './service';
+import { Global, Module } from "@nestjs/common";
+import { redisProvider } from "./provider";
+import { RedisService } from "./service";
+import { CacheContract } from "./contract";
 
 @Global()
 @Module({
-  providers: [redisProvider, RedisService],
-  exports: [RedisService],
+  providers: [
+    redisProvider,
+    { provide: CacheContract, useClass: RedisService },
+  ],
+  exports: [CacheContract],
 })
 export class RedisModule {}

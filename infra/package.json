@@ -6,9 +6,11 @@
     "./database/module": "./database/module.ts",
     "./database/service": "./database/service.ts",
     "./database/provider": "./database/provider.ts",
+    "./database/contract": "./database/contract.ts",
     "./redis/module": "./redis/module.ts",
     "./redis/service": "./redis/service.ts",
-    "./redis/provider": "./redis/provider.ts"
+    "./redis/provider": "./redis/provider.ts",
+    "./redis/contract": "./redis/contract.ts"
   },
   "dependencies": {
     "pg": "^8.21.0",

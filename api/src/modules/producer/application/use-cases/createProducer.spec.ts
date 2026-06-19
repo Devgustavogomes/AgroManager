@@ -24,6 +24,8 @@ describe('CreateProducerUseCase', () => {
   });
 
   it('should create a producer', async () => {
+    mockProducerRepository.create.mockImplementation((p) => Promise.resolve(p));
+
     await useCase.execute({
       username: 'Gustavo',
       email: 'gustavo@example.com',

@@ -1,5 +1,5 @@
 import { PropertyMapper } from '../../infrastructure/persistence/property.mapper';
-import { DatabaseService } from '@agromanager/infra/database/service';
+import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Property } from '../../domain/entities/property.entity';
 import { Area } from '../../../../shared/domain/value-object/area';
 import { Slug } from '../../domain/value-object/slug';
@@ -13,7 +13,7 @@ import { PropertyContract } from '../../domain/repositories/propertyRepository.c
 export class CreatePropertyUseCase {
   constructor(
     private propertyRepository: PropertyContract,
-    private dbService: DatabaseService,
+    private dbService: DatabaseContract,
   ) {}
 
   async execute(

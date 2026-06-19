@@ -1,9 +1,7 @@
 import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { UpdateProducerUseCase } from './updateProducer';
 import { ProducerContract } from '../../domain/repositories/producerRepository.contract';
-import { BadRequestException } from '@nestjs/common';
-import { ProducerOutput } from '../dto/output.dto';
-import { Role } from '../../../../shared/types/role';
+import { Producer } from '../../domain/entities/producer.entity';
 
 describe('UpdateProducerUseCase', () => {
   let useCase: UpdateProducerUseCase;
@@ -22,12 +20,20 @@ describe('UpdateProducerUseCase', () => {
 
   it('should update a producer', async () => {
     const producerUpdatePayload = { username: 'producer2' };
+    const producerMock = Producer.create({
+      username: 'Gustavo',
+      email: 'gustavo@example.com',
+      hashedPassword: 'hashed_password',
+    });
+
+    mockProducerRepository.findById.mockResolvedValue(producerMock);
+    mockProducerRepository.update.mockResolvedValue(producerMock);
 
     await useCase.execute('some-id', producerUpdatePayload);
 
     expect(mockProducerRepository.update).toHaveBeenCalledWith(
       'some-id',
-      producerUpdatePayload,
+      producerMock,
     );
     expect(mockProducerRepository.update).toHaveBeenCalledOnce();
   });

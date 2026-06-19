@@ -1,7 +1,7 @@
 import { Mocked } from 'vitest';
 import { CultureContract } from '../../domain/repositories/cultureRepository.interface';
 import { UpdateCultureUseCase } from './updateCulture';
-import { DatabaseService } from '@agromanager/infra/database/service';
+import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Culture } from '../../domain/entities/culture.entity';
 import { Area } from 'src/shared/domain/value-object/area';
 import { BadRequestException } from '@nestjs/common';
@@ -9,7 +9,7 @@ import { BadRequestException } from '@nestjs/common';
 describe('UpdateCultureUseCase', () => {
   let useCase: UpdateCultureUseCase;
   let mockCultureRepository: Mocked<CultureContract>;
-  let mockDatabaseService: Mocked<DatabaseService>;
+  let mockDatabaseService: Mocked<DatabaseContract>;
 
   beforeEach(() => {
     mockCultureRepository = {
@@ -23,7 +23,7 @@ describe('UpdateCultureUseCase', () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return callback({});
       }),
-    } as unknown as Mocked<DatabaseService>;
+    } as unknown as Mocked<DatabaseContract>;
 
     useCase = new UpdateCultureUseCase(
       mockCultureRepository,

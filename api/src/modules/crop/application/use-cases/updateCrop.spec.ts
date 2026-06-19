@@ -1,4 +1,4 @@
-import { DatabaseService } from '@agromanager/infra/database/service';
+import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { CropContract } from '../../domain/repositories/crops-repository.contract';
 import { UpdateCropUseCase } from './updateCrop';
 import { Mocked } from 'vitest';
@@ -9,7 +9,7 @@ import { Area } from 'src/shared/domain/value-object/area';
 
 describe('UpdateCropUseCase', () => {
   let mockCropRepository: Mocked<CropContract>;
-  let mockDatabaseService: Mocked<DatabaseService>;
+  let mockDatabaseService: Mocked<DatabaseContract>;
   let useCase: UpdateCropUseCase;
 
   beforeAll(() => {
@@ -24,7 +24,7 @@ describe('UpdateCropUseCase', () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return callback({});
       }),
-    } as unknown as Mocked<DatabaseService>;
+    } as unknown as Mocked<DatabaseContract>;
     useCase = new UpdateCropUseCase(mockCropRepository, mockDatabaseService);
   });
 

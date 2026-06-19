@@ -5,14 +5,14 @@ import { CultureOutput } from '../dto/cultureOutput.dto';
 import { Culture } from '../../domain/entities/culture.entity';
 import { Area } from 'src/shared/domain/value-object/area';
 import { CultureMapper } from '../../infrastructure/culture.mapper';
-import { DatabaseService } from '@agromanager/infra/database/service';
+import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
 
 @Injectable()
 export class CreateCultureUseCase {
   constructor(
     private readonly cultureRepository: CultureContract,
-    private readonly databaseService: DatabaseService,
+    private readonly databaseService: DatabaseContract,
   ) {}
 
   async execute(

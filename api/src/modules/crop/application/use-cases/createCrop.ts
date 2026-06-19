@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CropContract } from '../../domain/repositories/crops-repository.contract';
 import { CreateCropInput } from '../dto/createCrop.dto';
-import { DatabaseService } from '@agromanager/infra/database/service';
+import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Crop } from '../../domain/entities/crop.entity';
 import { Area } from 'src/shared/domain/value-object/area';
 import { CropMapper } from '../../infrastructure/crop.mapper';
@@ -10,7 +10,7 @@ import { CropMapper } from '../../infrastructure/crop.mapper';
 export class CreateCropUseCase {
   constructor(
     private readonly repository: CropContract,
-    private readonly databaseService: DatabaseService,
+    private readonly databaseService: DatabaseContract,
   ) {}
 
   async execute(cultureId: string, dto: CreateCropInput) {

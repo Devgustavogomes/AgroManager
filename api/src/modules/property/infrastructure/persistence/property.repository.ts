@@ -1,4 +1,4 @@
-import { DatabaseService } from '@agromanager/infra/database/service';
+import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Injectable } from '@nestjs/common';
 import { PoolClient } from 'pg';
 import {
@@ -10,7 +10,7 @@ import { PropertyMapper } from './property.mapper';
 
 @Injectable()
 export class PropertyRepository implements PropertyContract {
-  constructor(private readonly databaseservice: DatabaseService) {}
+  constructor(private readonly databaseservice: DatabaseContract) {}
 
   async findBySlug(
     slug: string,

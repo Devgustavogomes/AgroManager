@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { FindByIdProducerUseCase } from './findByIdProducer';
 import { ProducerContract } from '../../domain/repositories/producerRepository.contract';
 import { NotFoundException } from '@nestjs/common';
-import { ProducerOutput } from '../dto/output.dto';
-import { Role } from '../../../../shared/types/role';
+
+import { Producer } from '../../domain/entities/producer.entity';
 
 describe('FindByIdProducerUseCase', () => {
   let useCase: FindByIdProducerUseCase;
@@ -21,6 +21,13 @@ describe('FindByIdProducerUseCase', () => {
   });
 
   it('should find a producer by id', async () => {
+    const producer = Producer.create({
+      username: 'Gustavo',
+      email: 'gustavo@example.com',
+      hashedPassword: 'hashed_password',
+    });
+    mockProducerRepository.findById.mockResolvedValue(producer);
+
     await useCase.execute('some-id');
 
     expect(mockProducerRepository.findById).toHaveBeenCalledWith('some-id');

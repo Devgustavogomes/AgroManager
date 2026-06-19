@@ -7,13 +7,13 @@ import { CropContract } from '../../domain/repositories/crops-repository.contrac
 import { UpdateCropInput } from '../dto/updateCrop.dto';
 import { CropOutput } from '../dto/cropOutput.dto';
 import { CropMapper } from '../../infrastructure/crop.mapper';
-import { DatabaseService } from '@agromanager/infra/database/service';
+import { DatabaseContract } from '@agromanager/infra/database/contract';
 
 @Injectable()
 export class UpdateCropUseCase {
   constructor(
     private readonly repository: CropContract,
-    private readonly databaseService: DatabaseService,
+    private readonly databaseService: DatabaseContract,
   ) {}
 
   async execute(

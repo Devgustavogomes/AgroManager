@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { DatabaseService } from '@agromanager/infra/database/service';
+import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Culture } from '../../domain/entities/culture.entity';
 import { CultureMapper } from '../culture.mapper';
 import {
@@ -12,7 +12,7 @@ import { Area } from 'src/shared/domain/value-object/area';
 
 @Injectable()
 export class CultureRepository implements CultureContract {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(private readonly databaseService: DatabaseContract) {}
 
   async findById(id: string, client?: PoolClient): Promise<Culture> {
     const sql = `SELECT *

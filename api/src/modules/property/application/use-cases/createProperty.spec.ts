@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
-import { DatabaseService } from '@agromanager/infra/database/service';
+import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
 import { CreatePropertyUseCase } from './createProperty';
 import { BadRequestException } from '@nestjs/common';
@@ -7,7 +7,7 @@ import { BadRequestException } from '@nestjs/common';
 describe('Create Property', () => {
   let useCase: CreatePropertyUseCase;
   let mockPropertyRepository: Mocked<PropertyContract>;
-  let mockDatabaseService: Mocked<DatabaseService>;
+  let mockDatabaseService: Mocked<DatabaseContract>;
 
   beforeEach(() => {
     mockPropertyRepository = {
@@ -24,7 +24,7 @@ describe('Create Property', () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return callback({});
       }),
-    } as unknown as Mocked<DatabaseService>;
+    } as unknown as Mocked<DatabaseContract>;
 
     useCase = new CreatePropertyUseCase(
       mockPropertyRepository,

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@agromanager/infra/database/service';
+import { DatabaseContract } from '@agromanager/infra/database/contract';
 import {
   CropContract,
   CropPersistence,
@@ -11,7 +11,7 @@ import { CropMapper } from '../crop.mapper';
 
 @Injectable()
 export class CropRepository implements CropContract {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(private readonly databaseService: DatabaseContract) {}
 
   async findById(id: string, client?: PoolClient): Promise<Crop> {
     const sql = `SELECT *

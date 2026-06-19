@@ -5,11 +5,11 @@ import {
 } from '../../domain/repositories/producerRepository.contract';
 import { Producer } from '../../domain/entities/producer.entity';
 import { ProducerMapper } from './producer.mapper';
-import { DatabaseService } from '@agromanager/infra/database/service';
+import { DatabaseContract } from '@agromanager/infra/database/contract';
 
 @Injectable()
 export class ProducerRepository implements ProducerContract {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(private readonly databaseService: DatabaseContract) {}
 
   async findById(id: string): Promise<Producer> {
     const sql = `SELECT

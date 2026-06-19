@@ -4,12 +4,12 @@ import { CreateCropUseCase } from './createCrop';
 import { PestStatus } from '../../domain/constants/pest-status.enum';
 import { CropStatus } from '../../domain/constants/crop-status.enum';
 import { Crop } from '../../domain/entities/crop.entity';
-import { DatabaseService } from '@agromanager/infra/database/service';
+import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Area } from 'src/shared/domain/value-object/area';
 
 describe('CreateCropUseCase', () => {
   let mockCropRepository: Mocked<CropContract>;
-  let mockDatabaseService: Mocked<DatabaseService>;
+  let mockDatabaseService: Mocked<DatabaseContract>;
   let useCase: CreateCropUseCase;
 
   beforeAll(() => {
@@ -23,7 +23,7 @@ describe('CreateCropUseCase', () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return callback({});
       }),
-    } as unknown as Mocked<DatabaseService>;
+    } as unknown as Mocked<DatabaseContract>;
     useCase = new CreateCropUseCase(mockCropRepository, mockDatabaseService);
   });
 
