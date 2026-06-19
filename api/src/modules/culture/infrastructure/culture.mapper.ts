@@ -28,8 +28,10 @@ export class CultureMapper {
         propertyId: r.propertyId,
         name: r.name,
         allocatedArea: r.allocatedArea.getValue,
-        createdAt: r.createdAt.toISOString(),
-        updatedAt: r.updatedAt ? r.updatedAt.toISOString() : null,
+        createdAt:
+          r.createdAt instanceof Date ? r.createdAt.toISOString() : r.createdAt,
+        updatedAt:
+          r.updatedAt instanceof Date ? r.updatedAt.toISOString() : null,
       }))
       .toArray();
   }
