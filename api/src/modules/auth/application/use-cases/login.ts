@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { loginInputDto } from '../dto/login.dto';
+import { LoginInputDto } from '../dto/login.dto';
 import { compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -16,7 +16,7 @@ export class LoginUseCase {
   ) {}
 
   async execute(
-    data: loginInputDto,
+    data: LoginInputDto,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const producer = await this.repository.findProducer(data.email);
 
