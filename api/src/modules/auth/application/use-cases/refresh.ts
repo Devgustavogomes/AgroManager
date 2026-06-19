@@ -4,12 +4,14 @@ import { AuthContract } from '../../domain/repositories/auth-repository.contract
 import { TTL_REFRESH_TOKEN } from '../../domain/constants/ttlRefreshToken.constants';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'src/shared/types/jwtPayload';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class RefreshUseCase {
   constructor(
     private readonly repository: AuthContract,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async execute(
@@ -22,7 +24,7 @@ export class RefreshUseCase {
     const refreshTokenPayload: JwtPayload = await this.jwtService.verifyAsync(
       refreshToken,
       {
-        secret: process.env.REFRESH_SECRET,
+        secret: this.configService.get<string>('REFRESH_SECRET'),
       },
     );
 
@@ -39,7 +41,7 @@ export class RefreshUseCase {
     const accessToken = await this.jwtService.signAsync(payload);
 
     const newRefreshToken = await this.jwtService.signAsync(payload, {
-      secret: process.env.REFRESH_SECRET,
+      secret: this.configService.get<string>('REFRESH_SECRET'),
       expiresIn: '7d',
     });
 
