@@ -1,8 +1,6 @@
 import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { CreateProducerUseCase } from './createProducer';
 import { ProducerContract } from '../../domain/repositories/producerRepository.contract';
-import { ProducerOutput } from '../dto/output.dto';
-import { Role } from '../../../../shared/types/role';
 
 vi.mock('bcryptjs', () => ({
   hash: vi.fn().mockResolvedValue('hashed_password'),
