@@ -1,9 +1,10 @@
-import { Inject, Injectable, OnModuleDestroy } from '@nestjs/common';
-import Redis from 'ioredis';
+import { Inject, Injectable, OnModuleDestroy } from "@nestjs/common";
+import Redis from "ioredis";
+import { CacheContract } from "./contract";
 
 @Injectable()
-export class RedisService implements OnModuleDestroy {
-  constructor(@Inject('REDIS_CLIENT') private readonly redis: Redis) {}
+export class RedisService implements OnModuleDestroy, CacheContract {
+  constructor(@Inject("REDIS_CLIENT") private readonly redis: Redis) {}
 
   async onModuleDestroy() {
     await this.redis.quit();
@@ -11,7 +12,7 @@ export class RedisService implements OnModuleDestroy {
 
   async set(key: string, value: string, ttl?: number) {
     if (ttl) {
-      await this.redis.set(key, value, 'EX', ttl);
+      await this.redis.set(key, value, "EX", ttl);
     } else {
       await this.redis.set(key, value);
     }
@@ -22,6 +23,6 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async del(key: string) {
-    return await this.redis.del(key);
+    await this.redis.del(key);
   }
 }

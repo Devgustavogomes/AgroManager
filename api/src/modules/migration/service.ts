@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { runner } from 'node-pg-migrate';
 import { join } from 'node:path';
 import { PoolClient } from 'pg';
-import { DatabaseService } from 'src/infra/database/service';
+import { DatabaseContract } from '@agromanager/infra/database/contract';
 
 @Injectable()
 export class MigrationService {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(private readonly databaseService: DatabaseContract) {}
 
   async getMigrations(): Promise<unknown[]> {
     let client: PoolClient | undefined;

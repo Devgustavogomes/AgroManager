@@ -21,7 +21,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    container_name: api-agromanager
+    container_name: api
 
   postgres:
     image: postgres:16

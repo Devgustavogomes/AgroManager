@@ -1,7 +1,7 @@
 import { Area } from 'src/shared/domain/value-object/area';
-import { CultureOutput } from '../aplication/dto/cultureOutput.dto';
+import { CultureOutput } from '../application/dto/cultureOutput.dto';
 import { Culture } from '../domain/entities/culture.entity';
-import { CulturePersistence } from '../domain/repositories/culture.repository.interface';
+import { CulturePersistence } from '../domain/repositories/cultureRepository.interface';
 
 export class CultureMapper {
   static toDomain(data: CulturePersistence[]): Culture[] {
@@ -28,8 +28,10 @@ export class CultureMapper {
         propertyId: r.propertyId,
         name: r.name,
         allocatedArea: r.allocatedArea.getValue,
-        createdAt: r.createdAt.toISOString(),
-        updatedAt: r.updatedAt ? r.updatedAt.toISOString() : null,
+        createdAt:
+          r.createdAt instanceof Date ? r.createdAt.toISOString() : r.createdAt,
+        updatedAt:
+          r.updatedAt instanceof Date ? r.updatedAt.toISOString() : null,
       }))
       .toArray();
   }

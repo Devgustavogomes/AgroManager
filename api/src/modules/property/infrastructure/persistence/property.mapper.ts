@@ -1,13 +1,13 @@
-import { PropertyOutputDto } from '../../application/dtos/output.dto';
-import { PropertyEntity } from '../../domain/entities/property.entity';
-import { PropertyPersistence } from '../../domain/repositories/property-repository.interface';
+import { PropertyOutputDto } from '../../application/dto/output.dto';
+import { Property } from '../../domain/entities/property.entity';
+import { PropertyPersistence } from '../../domain/repositories/propertyRepository.contract';
 import { Area } from '../../../../shared/domain/value-object/area';
 import { Slug } from '../../domain/value-object/slug';
 
 export class PropertyMapper {
-  static toDomain(data: PropertyPersistence[]): PropertyEntity[] {
+  static toDomain(data: PropertyPersistence[]): Property[] {
     return data.map((r) =>
-      PropertyEntity.create({
+      Property.create({
         ...r,
         slug: Slug.createFromText(r.slug),
         totalArea: Area.create(Number(r.totalArea)),
@@ -19,7 +19,7 @@ export class PropertyMapper {
     );
   }
 
-  static toResponse(entity: PropertyEntity): PropertyOutputDto {
+  static toResponse(entity: Property): PropertyOutputDto {
     return {
       propertyId: entity.getPropertyId ?? 'non-registered',
       producerId: entity.getProducerId,

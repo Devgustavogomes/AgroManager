@@ -7,7 +7,7 @@ interface CultureProps {
   name: string;
   allocatedArea: Area;
   propertyId: string;
-  createdAt: Date;
+  createdAt: Date | string;
   updatedAt: Date | null;
 }
 

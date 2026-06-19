@@ -12,7 +12,7 @@ import {
 import type { Response } from 'express';
 import type { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
-import { loginInputDto } from '../application/dto/login.dto';
+import { LoginInputDto } from '../application/dto/login.dto';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { LoginUseCase } from '../application/use-cases/login';
 import { RefreshUseCase } from '../application/use-cases/refresh';
@@ -39,7 +39,7 @@ export class AuthController {
     },
   })
   async login(
-    @Body() data: loginInputDto,
+    @Body() data: LoginInputDto,
     @Res({ passthrough: true }) res: Response,
   ) {
     const tokens = await this.loginUseCase.execute(data);

@@ -1,12 +1,13 @@
-import { UnauthorizedException } from '@nestjs/common';
-import { loginInputDto } from '../dto/login.dto';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { LoginInputDto } from '../dto/login.dto';
 import { compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from 'src/shared/types/jwtPayload';
 import { TTL_REFRESH_TOKEN } from '../../domain/constants/ttlRefreshToken.constants';
-import { AuthContract } from '../../domain/repositories/auth-repository.constract';
+import { AuthContract } from '../../domain/repositories/auth-repository.contract';
 
+@Injectable()
 export class LoginUseCase {
   constructor(
     private readonly repository: AuthContract,
@@ -15,7 +16,7 @@ export class LoginUseCase {
   ) {}
 
   async execute(
-    data: loginInputDto,
+    data: LoginInputDto,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const producer = await this.repository.findProducer(data.email);
 
