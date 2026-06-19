@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { jwtConstants } from 'src/modules/auth/domain/constants/jwt.constants';
 import { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
 import { JwtPayload } from '../types/jwtPayload';
 
