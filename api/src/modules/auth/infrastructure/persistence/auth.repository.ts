@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from 'src/infra/database/service';
+import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { ProducerLogin } from '../../domain/entities/producerLogin.entity';
 import {
   AuthContract,
   ProducerLoginPersistence,
-} from '../../domain/repositories/auth-repository.constract';
+} from '../../domain/repositories/auth-repository.contract';
 import { AuthMapper } from '../auth.mapper';
-import { RedisService } from 'src/infra/redis/service';
+import { RedisService } from '@agromanager/infra/redis/service';
 
 @Injectable()
 export class AuthRepository implements AuthContract {
   constructor(
-    private readonly databaseService: DatabaseService,
+    private readonly databaseService: DatabaseContract,
     private readonly redisService: RedisService,
   ) {}
 

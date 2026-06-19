@@ -1,5 +1,5 @@
-import { Pool } from 'pg';
-import { ConfigService } from '@nestjs/config';
+import { Pool } from "pg";
+import { ConfigService } from "@nestjs/config";
 
 interface IEnv {
   database: {
@@ -12,11 +12,11 @@ interface IEnv {
 }
 
 export const DatabaseClientProvider = {
-  provide: 'DATABASE_CLIENT',
+  provide: "DATABASE_CLIENT",
   useFactory: (configService: ConfigService) => {
-    const dbConfig = configService.get<IEnv['database']>('database');
+    const dbConfig = configService.get<IEnv["database"]>("database");
     if (!dbConfig) {
-      throw new Error('Database configuration is empty');
+      throw new Error("Database configuration is empty");
     }
 
     return new Pool({
@@ -24,9 +24,9 @@ export const DatabaseClientProvider = {
       password: dbConfig.password,
       host: dbConfig.host,
       port: dbConfig.port,
-      ssl: process.env.NODE_ENV === 'production' ? true : false,
+      ssl: process.env.NODE_ENV === "production" ? true : false,
       database: dbConfig.database,
-      max: 1000,
+      max: 20,
       idleTimeoutMillis: 80000,
       connectionTimeoutMillis: 10000,
     });

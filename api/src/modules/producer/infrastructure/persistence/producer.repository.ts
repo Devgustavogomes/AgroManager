@@ -2,63 +2,56 @@ import { Injectable } from '@nestjs/common';
 import {
   ProducerContract,
   ProducerPersistence,
-} from '../../domain/repositories/producer.repository.interface';
-
-import { ProducerEntity } from '../../domain/entities/producer.entity';
+} from '../../domain/repositories/producerRepository.contract';
+import { Producer } from '../../domain/entities/producer.entity';
 import { ProducerMapper } from './producer.mapper';
-import { ProducerOutput } from '../../application/dtos/output.dto';
-import { UpdateProducerDTO } from '../../application/dtos/update.dto';
-import { DatabaseService } from 'src/infra/database/service';
+import { DatabaseContract } from '@agromanager/infra/database/contract';
 
 @Injectable()
 export class ProducerRepository implements ProducerContract {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(private readonly databaseService: DatabaseContract) {}
 
-  async findById(id: string): Promise<ProducerOutput | undefined> {
+  async findById(id: string): Promise<Producer> {
     const sql = `SELECT
                   *
                 FROM producers
-                WHERE id_producer = $1;`;
+                WHERE "producerId" = $1;`;
     const params = [id];
 
     const producer = await this.databaseService.query<ProducerPersistence>(
       sql,
       params,
     );
-    return ProducerMapper.toOutput(producer)[0];
+    return ProducerMapper.toDomain(producer)[0];
   }
 
-  async create(producer: ProducerEntity): Promise<ProducerOutput> {
+  async create(producer: Producer): Promise<Producer> {
     const sql = `INSERT INTO producers 
                 (username, 
                 email, 
-                password_hash)
+                "hashedPassword")
                 VALUES
                 ($1,
                 $2,
                 $3)
                 RETURNING *;`;
 
-    const params = [
-      producer.getUsername(),
-      producer.getEmail(),
-      producer.getPassword(),
-    ];
+    const params = [producer.username, producer.email, producer.hashedPassword];
 
     const result = await this.databaseService.query<ProducerPersistence>(
       sql,
       params,
     );
 
-    return ProducerMapper.toOutput(result)[0];
+    return ProducerMapper.toDomain(result)[0];
   }
 
-  async update(id: string, data: UpdateProducerDTO): Promise<ProducerOutput> {
+  async update(id: string, data: Producer): Promise<Producer> {
     const sql = `UPDATE producers
                 SET 
                 username = COALESCE($1, username),
                 email = COALESCE($2, email)
-                WHERE id_producer = $3
+                WHERE "producerId" = $3
                 RETURNING *;
                 `;
 
@@ -68,12 +61,12 @@ export class ProducerRepository implements ProducerContract {
       params,
     );
 
-    return ProducerMapper.toOutput(producer)[0];
+    return ProducerMapper.toDomain(producer)[0];
   }
 
   async remove(id: string): Promise<void> {
     const sql = `DELETE FROM producers
-                WHERE id_producer = $1`;
+                WHERE "producerId" = $1`;
     const params = [id];
 
     await this.databaseService.query(sql, params);

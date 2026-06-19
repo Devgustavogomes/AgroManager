@@ -9,4 +9,4 @@ export const loginSchema = z.object({
     .trim(),
 });
 
-export class loginInputDto extends createZodDto(loginSchema) {}
+export class LoginInputDto extends createZodDto(loginSchema) {}

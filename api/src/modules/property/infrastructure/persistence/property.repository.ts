@@ -1,21 +1,21 @@
-import { DatabaseService } from 'src/infra/database/service';
+import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Injectable } from '@nestjs/common';
 import { PoolClient } from 'pg';
 import {
   PropertyContract,
   PropertyPersistence,
-} from '../../domain/repositories/property-repository.interface';
-import { PropertyEntity } from '../../domain/entities/property.entity';
+} from '../../domain/repositories/propertyRepository.contract';
+import { Property } from '../../domain/entities/property.entity';
 import { PropertyMapper } from './property.mapper';
 
 @Injectable()
 export class PropertyRepository implements PropertyContract {
-  constructor(private readonly databaseservice: DatabaseService) {}
+  constructor(private readonly databaseservice: DatabaseContract) {}
 
   async findBySlug(
     slug: string,
     producerId: string,
-  ): Promise<PropertyEntity | undefined> {
+  ): Promise<Property | undefined> {
     const sql = `SELECT 
                   *
                 FROM properties
@@ -32,10 +32,7 @@ export class PropertyRepository implements PropertyContract {
     return PropertyMapper.toDomain(property)[0];
   }
 
-  async create(
-    property: PropertyEntity,
-    client: PoolClient,
-  ): Promise<PropertyEntity> {
+  async create(property: Property, client: PoolClient): Promise<Property> {
     const sql = `INSERT INTO properties (
       "producerId",
       "name",
@@ -76,8 +73,8 @@ export class PropertyRepository implements PropertyContract {
   async update(
     slug: string,
     producerId: string,
-    property: PropertyEntity,
-  ): Promise<PropertyEntity> {
+    property: Property,
+  ): Promise<Property> {
     const sql = `UPDATE properties
                 SET
                 "name" = COALESCE($1, "name"),
@@ -121,7 +118,7 @@ export class PropertyRepository implements PropertyContract {
     await this.databaseservice.query(sql, params);
   }
 
-  async count(property: PropertyEntity, client: PoolClient): Promise<number> {
+  async count(property: Property, client: PoolClient): Promise<number> {
     const sql = `SELECT COUNT(*) AS TOTAL
                 FROM properties
                 WHERE "producerId" = $1`;

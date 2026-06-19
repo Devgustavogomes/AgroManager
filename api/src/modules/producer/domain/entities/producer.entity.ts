@@ -3,34 +3,64 @@ import { Optional } from 'src/shared/types/optional';
 import { Role } from 'src/shared/types/role';
 
 export interface ProducerProps {
-  id_producer?: string;
+  producerId: string;
   username: string;
   email: string;
   role: Role;
-  password_hash: string;
-  created_at: Date;
-  updated_at: Date | null;
+  hashedPassword: string;
+  createdAt: Date | string;
+  updatedAt: Date | string | null;
 }
 
-export class ProducerEntity extends Entity<ProducerProps> {
+export class Producer extends Entity<ProducerProps> {
   static create(
-    props: Optional<ProducerProps, 'role' | 'created_at' | 'updated_at'>,
-  ): ProducerEntity {
-    return new ProducerEntity({
+    props: Optional<
+      ProducerProps,
+      'role' | 'createdAt' | 'updatedAt' | 'producerId'
+    >,
+  ): Producer {
+    return new Producer({
       ...props,
-      role: Role.USER,
-      created_at: new Date(),
-      updated_at: null,
+      role: props.role ?? Role.USER,
+      createdAt: props.createdAt ?? new Date(),
+      updatedAt: props.updatedAt ?? null,
+      producerId: props.producerId ?? 'non-registered',
     });
   }
 
-  getEmail(): string {
+  private touch() {
+    this.props.updatedAt = new Date();
+  }
+
+  set email(email: string) {
+    this.props.email = email;
+    this.touch();
+  }
+
+  set username(username: string) {
+    this.props.username = username;
+    this.touch();
+  }
+
+  get email(): string {
     return this.props.email;
   }
-  getPassword(): string {
-    return this.props.password_hash;
+  get hashedPassword(): string {
+    return this.props.hashedPassword;
   }
-  getUsername(): string {
+  get username(): string {
     return this.props.username;
+  }
+  get role(): Role {
+    return this.props.role;
+  }
+  get createdAt(): Date | string {
+    return this.props.createdAt;
+  }
+  get updatedAt(): Date | string | null {
+    return this.props.updatedAt;
+  }
+  get producerId(): string {
+    return this.props.producerId;
   }
 }
