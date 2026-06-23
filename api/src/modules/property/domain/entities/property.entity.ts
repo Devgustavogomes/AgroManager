@@ -36,44 +36,56 @@ export class Property extends Entity<PropertyProps> {
     });
   }
 
-  set changeName(name: string) {
-    this.props.name = name;
+  update(
+    property: Partial<
+      Omit<
+        PropertyProps,
+        'propertyId' | 'producerId' | 'createdAt' | 'updatedAt'
+      >
+    >,
+  ) {
+    let updated = false;
 
-    this.props.slug = Slug.createFromText(name);
-    this.touch();
-  }
+    if (property.name) {
+      this.props.name = property.name;
+      this.props.slug = Slug.createFromText(property.name);
+      updated = true;
+    }
 
-  set changeCity(city: string) {
-    this.props.city = city;
-    this.touch();
-  }
+    if (property.city) {
+      this.props.city = property.city;
+      updated = true;
+    }
 
-  set changeState(state: string) {
-    this.props.state = state;
-    this.touch();
-  }
+    if (property.state) {
+      this.props.state = property.state;
+      updated = true;
+    }
 
-  set changeSlug(slug: string) {
-    this.props.slug = Slug.createFromText(slug);
-    this.touch();
-  }
+    if (property.slug) {
+      this.props.slug = property.slug;
+      updated = true;
+    }
 
-  set changeTotalArea(area: number) {
-    this.props.totalArea = Area.create(area);
-    this.validateAreas();
-    this.touch();
-  }
+    if (property.totalArea) {
+      this.props.totalArea = property.totalArea;
+      updated = true;
+    }
 
-  set changeArableArea(area: number) {
-    this.props.arableArea = Area.create(area);
-    this.validateAreas();
-    this.touch();
-  }
+    if (property.arableArea) {
+      this.props.arableArea = property.arableArea;
+      updated = true;
+    }
 
-  set changeVegetationArea(area: number) {
-    this.props.vegetationArea = Area.create(area);
-    this.validateAreas();
-    this.touch();
+    if (property.vegetationArea) {
+      this.props.vegetationArea = property.vegetationArea;
+      updated = true;
+    }
+
+    if (updated) {
+      this.touch();
+      this.validateAreas();
+    }
   }
 
   private validateAreas() {
