@@ -6,7 +6,7 @@ import { Culture } from '../../domain/entities/culture.entity';
 import { Area } from 'src/shared/domain/value-object/area';
 import { CultureMapper } from '../../infrastructure/culture.mapper';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
-import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
+import { ValidateCultureAreaService } from '../../domain/services/validateCultureArea.service';
 
 @Injectable()
 export class CreateCultureUseCase {
@@ -35,13 +35,11 @@ export class CreateCultureUseCase {
 
       const culture = Culture.create({ ...dto, allocatedArea, propertyId });
 
-      const cultureSumArea = cultureAreaSum.sum(culture.allocatedArea);
-
-      if (cultureSumArea.getValue > propertyArea.getValue) {
-        throw new InvalidAreaError(
-          'Culture sum area exceed property total area.',
-        );
-      }
+      ValidateCultureAreaService.execute(
+        propertyArea,
+        cultureAreaSum,
+        culture.allocatedArea,
+      );
 
       const result = await this.cultureRepository.create(culture, client);
 
