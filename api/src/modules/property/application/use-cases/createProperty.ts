@@ -8,6 +8,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PoolClient } from 'pg';
 import { PropertyOutputDto } from '../dto/output.dto';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
+import { MAX_PROPERTIES_PER_PRODUCER } from '../../domain/constants/maxProperties.constant';
 
 @Injectable()
 export class CreatePropertyUseCase {
@@ -46,9 +47,9 @@ export class CreatePropertyUseCase {
           client,
         );
 
-        if (properties >= 5) {
+        if (properties >= MAX_PROPERTIES_PER_PRODUCER) {
           throw new BadRequestException(
-            `You have too many properties. The maximum allowed is ${5}`,
+            `You have too many properties. The maximum allowed is ${MAX_PROPERTIES_PER_PRODUCER}`,
           );
         }
 

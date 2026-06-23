@@ -3,6 +3,7 @@ import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
 import { CreatePropertyUseCase } from './createProperty';
 import { BadRequestException } from '@nestjs/common';
+import { MAX_PROPERTIES_PER_PRODUCER } from '../../domain/constants/maxProperties.constant';
 
 describe('Create Property', () => {
   let useCase: CreatePropertyUseCase;
@@ -62,7 +63,7 @@ describe('Create Property', () => {
       state: 'State',
     };
 
-    mockPropertyRepository.count.mockResolvedValue(5);
+    mockPropertyRepository.count.mockResolvedValue(MAX_PROPERTIES_PER_PRODUCER);
 
     mockPropertyRepository.create.mockImplementation((p) => Promise.resolve(p));
 
