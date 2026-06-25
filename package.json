@@ -29,6 +29,6 @@
     "eslint-plugin-prettier": "^5.5.6",
     "husky": "^9.1.7",
     "node-pg-migrate": "^8.0.4",
-    "pg": "^8.21.0"
+    "pg": "^8.22.0"
   }
 }
