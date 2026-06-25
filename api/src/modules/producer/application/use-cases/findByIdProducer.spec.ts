@@ -15,7 +15,7 @@ describe('FindByIdProducerUseCase', () => {
       findById: vi.fn(),
       update: vi.fn(),
       remove: vi.fn(),
-    } as unknown as Mocked<ProducerContract>;
+    };
 
     useCase = new FindByIdProducerUseCase(mockProducerRepository);
   });

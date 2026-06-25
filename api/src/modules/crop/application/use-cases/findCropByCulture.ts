@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CropContract } from '../../domain/repositories/crops-repository.contract';
+import { CropContract } from '../../domain/repositories/cropsRepository.contract';
 import { CropOutput } from '../dto/cropOutput.dto';
 import { CropMapper } from '../../infrastructure/crop.mapper';
 

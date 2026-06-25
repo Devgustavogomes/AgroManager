@@ -1,4 +1,5 @@
 import { Entity } from 'src/shared/domain/entities/entity';
+import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
 import { Area } from 'src/shared/domain/value-object/area';
 import { Optional } from 'src/shared/types/optional';
 
@@ -28,25 +29,31 @@ export class Culture extends Entity<CultureProps> {
     });
   }
 
+  update(property: Partial<Pick<CultureProps, 'name' | 'allocatedArea'>>) {
+    let updated = false;
+
+    if (property.name !== undefined) {
+      this.props.name = property.name;
+      updated = true;
+    }
+    if (property.allocatedArea !== undefined) {
+      this.props.allocatedArea = property.allocatedArea;
+      updated = true;
+    }
+    if (updated) {
+      this.touch();
+      this.validateAreas();
+    }
+  }
+
   private validateAreas() {
     if (this.props.allocatedArea.getValue < 1) {
-      throw new Error('Allocated area must be greater than 0');
+      throw new InvalidAreaError('Allocated area must be greater than 0');
     }
   }
 
   private touch() {
     this.props.updatedAt = new Date();
-  }
-
-  set changeName(name: string) {
-    this.props.name = name;
-    this.touch();
-  }
-
-  set changeAllocatedArea(allocatedArea: number) {
-    this.props.allocatedArea = Area.create(allocatedArea);
-    this.validateAreas();
-    this.touch();
   }
 
   get name() {

@@ -8,7 +8,7 @@ import { FindCropByIdUseCase } from '../application/use-cases/findCropById';
 import { DeleteCropByIdUseCase } from '../application/use-cases/deleteCropById';
 import { DeleteCropByCultureUseCase } from '../application/use-cases/deleteCropByCulture';
 import { CropRepository } from './persistence/crop.repository';
-import { CropContract } from '../domain/repositories/crops-repository.contract';
+import { CropContract } from '../domain/repositories/cropsRepository.contract';
 import { IsCropOwnerUseCase } from '../application/use-cases/isCropOwner';
 
 @Module({

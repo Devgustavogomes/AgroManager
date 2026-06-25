@@ -1,6 +1,6 @@
 import { Area } from 'src/shared/domain/value-object/area';
 import { Crop } from '../domain/entities/crop.entity';
-import { CropPersistence } from '../domain/repositories/crops-repository.contract';
+import { CropPersistence } from '../domain/repositories/cropsRepository.contract';
 import { CropOutput } from '../application/dto/cropOutput.dto';
 
 export class CropMapper {

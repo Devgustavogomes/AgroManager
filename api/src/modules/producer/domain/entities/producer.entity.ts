@@ -28,18 +28,26 @@ export class Producer extends Entity<ProducerProps> {
     });
   }
 
+  update(props: Partial<Pick<ProducerProps, 'email' | 'username'>>) {
+    let updated = false;
+
+    if (props.email !== undefined) {
+      this.props.email = props.email;
+      updated = true;
+    }
+
+    if (props.username !== undefined) {
+      this.props.username = props.username;
+      updated = true;
+    }
+
+    if (updated) {
+      this.touch();
+    }
+  }
+
   private touch() {
     this.props.updatedAt = new Date();
-  }
-
-  set email(email: string) {
-    this.props.email = email;
-    this.touch();
-  }
-
-  set username(username: string) {
-    this.props.username = username;
-    this.touch();
   }
 
   get email(): string {

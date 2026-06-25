@@ -19,14 +19,15 @@ export interface CropPersistence {
 
 export abstract class CropContract {
   abstract findById(id: string, client?: PoolClient): Promise<Crop>;
-  abstract findByCulture(idCulture: string): Promise<Crop[]>;
+  abstract findByCulture(cultureId: string): Promise<Crop[]>;
   abstract create(crop: Crop, cliente: PoolClient): Promise<Crop>;
   abstract update(crop: Crop, client: PoolClient): Promise<Crop>;
   abstract deleteById(id: string): Promise<void>;
-  abstract deleteByCulture(idCulture: string): Promise<void>;
+  abstract deleteByCulture(cultureId: string): Promise<void>;
   abstract getCultureArea(
-    idCulture: string,
+    cultureId: string,
     client: PoolClient,
   ): Promise<number>;
+  abstract getCropsArea(cultureId: string, client: PoolClient): Promise<number>;
   abstract isOwner(producerId: string, cropId: string): Promise<boolean>;
 }

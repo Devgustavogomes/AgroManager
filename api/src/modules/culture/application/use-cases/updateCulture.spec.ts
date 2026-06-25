@@ -4,7 +4,7 @@ import { UpdateCultureUseCase } from './updateCulture';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Culture } from '../../domain/entities/culture.entity';
 import { Area } from 'src/shared/domain/value-object/area';
-import { BadRequestException } from '@nestjs/common';
+import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
 
 describe('UpdateCultureUseCase', () => {
   let useCase: UpdateCultureUseCase;
@@ -68,7 +68,7 @@ describe('UpdateCultureUseCase', () => {
     );
     expect(mockDatabaseService.transaction).toHaveBeenCalled();
   });
-  it('Should throw a BadRequestException if the sum of crops is greater than the allocated area', async () => {
+  it('Should throw a InvalidAreaError if the sum of crops is greater than the allocated area', async () => {
     const dto = {
       name: 'new name',
       allocatedArea: 100,
@@ -83,8 +83,6 @@ describe('UpdateCultureUseCase', () => {
     mockCultureRepository.findById.mockResolvedValue(culture);
     mockCultureRepository.cropSum.mockResolvedValue(110);
 
-    await expect(useCase.execute('1', dto)).rejects.toThrow(
-      BadRequestException,
-    );
+    await expect(useCase.execute('1', dto)).rejects.toThrow(InvalidAreaError);
   });
 });

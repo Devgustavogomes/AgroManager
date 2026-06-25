@@ -3,7 +3,7 @@ import { DatabaseContract } from '@agromanager/infra/database/contract';
 import {
   CropContract,
   CropPersistence,
-} from '../../domain/repositories/crops-repository.contract';
+} from '../../domain/repositories/cropsRepository.contract';
 
 import { PoolClient } from 'pg';
 import { Crop } from '../../domain/entities/crop.entity';
@@ -58,7 +58,24 @@ export class CropRepository implements CropContract {
       client,
     );
 
-    return result[0];
+    return result[0] ?? 0;
+  }
+
+  async getCropsArea(cultureId: string, client: PoolClient): Promise<number> {
+    const sql = `SELECT SUM("allocatedArea")
+                FROM crops
+                WHERE "cultureId" = $1
+                FOR UPDATE`;
+
+    const params = [cultureId];
+
+    const result = await this.databaseService.query<number>(
+      sql,
+      params,
+      client,
+    );
+
+    return result[0] ?? 0;
   }
 
   async create(crop: Crop, cliente: PoolClient): Promise<Crop> {
