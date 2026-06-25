@@ -52,13 +52,13 @@ export class PropertyRepository implements PropertyContract {
     ) RETURNING *`;
 
     const params = [
-      property.getProducerId,
-      property.getName,
-      property.getCity,
-      property.getState,
-      property.getArableArea,
-      property.getVegetationArea,
-      property.getTotalArea,
+      property.producerId,
+      property.name,
+      property.city,
+      property.state,
+      property.arableArea,
+      property.vegetationArea,
+      property.totalArea,
     ];
 
     const result = await this.databaseservice.query<PropertyPersistence>(
@@ -89,13 +89,13 @@ export class PropertyRepository implements PropertyContract {
                 RETURNING *`;
 
     const params = [
-      property.getName,
-      property.getCity,
-      property.getState,
-      property.getArableArea,
-      property.getVegetationArea,
-      property.getTotalArea,
-      property.getUpdatedAt,
+      property.name,
+      property.city,
+      property.state,
+      property.arableArea,
+      property.vegetationArea,
+      property.totalArea,
+      property.updatedAt,
       slug,
       producerId,
     ];
@@ -123,7 +123,7 @@ export class PropertyRepository implements PropertyContract {
                 FROM properties
                 WHERE "producerId" = $1`;
 
-    const params = [property.getProducerId];
+    const params = [property.producerId];
 
     const result = await this.databaseservice.query<{ total: number }>(
       sql,

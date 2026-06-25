@@ -1,8 +1,12 @@
 import { ProducerLogin } from '../domain/entities/producerLogin.entity';
-import { ProducerLoginPersistence } from '../domain/repositories/auth-repository.contract';
+import { ProducerLoginPersistence } from '../domain/repositories/authRepository.contract';
 
 export class AuthMapper {
-  static toDomain(producer: ProducerLoginPersistence) {
+  static toDomain(producer: ProducerLoginPersistence | undefined) {
+    if (!producer) {
+      return null;
+    }
+
     return ProducerLogin.create({
       producerId: producer.producerId,
       username: producer.username,
