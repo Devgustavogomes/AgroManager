@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CropContract } from '../../domain/repositories/cropsRepository.contract';
 import { CreateCropInput } from '../dto/createCrop.dto';
 import { DatabaseContract } from '@agromanager/infra/database/contract';

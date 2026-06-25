@@ -39,7 +39,7 @@ describe('Update Property', () => {
 
     mockRepository.update.mockResolvedValue(propertyMock);
 
-    const result = await useCase.execute('slug', 'producer-123', dto);
+    await useCase.execute('slug', 'producer-123', dto);
 
     expect(mockRepository.findBySlug).toHaveBeenCalledOnce();
     expect(mockRepository.findBySlug).toHaveBeenCalledWith(

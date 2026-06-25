@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CropContract } from '../../domain/repositories/cropsRepository.contract';
 import { UpdateCropInput } from '../dto/updateCrop.dto';
 import { CropOutput } from '../dto/cropOutput.dto';
@@ -46,8 +42,8 @@ export class UpdateCropUseCase {
 
       const result = await this.databaseService.transaction(async (client) => {
         const [cultureArea, cropsArea] = await Promise.all([
-          await this.repository.getCultureArea(cultureId, client),
-          await this.repository.getCropsArea(cultureId, client),
+          this.repository.getCultureArea(cultureId, client),
+          this.repository.getCropsArea(cultureId, client),
         ]);
 
         ValidateCultureCropsAreaService.execute(
