@@ -38,6 +38,55 @@ export class Crop extends Entity<CreateCropEntity> {
       updatedAt: props.updatedAt ?? null,
     });
   }
+
+  public update(
+    crop: Partial<
+      Omit<CreateCropEntity, 'cropId' | 'cultureId' | 'createdAt' | 'updatedAt'>
+    >,
+  ) {
+    let updated = false;
+
+    if (crop.name !== undefined) {
+      this.props.name = crop.name;
+      updated = true;
+    }
+
+    if (crop.status !== undefined) {
+      this.props.status = crop.status;
+      updated = true;
+    }
+
+    if (crop.allocatedArea !== undefined) {
+      this.props.allocatedArea = crop.allocatedArea;
+      updated = true;
+    }
+
+    if (crop.plantingDate !== undefined) {
+      this.props.plantingDate = crop.plantingDate;
+      updated = true;
+    }
+
+    if (crop.harvestDateExpected !== undefined) {
+      this.props.harvestDateExpected = crop.harvestDateExpected;
+      updated = true;
+    }
+
+    if (crop.harvestDateActual !== undefined) {
+      this.props.harvestDateActual = crop.harvestDateActual;
+      updated = true;
+    }
+
+    if (crop.pestStatus !== undefined) {
+      this.props.pestStatus = crop.pestStatus;
+      updated = true;
+    }
+
+    if (updated) {
+      this.touch();
+      this.validateArea();
+    }
+  }
+
   private touch() {
     this.props.updatedAt = new Date();
   }
@@ -46,42 +95,6 @@ export class Crop extends Entity<CreateCropEntity> {
     if (this.props.allocatedArea.getValue <= 0) {
       throw new InvalidAreaError('Allocated area must be greater than 0');
     }
-  }
-
-  set name(name: string) {
-    this.props.name = name;
-    this.touch();
-  }
-
-  set allocatedArea(allocatedArea: number) {
-    this.props.allocatedArea = Area.create(allocatedArea);
-    this.touch();
-    this.validateArea();
-  }
-
-  set pestStatus(pestStatus: PestStatus) {
-    this.props.pestStatus = pestStatus;
-    this.touch();
-  }
-
-  set status(status: CropStatus) {
-    this.props.status = status;
-    this.touch();
-  }
-
-  set harvestDateActual(harvestDateActual: Date | null) {
-    this.props.harvestDateActual = harvestDateActual;
-    this.touch();
-  }
-
-  set harvestDateExpected(harvestDateExpected: Date) {
-    this.props.harvestDateExpected = harvestDateExpected;
-    this.touch();
-  }
-
-  set plantingDate(plantingDate: Date) {
-    this.props.plantingDate = plantingDate;
-    this.touch();
   }
 
   get cropId(): string {
