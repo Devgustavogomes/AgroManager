@@ -15,7 +15,7 @@ export class AuthRepository implements AuthContract {
     private readonly redisService: RedisService,
   ) {}
 
-  async findProducer(email: string): Promise<ProducerLogin> {
+  async findProducer(email: string): Promise<ProducerLogin | null> {
     const sql = `SELECT 
                 "producerId",
                 USERNAME,
