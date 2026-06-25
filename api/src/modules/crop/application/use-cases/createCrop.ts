@@ -5,6 +5,7 @@ import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Crop } from '../../domain/entities/crop.entity';
 import { Area } from 'src/shared/domain/value-object/area';
 import { CropMapper } from '../../infrastructure/crop.mapper';
+import { ValidateCultureCropsAreaService } from 'src/modules/culture/domain/services/validateCultureCropsArea.service';
 
 @Injectable()
 export class CreateCropUseCase {
@@ -39,11 +40,12 @@ export class CreateCropUseCase {
         client,
       );
 
-      if (cultureArea < crop.allocatedArea.getValue) {
-        throw new BadRequestException(
-          'Allocated area must be less than or equal to culture area',
-        );
-      }
+      const cropsArea = await this.repository.getCropsArea(cultureId, client);
+
+      ValidateCultureCropsAreaService.execute(
+        Area.create(cultureArea),
+        Area.create(cropsArea).sum(crop.allocatedArea),
+      );
 
       const result = await this.repository.create(crop, client);
 

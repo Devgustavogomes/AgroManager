@@ -16,6 +16,7 @@ describe('CreateCropUseCase', () => {
     mockCropRepository = {
       create: vi.fn(),
       getCultureArea: vi.fn(),
+      getCropsArea: vi.fn(),
     } as unknown as Mocked<CropContract>;
 
     mockDatabaseService = {
@@ -49,6 +50,7 @@ describe('CreateCropUseCase', () => {
     });
 
     mockCropRepository.getCultureArea.mockResolvedValueOnce(20);
+    mockCropRepository.getCropsArea.mockResolvedValueOnce(0);
     mockCropRepository.create.mockResolvedValue(crop);
 
     await useCase.execute(cultureId, dto);
