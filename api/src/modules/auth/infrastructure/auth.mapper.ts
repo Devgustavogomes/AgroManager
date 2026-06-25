@@ -1,5 +1,5 @@
 import { ProducerLogin } from '../domain/entities/producerLogin.entity';
-import { ProducerLoginPersistence } from '../domain/repositories/auth-repository.contract';
+import { ProducerLoginPersistence } from '../domain/repositories/authRepository.contract';
 
 export class AuthMapper {
   static toDomain(producer: ProducerLoginPersistence | undefined) {
