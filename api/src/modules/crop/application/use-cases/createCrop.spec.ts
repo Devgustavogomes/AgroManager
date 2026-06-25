@@ -1,5 +1,5 @@
 import { Mocked } from 'vitest';
-import { CropContract } from '../../domain/repositories/crops-repository.contract';
+import { CropContract } from '../../domain/repositories/cropsRepository.contract';
 import { CreateCropUseCase } from './createCrop';
 import { PestStatus } from '../../domain/constants/pest-status.enum';
 import { CropStatus } from '../../domain/constants/crop-status.enum';

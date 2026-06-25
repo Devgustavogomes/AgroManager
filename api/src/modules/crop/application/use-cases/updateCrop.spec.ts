@@ -1,5 +1,5 @@
 import { DatabaseContract } from '@agromanager/infra/database/contract';
-import { CropContract } from '../../domain/repositories/crops-repository.contract';
+import { CropContract } from '../../domain/repositories/cropsRepository.contract';
 import { UpdateCropUseCase } from './updateCrop';
 import { Mocked } from 'vitest';
 import { CropStatus } from '../../domain/constants/crop-status.enum';

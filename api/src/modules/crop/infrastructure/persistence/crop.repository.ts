@@ -3,7 +3,7 @@ import { DatabaseContract } from '@agromanager/infra/database/contract';
 import {
   CropContract,
   CropPersistence,
-} from '../../domain/repositories/crops-repository.contract';
+} from '../../domain/repositories/cropsRepository.contract';
 
 import { PoolClient } from 'pg';
 import { Crop } from '../../domain/entities/crop.entity';
