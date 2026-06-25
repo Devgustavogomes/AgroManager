@@ -91,7 +91,7 @@ export class Property extends Entity<PropertyProps> {
   private validateAreas() {
     const sum = this.props.arableArea.sum(this.props.vegetationArea);
 
-    if (sum > this.props.totalArea) {
+    if (sum.getValue > this.props.totalArea.getValue) {
       throw new InvalidAreaError(
         'Arable area plus vegetation area cannot exceed total area',
       );
