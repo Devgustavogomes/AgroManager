@@ -99,7 +99,7 @@ export class CultureRepository implements CultureContract {
   }
 
   async cropSum(id: string, client?: PoolClient): Promise<number> {
-    const sql = `SELECT SUM("allocatedArea") as sum
+    const sql = `SELECT COALESCE(SUM("allocatedArea"), 0) as sum
                 FROM crops
                 WHERE "cultureId" = $1
                 FOR UPDATE`;
@@ -133,7 +133,7 @@ export class CultureRepository implements CultureContract {
   }
 
   async cultureAreaSum(propertyId: string, client: PoolClient): Promise<Area> {
-    const sql = `SELECT SUM("allocatedArea") as sum
+    const sql = `SELECT COALESCE(SUM("allocatedArea"), 0) as sum
                 FROM cultures
                 WHERE "propertyId" = $1
                 FOR UPDATE`;

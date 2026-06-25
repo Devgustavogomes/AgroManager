@@ -63,7 +63,7 @@ export class CropRepository implements CropContract {
   }
 
   async getCropsArea(cultureId: string, client: PoolClient): Promise<number> {
-    const sql = `SELECT SUM("allocatedArea")
+    const sql = `SELECT COALESCE(SUM("allocatedArea"), 0)
                 FROM crops
                 WHERE "cultureId" = $1
                 FOR UPDATE`;
@@ -76,7 +76,7 @@ export class CropRepository implements CropContract {
       client,
     );
 
-    return result[0] ?? 0;
+    return result[0];
   }
 
   async create(crop: Crop, cliente: PoolClient): Promise<Crop> {
