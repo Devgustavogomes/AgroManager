@@ -13,7 +13,7 @@
     "./redis/contract": "./redis/contract.ts"
   },
   "dependencies": {
-    "pg": "^8.21.0",
+    "pg": "^8.22.0",
     "ioredis": "^5.11.0",
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.0"
