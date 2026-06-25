@@ -15,7 +15,7 @@ export class Slug {
     return new Slug(slugText);
   }
 
-  get getSlug() {
+  get slug() {
     return this.text;
   }
 }

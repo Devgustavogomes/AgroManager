@@ -21,17 +21,17 @@ export class PropertyMapper {
 
   static toResponse(entity: Property): PropertyOutputDto {
     return {
-      propertyId: entity.getPropertyId ?? 'non-registered',
-      producerId: entity.getProducerId,
-      name: entity.getName,
-      slug: entity.getSlug,
-      city: entity.getCity,
-      state: entity.getState,
-      totalArea: entity.getTotalArea,
-      arableArea: entity.getArableArea,
-      vegetationArea: entity.getVegetationArea,
-      createdAt: entity.getCreatedAt.toISOString(),
-      updatedAt: entity.getUpdatedAt ? entity.getUpdatedAt.toISOString() : null,
+      propertyId: entity.propertyId ?? 'non-registered',
+      producerId: entity.producerId,
+      name: entity.name,
+      slug: entity.slug,
+      city: entity.city,
+      state: entity.state,
+      totalArea: entity.totalArea,
+      arableArea: entity.arableArea,
+      vegetationArea: entity.vegetationArea,
+      createdAt: entity.createdAt.toISOString(),
+      updatedAt: entity.updatedAt ? entity.updatedAt.toISOString() : null,
     };
   }
 }

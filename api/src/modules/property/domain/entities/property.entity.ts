@@ -102,37 +102,37 @@ export class Property extends Entity<PropertyProps> {
     this.props.updatedAt = new Date();
   }
 
-  get getProducerId() {
+  get producerId() {
     return this.props.producerId;
   }
-  get getName() {
+  get name() {
     return this.props.name;
   }
-  get getSlug() {
-    return this.props.slug.getSlug;
+  get slug() {
+    return this.props.slug.slug;
   }
-  get getCity() {
+  get city() {
     return this.props.city;
   }
-  get getState() {
+  get state() {
     return this.props.state;
   }
-  get getArableArea() {
+  get arableArea() {
     return this.props.arableArea.getValue;
   }
-  get getVegetationArea() {
+  get vegetationArea() {
     return this.props.vegetationArea.getValue;
   }
-  get getTotalArea() {
+  get totalArea() {
     return this.props.totalArea.getValue;
   }
-  get getCreatedAt() {
+  get createdAt() {
     return this.props.createdAt;
   }
-  get getUpdatedAt() {
+  get updatedAt() {
     return this.props.updatedAt;
   }
-  get getPropertyId() {
+  get propertyId() {
     return this.props.propertyId;
   }
 }
