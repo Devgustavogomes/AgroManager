@@ -52,7 +52,7 @@ CREATE TABLE "crops" (
   "plantingDate" date NOT NULL,
   "harvestDateExpected" date NOT NULL,
   "harvestDateActual" date,
-  "pestsStatus" varchar NOT NULL,
+  "pestStatus" varchar NOT NULL,
   "createdAt" timestamp DEFAULT NOW(),
   "updatedAt" timestamp,
 
