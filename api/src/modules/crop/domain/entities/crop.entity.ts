@@ -5,7 +5,7 @@ import { Optional } from 'src/shared/types/optional';
 import { Area } from 'src/shared/domain/value-object/area';
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
 
-interface CreateCropEntity {
+interface CropProps {
   cropId: string;
   cultureId: string;
   name: string;
@@ -19,14 +19,14 @@ interface CreateCropEntity {
   updatedAt: Date | null;
 }
 
-export class Crop extends Entity<CreateCropEntity> {
-  private constructor(props: CreateCropEntity) {
+export class Crop extends Entity<CropProps> {
+  private constructor(props: CropProps) {
     super(props);
     this.validateArea();
   }
   public static create(
     props: Optional<
-      CreateCropEntity,
+      CropProps,
       'createdAt' | 'updatedAt' | 'cropId' | 'harvestDateActual'
     >,
   ) {
@@ -41,7 +41,7 @@ export class Crop extends Entity<CreateCropEntity> {
 
   public update(
     crop: Partial<
-      Omit<CreateCropEntity, 'cropId' | 'cultureId' | 'createdAt' | 'updatedAt'>
+      Omit<CropProps, 'cropId' | 'cultureId' | 'createdAt' | 'updatedAt'>
     >,
   ) {
     let updated = false;

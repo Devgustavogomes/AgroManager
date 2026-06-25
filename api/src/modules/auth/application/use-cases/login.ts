@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from 'src/shared/types/jwtPayload';
 import { TTL_REFRESH_TOKEN } from '../../domain/constants/ttlRefreshToken.constants';
-import { AuthContract } from '../../domain/repositories/auth-repository.contract';
+import { AuthContract } from '../../domain/repositories/authRepository.contract';
 
 @Injectable()
 export class LoginUseCase {

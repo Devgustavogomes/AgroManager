@@ -9,7 +9,7 @@ export interface ProducerLoginPersistence {
 }
 
 export abstract class AuthContract {
-  abstract findProducer(email: string): Promise<ProducerLogin>;
+  abstract findProducer(email: string): Promise<ProducerLogin | null>;
   abstract registerRefreshToken(
     producerId: string,
     refreshToken: string,

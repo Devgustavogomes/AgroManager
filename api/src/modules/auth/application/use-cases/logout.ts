@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AuthContract } from '../../domain/repositories/auth-repository.contract';
+import { AuthContract } from '../../domain/repositories/authRepository.contract';
 
 @Injectable()
 export class LogoutUseCase {

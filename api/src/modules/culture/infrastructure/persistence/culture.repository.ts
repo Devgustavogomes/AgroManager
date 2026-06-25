@@ -31,6 +31,23 @@ export class CultureRepository implements CultureContract {
     return CultureMapper.toDomain(result)[0];
   }
 
+  async findPropertyBySlug(slug: string, client: PoolClient): Promise<string> {
+    const sql = `SELECT "propertyId"
+                FROM properties
+                WHERE slug = $1
+                FOR UPDATE`;
+
+    const params = [slug];
+
+    const result = await this.databaseService.query<{ propertyId: string }>(
+      sql,
+      params,
+      client,
+    );
+
+    return result[0].propertyId;
+  }
+
   async create(culture: Culture): Promise<Culture> {
     const sql = `INSERT INTO cultures (
                     "propertyId",
@@ -82,7 +99,7 @@ export class CultureRepository implements CultureContract {
   }
 
   async cropSum(id: string, client?: PoolClient): Promise<number> {
-    const sql = `SELECT SUM("allocatedArea") as sum
+    const sql = `SELECT COALESCE(SUM("allocatedArea"), 0) as sum
                 FROM crops
                 WHERE "cultureId" = $1
                 FOR UPDATE`;
@@ -116,7 +133,7 @@ export class CultureRepository implements CultureContract {
   }
 
   async cultureAreaSum(propertyId: string, client: PoolClient): Promise<Area> {
-    const sql = `SELECT SUM("allocatedArea") as sum
+    const sql = `SELECT COALESCE(SUM("allocatedArea"), 0) as sum
                 FROM cultures
                 WHERE "propertyId" = $1
                 FOR UPDATE`;

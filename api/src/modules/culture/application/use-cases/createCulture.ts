@@ -15,25 +15,23 @@ export class CreateCultureUseCase {
     private readonly databaseService: DatabaseContract,
   ) {}
 
-  async execute(
-    slug: string,
-    propertyId: string,
-    dto: CreateCultureInput,
-  ): Promise<CultureOutput> {
+  async execute(slug: string, dto: CreateCultureInput): Promise<CultureOutput> {
     return await this.databaseService.transaction(async (client) => {
-      const propertyArea = await this.cultureRepository.getPropertyArea(
-        slug,
-        client,
-      );
+      const [propertyId, propertyArea] = await Promise.all([
+        this.cultureRepository.findPropertyBySlug(slug, client),
+        this.cultureRepository.getPropertyArea(slug, client),
+      ]);
 
       const cultureAreaSum = await this.cultureRepository.cultureAreaSum(
         propertyId,
         client,
       );
 
-      const allocatedArea = Area.create(dto.allocatedArea);
-
-      const culture = Culture.create({ ...dto, allocatedArea, propertyId });
+      const culture = Culture.create({
+        name: dto.name,
+        allocatedArea: Area.create(dto.allocatedArea),
+        propertyId,
+      });
 
       ValidateCultureAreaService.execute(
         propertyArea,
