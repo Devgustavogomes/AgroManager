@@ -16,7 +16,8 @@ export class CropRepository implements CropContract {
   async findById(id: string, client?: PoolClient): Promise<Crop> {
     const sql = `SELECT *
                 FROM crops
-                WHERE "cropId" = $1`;
+                WHERE "cropId" = $1
+                ${client ? 'FOR UPDATE' : ''}`;
 
     const params = [id];
 
@@ -126,7 +127,7 @@ export class CropRepository implements CropContract {
                 name = $1, 
                 status = $2, 
                 "allocatedArea" = $3, 
-                "plantingDate" = $4
+                "plantingDate" = $4,
                 "harvestDateExpected" = $5, 
                 "harvestDateActual" = $6, 
                 "pestStatus" = $7
@@ -137,8 +138,8 @@ export class CropRepository implements CropContract {
     const params = [
       crop.name,
       crop.status,
-      crop.plantingDate,
       crop.allocatedArea,
+      crop.plantingDate,
       crop.harvestDateExpected,
       crop.harvestDateActual,
       crop.pestStatus,
