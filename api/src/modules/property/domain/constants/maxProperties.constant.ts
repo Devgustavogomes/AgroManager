@@ -1,0 +1,1 @@
+export const MAX_PROPERTIES_PER_PRODUCER = 5;

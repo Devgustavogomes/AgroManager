@@ -1,5 +1,5 @@
 import { Mocked } from 'vitest';
-import { CropContract } from '../../domain/repositories/crops-repository.contract';
+import { CropContract } from '../../domain/repositories/cropsRepository.contract';
 import { CreateCropUseCase } from './createCrop';
 import { PestStatus } from '../../domain/constants/pest-status.enum';
 import { CropStatus } from '../../domain/constants/crop-status.enum';
@@ -16,6 +16,7 @@ describe('CreateCropUseCase', () => {
     mockCropRepository = {
       create: vi.fn(),
       getCultureArea: vi.fn(),
+      getCropsArea: vi.fn(),
     } as unknown as Mocked<CropContract>;
 
     mockDatabaseService = {
@@ -49,6 +50,7 @@ describe('CreateCropUseCase', () => {
     });
 
     mockCropRepository.getCultureArea.mockResolvedValueOnce(20);
+    mockCropRepository.getCropsArea.mockResolvedValueOnce(0);
     mockCropRepository.create.mockResolvedValue(crop);
 
     await useCase.execute(cultureId, dto);

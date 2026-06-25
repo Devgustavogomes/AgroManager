@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
 import { UpdatePropertyDto } from '../dto/update.dto';
+import { Slug } from '../../domain/value-object/slug';
+import { Area } from 'src/shared/domain/value-object/area';
 
 @Injectable()
 export class UpdatePropertyUseCase {
@@ -13,17 +15,20 @@ export class UpdatePropertyUseCase {
       throw new NotFoundException('Property not found');
     }
 
-    if (dto.name !== undefined) property.changeName = dto.name;
-    if (dto.city !== undefined) property.changeCity = dto.city;
-    if (dto.state !== undefined) property.changeState = dto.state;
-
-    if (dto.slug !== undefined) property.changeSlug = dto.slug;
-
-    if (dto.totalArea !== undefined) property.changeTotalArea = dto.totalArea;
-    if (dto.arableArea !== undefined)
-      property.changeArableArea = dto.arableArea;
-    if (dto.vegetationArea !== undefined)
-      property.changeVegetationArea = dto.vegetationArea;
+    property.update({
+      name: dto.name,
+      city: dto.city,
+      state: dto.state,
+      slug: dto.slug ? Slug.createFromText(dto.slug) : undefined,
+      totalArea:
+        dto.totalArea !== undefined ? Area.create(dto.totalArea) : undefined,
+      arableArea:
+        dto.arableArea !== undefined ? Area.create(dto.arableArea) : undefined,
+      vegetationArea:
+        dto.vegetationArea !== undefined
+          ? Area.create(dto.vegetationArea)
+          : undefined,
+    });
 
     return await this.propertyRepository.update(slug, producerId, property);
   }

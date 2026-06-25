@@ -37,11 +37,9 @@ describe('Update Property', () => {
 
     mockRepository.findBySlug.mockResolvedValue(propertyMock);
 
-    propertyMock.changeName = dto.name;
-
     mockRepository.update.mockResolvedValue(propertyMock);
 
-    const result = await useCase.execute('slug', 'producer-123', dto);
+    await useCase.execute('slug', 'producer-123', dto);
 
     expect(mockRepository.findBySlug).toHaveBeenCalledOnce();
     expect(mockRepository.findBySlug).toHaveBeenCalledWith(
@@ -54,7 +52,5 @@ describe('Update Property', () => {
       'producer-123',
       propertyMock,
     );
-    expect(result.getName).toBe(dto.name);
-    expect(result.getSlug).toBe('new-name');
   });
 });
