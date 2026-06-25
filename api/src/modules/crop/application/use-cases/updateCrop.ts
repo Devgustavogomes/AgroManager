@@ -19,7 +19,7 @@ export class UpdateCropUseCase {
     cultureId: string,
     dto: UpdateCropInput,
   ): Promise<CropOutput> {
-    return await this.databaseService.transaction(async (client) => {
+    const result = await this.databaseService.transaction(async (client) => {
       const crop = await this.repository.findById(cropId, client);
 
       if (!crop) {
@@ -40,21 +40,19 @@ export class UpdateCropUseCase {
           : undefined,
       });
 
-      const result = await this.databaseService.transaction(async (client) => {
-        const [cultureArea, cropsArea] = await Promise.all([
-          this.repository.getCultureArea(cultureId, client),
-          this.repository.getCropsArea(cultureId, client),
-        ]);
+      const [cultureArea, cropsArea] = await Promise.all([
+        this.repository.getCultureArea(cultureId, client),
+        this.repository.getCropsArea(cultureId, client),
+      ]);
 
-        ValidateCultureCropsAreaService.execute(
-          Area.create(cultureArea),
-          Area.create(cropsArea).sum(crop.allocatedArea),
-        );
+      ValidateCultureCropsAreaService.execute(
+        Area.create(cultureArea),
+        Area.create(cropsArea).sum(crop.allocatedArea),
+      );
 
-        return await this.repository.update(crop, client);
-      });
-
-      return CropMapper.toResponse([result])[0];
+      return await this.repository.update(crop, client);
     });
+
+    return CropMapper.toResponse([result])[0];
   }
 }
