@@ -26,5 +26,10 @@ export abstract class CultureContract {
 
   abstract getPropertyArea(slug: string, client: PoolClient): Promise<Area>;
 
+  abstract findPropertyBySlug(
+    slug: string,
+    client: PoolClient,
+  ): Promise<string>;
+
   abstract isOwner(producerId: string, cultureId: string): Promise<boolean>;
 }

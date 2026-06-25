@@ -50,11 +50,7 @@ export class CultureController {
     @Param() params: CultureIdParams,
     @Body() dto: CreateCultureInput,
   ) {
-    return await this.createCultureUseCase.execute(
-      params.slug,
-      params.id!,
-      dto,
-    );
+    return await this.createCultureUseCase.execute(params.slug, dto);
   }
 
   @ApiBearerAuth()

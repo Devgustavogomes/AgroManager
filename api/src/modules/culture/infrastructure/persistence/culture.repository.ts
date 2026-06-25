@@ -31,6 +31,23 @@ export class CultureRepository implements CultureContract {
     return CultureMapper.toDomain(result)[0];
   }
 
+  async findPropertyBySlug(slug: string, client: PoolClient): Promise<string> {
+    const sql = `SELECT "propertyId"
+                FROM properties
+                WHERE slug = $1
+                FOR UPDATE`;
+
+    const params = [slug];
+
+    const result = await this.databaseService.query<{ propertyId: string }>(
+      sql,
+      params,
+      client,
+    );
+
+    return result[0].propertyId;
+  }
+
   async create(culture: Culture): Promise<Culture> {
     const sql = `INSERT INTO cultures (
                     "propertyId",
