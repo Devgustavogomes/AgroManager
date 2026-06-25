@@ -16,6 +16,7 @@ describe('UpdateCropUseCase', () => {
     mockCropRepository = {
       findById: vi.fn(),
       getCultureArea: vi.fn(),
+      getCropsArea: vi.fn(),
       update: vi.fn(),
     } as unknown as Mocked<CropContract>;
 
@@ -53,6 +54,7 @@ describe('UpdateCropUseCase', () => {
 
     mockCropRepository.findById.mockResolvedValueOnce(crop);
     mockCropRepository.getCultureArea.mockResolvedValueOnce(20);
+    mockCropRepository.getCropsArea.mockResolvedValueOnce(0);
     mockCropRepository.update.mockResolvedValueOnce(crop);
 
     await useCase.execute(cropId, cultureId, dto);
