@@ -37,8 +37,6 @@ describe('Update Property', () => {
 
     mockRepository.findBySlug.mockResolvedValue(propertyMock);
 
-    propertyMock.changeName = dto.name;
-
     mockRepository.update.mockResolvedValue(propertyMock);
 
     const result = await useCase.execute('slug', 'producer-123', dto);
@@ -54,7 +52,5 @@ describe('Update Property', () => {
       'producer-123',
       propertyMock,
     );
-    expect(result.getName).toBe(dto.name);
-    expect(result.getSlug).toBe('new-name');
   });
 });

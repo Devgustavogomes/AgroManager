@@ -4,11 +4,11 @@ import { Property } from '../../domain/entities/property.entity';
 import { Area } from '../../../../shared/domain/value-object/area';
 import { Slug } from '../../domain/value-object/slug';
 import { CreatePropertyDto } from '../dto/create.dto';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PoolClient } from 'pg';
 import { PropertyOutputDto } from '../dto/output.dto';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
-import { MAX_PROPERTIES_PER_PRODUCER } from '../../domain/constants/maxProperties.constant';
+import { ValidateMaxProperties } from '../../domain/services/validateMaxProperties.service';
 
 @Injectable()
 export class CreatePropertyUseCase {
@@ -42,16 +42,12 @@ export class CreatePropertyUseCase {
 
     const result = await this.dbService.transaction(
       async (client: PoolClient) => {
-        const properties = await this.propertyRepository.count(
+        const propertiesCount = await this.propertyRepository.count(
           property,
           client,
         );
 
-        if (properties >= MAX_PROPERTIES_PER_PRODUCER) {
-          throw new BadRequestException(
-            `You have too many properties. The maximum allowed is ${MAX_PROPERTIES_PER_PRODUCER}`,
-          );
-        }
+        ValidateMaxProperties.execute(propertiesCount);
 
         return await this.propertyRepository.create(property, client);
       },
