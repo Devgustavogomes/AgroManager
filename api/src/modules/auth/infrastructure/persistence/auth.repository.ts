@@ -6,13 +6,13 @@ import {
   ProducerLoginPersistence,
 } from '../../domain/repositories/authRepository.contract';
 import { AuthMapper } from '../auth.mapper';
-import { RedisService } from '@agromanager/infra/redis/service';
+import { CacheContract } from '@agromanager/infra/redis/contract';
 
 @Injectable()
 export class AuthRepository implements AuthContract {
   constructor(
     private readonly databaseService: DatabaseContract,
-    private readonly redisService: RedisService,
+    private readonly redisService: CacheContract,
   ) {}
 
   async findProducer(email: string): Promise<ProducerLogin | null> {
