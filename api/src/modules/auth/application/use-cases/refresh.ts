@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { AuthContract } from '../../domain/repositories/authRepository.contract';
 import { TTL_REFRESH_TOKEN } from '../../domain/constants/ttlRefreshToken.constants';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'src/shared/types/jwtPayload';
 import { ConfigService } from '@nestjs/config';
+import { UnauthorizedError } from 'src/shared/domain/errors/unauthorizedError';
 
 @Injectable()
 export class RefreshUseCase {
@@ -18,7 +19,7 @@ export class RefreshUseCase {
     refreshToken: string,
   ): Promise<{ accessToken: string; newRefreshToken: string }> {
     if (!refreshToken) {
-      throw new UnauthorizedException(`Token not found`);
+      throw new UnauthorizedError(`Token not found`);
     }
 
     const refreshTokenPayload: JwtPayload = await this.jwtService.verifyAsync(
@@ -33,7 +34,7 @@ export class RefreshUseCase {
     );
 
     if (!registeredRefreshToken || registeredRefreshToken !== refreshToken) {
-      throw new UnauthorizedException(`Token not found`);
+      throw new UnauthorizedError(`Token not found`);
     }
 
     const { iat, exp, ...payload } = { ...refreshTokenPayload };

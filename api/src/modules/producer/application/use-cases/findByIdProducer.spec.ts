@@ -1,9 +1,8 @@
 import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { FindByIdProducerUseCase } from './findByIdProducer';
 import { ProducerContract } from '../../domain/repositories/producerRepository.contract';
-import { NotFoundException } from '@nestjs/common';
-
 import { Producer } from '../../domain/entities/producer.entity';
+import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
 
 describe('FindByIdProducerUseCase', () => {
   let useCase: FindByIdProducerUseCase;
@@ -34,11 +33,11 @@ describe('FindByIdProducerUseCase', () => {
     expect(mockProducerRepository.findById).toHaveBeenCalledOnce();
   });
 
-  it('should throw NotFoundException if producer is not found', async () => {
+  it('should throw NotFoundError if producer is not found', async () => {
     mockProducerRepository.findById.mockResolvedValue(undefined);
 
     await expect(useCase.execute('non-existing-id')).rejects.toThrow(
-      NotFoundException,
+      NotFoundError,
     );
   });
 });

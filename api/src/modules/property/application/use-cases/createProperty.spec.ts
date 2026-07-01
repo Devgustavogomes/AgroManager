@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
 import { CreatePropertyUseCase } from './createProperty';
-import { BadRequestException } from '@nestjs/common';
 import { MAX_PROPERTIES_PER_PRODUCER } from '../../domain/constants/maxProperties.constant';
+import { ConflictError } from 'src/shared/domain/errors/conflictError';
 
 describe('Create Property', () => {
   let useCase: CreatePropertyUseCase;
@@ -68,7 +68,7 @@ describe('Create Property', () => {
     mockPropertyRepository.create.mockImplementation((p) => Promise.resolve(p));
 
     await expect(() => useCase.execute('123', dto)).rejects.toThrow(
-      BadRequestException,
+      ConflictError,
     );
   });
 });

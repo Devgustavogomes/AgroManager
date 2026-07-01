@@ -6,6 +6,7 @@ import { CultureMapper } from '../../infrastructure/culture.mapper';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Area } from 'src/shared/domain/value-object/area';
 import { ValidateCultureCropsAreaService } from '../../domain/services/validateCultureCropsArea.service';
+import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
 
 @Injectable()
 export class UpdateCultureUseCase {
@@ -17,6 +18,10 @@ export class UpdateCultureUseCase {
   async execute(id: string, dto: UpdateCultureInput): Promise<CultureOutput> {
     return await this.databaseService.transaction(async (client) => {
       const culture = await this.cultureRepository.findById(id, client);
+
+      if (!culture) {
+        throw new NotFoundError('Culture not found');
+      }
 
       culture.update({
         name: dto.name,
