@@ -587,6 +587,18 @@ O pipeline de testes executa `npm run test` na raiz, que roda os testes de todos
 - **Cascade Deletes:** Deletar um produtor remove todas as suas propriedades, que por sua vez removem suas culturas e safras automaticamente
 - **Constraints:** `email` e `slug` possuem constraints `UNIQUE`
 
+**Indexes:**
+
+O banco possui indexes nas colunas de chave estrangeira para otimizar JOINs e buscas por relacionamento:
+
+| Index | Tabela | Coluna |
+|-------|--------|--------|
+| `idx_properties_producerId` | `properties` | `producerId` |
+| `idx_cultures_propertyId` | `cultures` | `propertyId` |
+| `idx_crops_cultureId` | `crops` | `cultureId` |
+
+Esses indexes beneficiam diretamente a **performance do OwnerGuard**, que executa queries com JOINs encadeados para verificar ownership. Por exemplo, o `IsCropOwnerUseCase` faz `crops → cultures → properties` para verificar se o crop pertence ao produtor autenticado — sem indexes, o PostgreSQL faria full table scans em cada JOIN.
+
 ---
 
 ## 🚀 Como Rodar o Projeto
@@ -720,6 +732,7 @@ POSTGRES_DB=local_pg
 - [x] API — Domain Services para regras de negócio
 - [x] API — Error Handling global com erros customizáveis
 - [x] API — Transações e Locks para integridade de dados
+- [x] API — Indexes em FKs para otimização de JOINs e OwnerGuard
 - [x] API — Swagger para documentação
 - [x] API — Testes unitários com Vitest
 - [x] Docker Compose para ambiente local
