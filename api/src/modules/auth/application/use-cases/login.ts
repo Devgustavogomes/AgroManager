@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { LoginInputDto } from '../dto/login.dto';
 import { compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from 'src/shared/types/jwtPayload';
 import { TTL_REFRESH_TOKEN } from '../../domain/constants/ttlRefreshToken.constants';
 import { AuthContract } from '../../domain/repositories/authRepository.contract';
+import { UnauthorizedError } from 'src/shared/domain/errors/unauthorizedError';
 
 @Injectable()
 export class LoginUseCase {
@@ -21,13 +22,13 @@ export class LoginUseCase {
     const producer = await this.repository.findProducer(data.email);
 
     if (!producer) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedError('Invalid credentials');
     }
 
     const isMatch = await compare(data.password, producer.hashedPassword);
 
     if (!isMatch) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedError('Invalid credentials');
     }
 
     const payload: JwtPayload = {

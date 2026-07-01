@@ -3,13 +3,13 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
-  UnauthorizedException,
   Type,
 } from '@nestjs/common';
 import { ModuleRef, Reflector } from '@nestjs/core';
 import { OWNER_SERVICE_KEY } from 'src/shared/decorators/owner.decorator';
 import { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
 import { Role } from 'src/shared/types/role';
+import { UnauthorizedError } from '../domain/errors/unauthorizedError';
 
 interface Service {
   execute(idProducer: string, idService: string): Promise<boolean>;
@@ -27,7 +27,7 @@ export class OwnerGuard implements CanActivate {
     const producer = request.producer;
 
     if (!producer) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedError();
     }
 
     if (producer.role === Role.ADMIN) {
