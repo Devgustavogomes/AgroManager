@@ -1,7 +1,6 @@
 import {
   CanActivate,
   ExecutionContext,
-  ForbiddenException,
   Injectable,
   Type,
 } from '@nestjs/common';
@@ -10,6 +9,7 @@ import { OWNER_SERVICE_KEY } from 'src/shared/decorators/owner.decorator';
 import { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
 import { Role } from 'src/shared/types/role';
 import { UnauthorizedError } from '../domain/errors/unauthorizedError';
+import { ForbiddenError } from '../domain/errors/forbiddenError';
 
 interface Service {
   execute(idProducer: string, idService: string): Promise<boolean>;
@@ -56,7 +56,7 @@ export class OwnerGuard implements CanActivate {
     const isOwner = await service.execute(producer.id, resourceId);
 
     if (!isOwner) {
-      throw new ForbiddenException('You do not own this resource.');
+      throw new ForbiddenError('You do not own this resource.');
     }
 
     return true;
