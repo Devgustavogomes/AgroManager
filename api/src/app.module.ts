@@ -10,6 +10,8 @@ import { MigrationModule } from './modules/migration/module';
 import { CultureModule } from './modules/culture/infrastructure/culture.module';
 import { PropertyModule } from './modules/property/infrastructure/property.module';
 import { CropModule } from './modules/crop/infrastructure/crop.module';
+import { APP_FILTER } from '@nestjs/core';
+import { GlobalErrorHandler } from './shared/filters/globalErrorHandler';
 
 @Module({
   imports: [
@@ -29,6 +31,11 @@ import { CropModule } from './modules/crop/infrastructure/crop.module';
     CropModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: GlobalErrorHandler,
+    },
+  ],
 })
 export class AppModule {}

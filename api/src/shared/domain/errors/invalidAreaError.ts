@@ -1,12 +1,7 @@
-export class InvalidAreaError extends Error {
-  private status: number;
-  constructor(message: string) {
-    super(message);
+import { BaseError } from './baseError';
 
-    this.status = 422;
-  }
-
-  get getStatus() {
-    return this.status;
+export class InvalidAreaError extends BaseError {
+  constructor(message: string = 'Invalid Area') {
+    super(422, message);
   }
 }

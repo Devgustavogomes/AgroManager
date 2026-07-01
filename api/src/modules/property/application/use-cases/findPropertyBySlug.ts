@@ -1,7 +1,8 @@
 import { PropertyMapper } from '../../infrastructure/persistence/property.mapper';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PropertyOutputDto } from '../dto/output.dto';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
+import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
 
 @Injectable()
 export class FindBySlugUseCase {
@@ -11,7 +12,7 @@ export class FindBySlugUseCase {
     const property = await this.propertyRepository.findBySlug(slug, producerId);
 
     if (!property) {
-      throw new NotFoundException('Property not found');
+      throw new NotFoundError('Property not found');
     }
 
     return PropertyMapper.toResponse(property);
