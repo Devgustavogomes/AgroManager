@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ProducerContract } from '../../domain/repositories/producerRepository.contract';
 import { ProducerOutput } from '../dto/output.dto';
 import { ProducerMapper } from '../../infrastructure/persistence/producer.mapper';
+import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
 @Injectable()
 export class FindByIdProducerUseCase {
   constructor(private readonly producerRepository: ProducerContract) {}
@@ -10,7 +11,7 @@ export class FindByIdProducerUseCase {
     const result = await this.producerRepository.findById(id);
 
     if (!result) {
-      throw new NotFoundException('Producer not found');
+      throw new NotFoundError('Producer not found');
     }
 
     return ProducerMapper.toResponse([result])[0];

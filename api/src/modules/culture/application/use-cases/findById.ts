@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CultureContract } from '../../domain/repositories/cultureRepository.interface';
 import { CultureOutput } from '../dto/cultureOutput.dto';
 import { CultureMapper } from '../../infrastructure/culture.mapper';
+import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
 
 @Injectable()
 export class FindByIdCultureUseCase {
@@ -11,7 +12,7 @@ export class FindByIdCultureUseCase {
     const result = await this.cultureRepository.findById(id);
 
     if (!result) {
-      throw new NotFoundException('Culture not found');
+      throw new NotFoundError('Culture not found');
     }
 
     return CultureMapper.toResponse([result])[0];

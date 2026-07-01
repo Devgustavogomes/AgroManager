@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
 import { UpdatePropertyDto } from '../dto/update.dto';
 import { Slug } from '../../domain/value-object/slug';
 import { Area } from 'src/shared/domain/value-object/area';
+import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
 
 @Injectable()
 export class UpdatePropertyUseCase {
@@ -12,7 +13,7 @@ export class UpdatePropertyUseCase {
     const property = await this.propertyRepository.findBySlug(slug, producerId);
 
     if (!property) {
-      throw new NotFoundException('Property not found');
+      throw new NotFoundError('Property not found');
     }
 
     property.update({

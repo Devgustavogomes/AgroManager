@@ -3,7 +3,7 @@ import { FindBySlugUseCase } from './findPropertyBySlug';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
 import { Property } from '../../domain/entities/property.entity';
 import { Area } from 'src/shared/domain/value-object/area';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
 
 describe('Find property by Slug', () => {
   let useCase: FindBySlugUseCase;
@@ -44,11 +44,11 @@ describe('Find property by Slug', () => {
       'producer-id',
     );
   });
-  it('Should thrown a NotFoundException if property doesnt exist', async () => {
+  it('Should thrown a NotFoundError if property doesnt exist', async () => {
     mockRepository.findBySlug.mockResolvedValue(undefined);
 
     await expect(useCase.execute('slug', 'producer-id')).rejects.toThrow(
-      NotFoundException,
+      NotFoundError,
     );
   });
 });

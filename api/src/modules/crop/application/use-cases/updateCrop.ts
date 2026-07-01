@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CropContract } from '../../domain/repositories/cropsRepository.contract';
 import { UpdateCropInput } from '../dto/updateCrop.dto';
 import { CropOutput } from '../dto/cropOutput.dto';
@@ -6,6 +6,7 @@ import { CropMapper } from '../../infrastructure/crop.mapper';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Area } from 'src/shared/domain/value-object/area';
 import { ValidateCultureCropsAreaService } from 'src/modules/culture/domain/services/validateCultureCropsArea.service';
+import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
 
 @Injectable()
 export class UpdateCropUseCase {
@@ -23,7 +24,7 @@ export class UpdateCropUseCase {
       const crop = await this.repository.findById(cropId, client);
 
       if (!crop) {
-        throw new NotFoundException(`Crop not found`);
+        throw new NotFoundError(`Crop not found`);
       }
 
       crop.update({
