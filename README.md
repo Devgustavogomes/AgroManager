@@ -13,6 +13,8 @@
 - [Tech Stack](#-tech-stack)
 - [API — Decisões Arquiteturais](#-api--decisões-arquiteturais)
   - [DDD e Clean Architecture](#ddd-e-clean-architecture)
+  - [Domain Services e Use Cases](#domain-services-e-use-cases)
+  - [Error Handling — Erros Customizáveis](#error-handling--erros-customizáveis)
   - [Sistema de Autenticação (JWT + Redis Sessions)](#sistema-de-autenticação-jwt--redis-sessions)
   - [Sistema de Autorização (Guards)](#sistema-de-autorização-guards)
   - [Validação com Zod](#validação-com-zod)
@@ -42,11 +44,12 @@ O AgroManager é uma plataforma completa para gestão agrícola, projetada para 
 - **Acompanhem safras (crops)** com status de plantio, colheita esperada e pragas
 - **Controlem acesso** através de autenticação segura com tokens JWT e sessões revogáveis via Redis
 
-O projeto é estruturado como um **monorepo** que abriga três aplicações independentes:
+O projeto é estruturado como um **monorepo** que abriga quatro workspaces independentes:
 
 | Workspace | Descrição | Status |
 |-----------|-----------|--------|
 | `api/` | API REST construída com NestJS | 🟢 Em desenvolvimento avançado |
+| `infra/` | Módulos de infraestrutura compartilhados (Database, Redis) | 🟢 Em uso |
 | `web/` | Frontend web com Next.js | 🔴 Não iniciado |
 | `workers/` | Workers para processamento assíncrono | 🔴 Não iniciado |
 
@@ -58,21 +61,29 @@ O projeto é estruturado como um **monorepo** que abriga três aplicações inde
 AgroManager/
 ├── api/                          # API REST (NestJS)
 │   ├── src/
-│   │   ├── config/               # Configurações e validação de env
-│   │   ├── infra/                # Infraestrutura (DB, Redis, Migrations)
 │   │   ├── modules/              # Módulos de domínio
 │   │   │   ├── auth/             # Autenticação (JWT + Redis)
 │   │   │   ├── producer/         # Produtores (DDD completo)
 │   │   │   ├── property/         # Propriedades (DDD completo)
 │   │   │   ├── culture/          # Culturas (DDD completo)
-│   │   │   └── crops/            # Safras
+│   │   │   ├── crop/             # Safras (DDD completo)
+│   │   │   └── migration/        # Execução de migrations (Admin)
 │   │   └── shared/               # Código compartilhado
+│   │       ├── config/           # Configurações e validação de env
 │   │       ├── decorators/       # Decoradores customizados
-│   │       ├── domain/           # Entidades base e Value Objects
+│   │       ├── domain/           # Entidades base, Value Objects e Erros
+│   │       │   ├── entities/     # Entidades base
+│   │       │   ├── errors/       # Hierarquia de erros customizados
+│   │       │   └── value-object/ # Value Objects compartilhados
+│   │       ├── filters/          # Global Error Handler
 │   │       ├── guards/           # Guards de autenticação e autorização
 │   │       └── types/            # Tipos compartilhados
 │   ├── Dockerfile                # Container de desenvolvimento
 │   └── prod.Dockerfile           # Multi-stage build para produção
+│
+├── infra/                        # Módulos de infraestrutura compartilhados
+│   ├── database/                 # DatabaseModule (pg + connection pool)
+│   └── redis/                    # RedisModule (ioredis + session management)
 │
 ├── web/                          # Frontend (Next.js) — 🔴 Não iniciado
 ├── workers/                      # Workers (NestJS) — 🔴 Não iniciado
@@ -81,11 +92,11 @@ AgroManager/
 ├── docker-compose.yml            # Orquestração local (API + Postgres + Redis + Nginx)
 ├── nginx.conf                    # Reverse proxy para a API
 └── .github/
-    ├── workflows/                # CI/CD pipelines por workspace
+    ├── workflows/                # CI/CD pipelines
     └── dependabot.yml            # Atualização automática de dependências
 ```
 
-O monorepo utiliza **NPM Workspaces** para gerenciar dependências de forma centralizada, com um único `package-lock.json` na raiz, garantindo consistência de versões entre todos os subprojetos.
+O monorepo utiliza **NPM Workspaces** para gerenciar dependências de forma centralizada, com um único `package-lock.json` na raiz, garantindo consistência de versões entre todos os subprojetos. O workspace `infra/` é consumido pelos demais como dependência interna via alias `@agromanager/infra`.
 
 ---
 
@@ -119,11 +130,14 @@ A API segue os princípios de **Domain-Driven Design** e **Clean Architecture**,
 modules/producer/
 ├── domain/                       # Camada de Domínio (core)
 │   ├── entities/                 # Entidades de domínio com regras de negócio
-│   └── repositories/             # Contratos (interfaces) de persistência
+│   ├── repositories/             # Contratos (interfaces) de persistência
+│   ├── services/                 # Domain Services (regras de negócio complexas)
+│   ├── constants/                # Constantes de domínio
+│   └── value-object/             # Value Objects do módulo
 │
 ├── application/                  # Camada de Aplicação
-│   ├── use-cases/                # Casos de uso (orquestração de regras)
-│   └── dtos/                     # Data Transfer Objects (entrada/saída)
+│   ├── use-cases/                # Casos de uso (orquestradores)
+│   └── dto/                      # Data Transfer Objects (entrada/saída)
 │
 ├── infrastructure/               # Camada de Infraestrutura
 │   └── persistence/              # Implementação concreta dos repositórios
@@ -133,8 +147,8 @@ modules/producer/
 ```
 
 **Por quê?**
-- As regras de negócio ficam nas **Entities** do domínio, isoladas de qualquer framework.
-- Os **Use Cases** orquestram o fluxo, delegando a persistência para contratos abstratos.
+- As regras de negócio ficam nas **Entities** e **Domain Services**, isoladas de qualquer framework.
+- Os **Use Cases** atuam como **orquestradores**, coordenando o fluxo entre repositórios, domain services e entidades — sem implementar regras de negócio diretamente.
 - Os **Repositories** são injetados via Dependency Injection do NestJS usando `abstract class` como token de injeção, permitindo trocar a implementação sem alterar o domínio.
 
 **Exemplo:** O `ProducerContract` define a interface. O `ProducerRepository` implementa com SQL puro via `pg`. O NestJS resolve a dependência automaticamente:
@@ -143,6 +157,125 @@ modules/producer/
 // Módulo registrando a implementação concreta via DI
 { provide: ProducerContract, useClass: ProducerRepository }
 ```
+
+---
+
+### Domain Services e Use Cases
+
+O projeto separa claramente as responsabilidades entre **Domain Services** e **Use Cases**:
+
+**Domain Services** encapsulam regras de negócio complexas que envolvem validações ou lógica que não pertence a uma única entidade. São classes estáticas e puras, sem dependências de infraestrutura:
+
+```typescript
+// Domain Service — regra de negócio pura
+export class ValidateCultureAreaService {
+  static execute(
+    propertyArea: Area,
+    existingCulturesArea: Area,
+    newCultureArea: Area,
+  ): void {
+    const totalAllocated = existingCulturesArea.sum(newCultureArea);
+
+    if (totalAllocated.getValue > propertyArea.getValue) {
+      throw new InvalidAreaError(
+        'Culture sum area exceed property total area.',
+      );
+    }
+  }
+}
+```
+
+**Use Cases** são orquestradores. Eles coordenam o fluxo entre repositórios, domain services e entidades, mas delegam as regras de negócio:
+
+```typescript
+// Use Case — orquestra, não implementa regras
+@Injectable()
+export class CreateCultureUseCase {
+  async execute(slug: string, dto: CreateCultureInput): Promise<CultureOutput> {
+    return await this.databaseService.transaction(async (client) => {
+      // 1. Busca dados necessários via repositório
+      const [propertyId, propertyArea] = await Promise.all([...]);
+      const cultureAreaSum = await this.cultureRepository.cultureAreaSum(...);
+
+      // 2. Cria a entidade de domínio
+      const culture = Culture.create({ ... });
+
+      // 3. Delega validação ao Domain Service
+      ValidateCultureAreaService.execute(propertyArea, cultureAreaSum, culture.allocatedArea);
+
+      // 4. Persiste via repositório
+      return await this.cultureRepository.create(culture, client);
+    });
+  }
+}
+```
+
+**Domain Services existentes:**
+
+| Service | Módulo | Responsabilidade |
+|---------|--------|-----------------|
+| `ValidateCultureAreaService` | Culture | Valida se a soma das culturas não excede a área da propriedade |
+| `ValidateCultureCropsAreaService` | Culture | Valida se a soma dos crops não excede a área da cultura |
+| `ValidateMaxProperties` | Property | Valida o limite máximo de propriedades por produtor |
+
+---
+
+### Error Handling — Erros Customizáveis
+
+A aplicação utiliza uma **hierarquia de erros customizados** com um `GlobalErrorHandler` que captura e serializa automaticamente todos os erros de domínio em respostas HTTP padronizadas.
+
+#### Hierarquia de Erros
+
+Todos os erros estendem a classe abstrata `BaseError`, que encapsula o status HTTP e a mensagem:
+
+```typescript
+export abstract class BaseError extends Error {
+  constructor(
+    protected readonly status: number,
+    message: string,
+  ) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+
+  get statusCode(): number { return this.status; }
+  get errorName(): string { return this.name; }
+  get errorMessage(): string { return this.message; }
+}
+```
+
+**Erros disponíveis:**
+
+| Erro | Status HTTP | Uso |
+|------|-------------|-----|
+| `NotFoundError` | `404` | Recurso não encontrado |
+| `UnauthorizedError` | `401` | Falha de autenticação |
+| `ForbiddenError` | `403` | Sem permissão de acesso |
+| `ConflictError` | `409` | Conflito de recurso (ex: email duplicado, limite atingido) |
+| `InvalidAreaError` | `422` | Validação de área inválida (domínio) |
+
+#### Global Error Handler
+
+O `GlobalErrorHandler` intercepta **todas** as exceções da aplicação. Se o erro for uma instância de `BaseError`, retorna uma resposta JSON padronizada. Caso contrário, delega ao handler padrão:
+
+```typescript
+@Catch()
+export class GlobalErrorHandler extends BaseExceptionFilter {
+  catch(exception: unknown, host: ArgumentsHost) {
+    if (exception instanceof BaseError) {
+      const response = ctx.getResponse<Response>();
+      return response.status(exception.statusCode).json({
+        statusCode: exception.statusCode,
+        error: exception.errorName,
+        message: exception.errorMessage,
+      });
+    }
+    super.catch(exception, host);
+  }
+}
+```
+
+Isso elimina a necessidade de tratar erros manualmente em cada controller — basta lançar o erro customizado em qualquer camada e o handler serializa automaticamente.
 
 ---
 
@@ -209,7 +342,7 @@ Este é o guard mais sofisticado da aplicação. Ele resolve **dinamicamente** q
 async findById(@Param() params: CultureIdParams) { ... }
 
 // Para recursos com chave de params diferente de "id"
-@OwnerService(IsPropertyOwnerUseCase, 'propertyId')
+@OwnerService(IsPropertyOwnerUseCase, 'slug')
 async create(@Param() params: CultureIdParams) { ... }
 ```
 
@@ -218,7 +351,7 @@ async create(@Param() params: CultureIdParams) { ... }
 2. Resolve o service de ownership via `ModuleRef` (IoC container do NestJS)
 3. Chama `service.execute(producerId, resourceId)` que retorna um boolean
 4. Se o usuário for `ADMIN`, o guard libera automaticamente sem verificar ownership
-5. Se não for owner, lança `ForbiddenException`
+5. Se não for owner, lança `ForbiddenError`
 
 Isso permite que qualquer novo módulo implemente seu próprio `IsXOwnerUseCase` e use o mesmo guard genérico sem modificar nenhum código compartilhado.
 
@@ -256,16 +389,13 @@ A aplicação utiliza **transações explícitas** e **row-level locks** (`SELEC
 ```typescript
 async execute(id: string, dto: UpdateCultureInput): Promise<CultureOutput> {
   return await this.databaseService.transaction(async (client) => {
-    // Lê com lock FOR UPDATE, impedindo leitura concorrente
     const culture = await this.cultureRepository.findById(id, client);
 
-    culture.changeAllocatedArea = dto.allocatedArea;
+    culture.update({ allocatedArea: Area.create(dto.allocatedArea) });
 
-    // Valida regras de negócio com dados consistentes
+    // Delega validação ao Domain Service
     const sumCrops = await this.cultureRepository.cropSum(id, client);
-    if (sumCrops > culture.allocatedArea.getValue) {
-      throw new BadRequestException('Sum of crops exceeds allocated area');
-    }
+    ValidateCultureCropsAreaService.execute(culture.allocatedArea, Area.create(sumCrops));
 
     return await this.cultureRepository.update(culture, client);
   });
@@ -354,16 +484,16 @@ A API em produção usa um **multi-stage Dockerfile** (`prod.Dockerfile`) com 3 
 
 ### CI/CD — GitHub Actions
 
-Os pipelines de CI/CD são **separados por workspace** e otimizados com filtro de paths, garantindo que alterações em um workspace não disparem pipelines de outros:
+Os pipelines de CI/CD são organizados em workflows separados. Apenas o pipeline de deploy utiliza filtro de paths, garantindo que deploys ocorram somente quando o código da API é alterado:
 
 | Workflow | Trigger | O que faz |
-|----------|---------|-----------|
-| `build-api.yml` | PR em `main`/`develop` — paths: `api/**` | Build da API |
-| `test-api.yml` | PR em `main`/`develop` — paths: `api/**` | Testes unitários com PostgreSQL e Redis |
-| `linting-api.yml` | PR em `main`/`develop` — paths: `api/**` | ESLint, Prettier e Commitlint |
+|----------|---------|-----------| 
+| `build.yml` | PR em `main`/`develop` | Build de todo o monorepo |
+| `test.yml` | PR em `main`/`develop` | Testes unitários (Vitest) |
+| `linting.yml` | PR em `main`/`develop` | ESLint, Prettier e Commitlint |
 | `deploy-api.yml` | Push em `main` — paths: `api/**` | Deploy via Render webhook |
 
-O pipeline de testes levanta containers de **PostgreSQL** e **Redis** como service containers no GitHub Actions, executa as migrations e roda os testes unitários com Vitest.
+O pipeline de testes executa `npm run test` na raiz, que roda os testes de todos os workspaces. Os workflows de build, test e linting ignoram PRs do Dependabot (quando aplicável) para economizar minutos de CI.
 
 ---
 
@@ -404,13 +534,23 @@ O pipeline de testes levanta containers de **PostgreSQL** e **Redis** como servi
 | `PATCH` | `/property/:slug` | Atualizar propriedade | Bearer |
 | `DELETE` | `/property/:slug` | Deletar propriedade | Bearer |
 
-### Culture (`/:propertyId/cultures`)
+### Culture (`/:slug/cultures`)
 | Método | Rota | Descrição | Auth + Owner |
 |--------|------|-----------|------|
-| `GET` | `/:propertyId/cultures/:id` | Buscar cultura por ID | Bearer + OwnerGuard |
-| `POST` | `/:propertyId/cultures` | Criar nova cultura | Bearer + OwnerGuard |
-| `PATCH` | `/:propertyId/cultures/:id` | Atualizar cultura | Bearer + OwnerGuard |
-| `DELETE` | `/:propertyId/cultures` | Deletar cultura | Bearer + OwnerGuard |
+| `GET` | `/:slug/cultures/:id` | Buscar cultura por ID | Bearer + OwnerGuard |
+| `POST` | `/:slug/cultures` | Criar nova cultura | Bearer + OwnerGuard |
+| `PATCH` | `/:slug/cultures/:id` | Atualizar cultura | Bearer + OwnerGuard |
+| `DELETE` | `/:slug/cultures` | Deletar cultura | Bearer + OwnerGuard |
+
+### Crop (`/:cultureId/crop`)
+| Método | Rota | Descrição | Auth + Owner |
+|--------|------|-----------|------|
+| `POST` | `/:cultureId/crop` | Criar novo crop | Bearer + OwnerGuard |
+| `GET` | `/:cultureId/crop/:id` | Buscar crop por ID | Bearer + OwnerGuard |
+| `GET` | `/:cultureId/crop` | Listar crops da cultura | Bearer + OwnerGuard |
+| `PATCH` | `/:cultureId/crop/:id` | Atualizar crop | Bearer + OwnerGuard |
+| `DELETE` | `/:cultureId/crop/:id` | Deletar crop por ID | Bearer + OwnerGuard |
+| `DELETE` | `/:cultureId/crop` | Deletar todos os crops da cultura | Bearer + OwnerGuard |
 
 ### Migration (`/migration`) — Admin Only
 | Método | Rota | Descrição | Auth |
@@ -425,24 +565,27 @@ O pipeline de testes levanta containers de **PostgreSQL** e **Redis** como servi
 ## 🗄 Modelo de Dados
 
 ```
-┌──────────────┐       ┌──────────────────┐       ┌──────────────┐       ┌──────────────┐
-│  producers   │       │   properties     │       │   cultures   │       │    crops      │
-├──────────────┤       ├──────────────────┤       ├──────────────┤       ├──────────────┤
-│ producerId   │──┐    │ propertyId       │──┐    │ cultureId    │──┐    │ cropId       │
-│ username     │  │    │ producerId    (FK)│  │    │ propertyId(FK)│  │    │ cultureId(FK)│
-│ email        │  └───▶│ name             │  │    │ name         │  └───▶│ name         │
-│ hashedPasswd │       │ slug (UNIQUE)    │  └───▶│ allocatedArea│       │ status       │
-│ role         │       │ city             │       │ createdAt    │       │ allocatedArea│
-│ createdAt    │       │ state            │       │ updatedAt    │       │ plantingDate │
-│ updatedAt    │       │ totalArea        │       └──────────────┘       │ harvestExpect│
-└──────────────┘       │ arableArea       │                             │ harvestActual│
-                       │ vegetationArea   │                             │ pestsStatus  │
-                       │ createdAt        │                             │ createdAt    │
-                       │ updatedAt        │                             │ updatedAt    │
-                       └──────────────────┘                             └──────────────┘
+┌──────────────┐       ┌──────────────────┐       ┌──────────────┐       ┌───────────────────┐
+│  producers   │       │   properties     │       │   cultures   │       │      crops        │
+├──────────────┤       ├──────────────────┤       ├──────────────┤       ├───────────────────┤
+│ producerId   │──┐    │ propertyId       │──┐    │ cultureId    │──┐    │ cropId            │
+│ username     │  │    │ producerId    (FK)│  │    │ propertyId(FK)│  │    │ cultureId    (FK) │
+│ email (UQ)   │  └───▶│ name             │  │    │ name         │  └───▶│ name              │
+│ hashedPasswd │       │ slug (UQ)        │  └───▶│ allocatedArea│       │ status            │
+│ role         │       │ city             │       │ createdAt    │       │ allocatedArea     │
+│ createdAt    │       │ state            │       │ updatedAt    │       │ plantingDate      │
+│ updatedAt    │       │ totalArea (10,2) │       └──────────────┘       │ harvestDateExpect │
+└──────────────┘       │ arableArea (10,2)│                             │ harvestDateActual │
+                       │ vegetationArea   │                             │ pestStatus        │
+                       │ createdAt        │                             │ createdAt         │
+                       │ updatedAt        │                             │ updatedAt         │
+                       └──────────────────┘                             └───────────────────┘
 ```
 
-**Cascade Deletes:** Deletar um produtor remove todas as suas propriedades, que por sua vez removem suas culturas e safras automaticamente.
+**Detalhes:**
+- **Tipos numéricos:** `totalArea`, `arableArea` e `vegetationArea` usam `NUMERIC(10,2)` para precisão decimal; `allocatedArea` em cultures e crops usa `integer`
+- **Cascade Deletes:** Deletar um produtor remove todas as suas propriedades, que por sua vez removem suas culturas e safras automaticamente
+- **Constraints:** `email` e `slug` possuem constraints `UNIQUE`
 
 ---
 
@@ -545,6 +688,10 @@ POSTGRES_DB=local_pg
 | `compose:build` | `docker compose up --build` | Sobe com rebuild de imagens |
 | `compose:stop` | `docker compose stop` | Para todos os containers |
 | `compose:down` | `docker compose down` | Remove todos os containers |
+| `build` | `npm run build -ws` | Build de todos os workspaces |
+| `test` | `npm run test -ws` | Testes de todos os workspaces |
+| `lint` | `npm run lint -ws` | Lint de todos os workspaces |
+| `format` | `npm run format -ws` | Formatação de todos os workspaces |
 | `migrate` | `node-pg-migrate up` | Executa migrations |
 
 ### API Workspace (`-w api`)
@@ -564,16 +711,19 @@ POSTGRES_DB=local_pg
 ## 🗺 Roadmap
 
 - [x] Estrutura do monorepo com NPM Workspaces
+- [x] Workspace `infra/` com módulos compartilhados (Database + Redis)
 - [x] API — Módulo de Autenticação (JWT + Redis)
 - [x] API — CRUD de Produtores com DDD
 - [x] API — CRUD de Propriedades com Value Objects
 - [x] API — CRUD de Culturas com OwnerGuard dinâmico
+- [x] API — CRUD de Crops (safras) completo
+- [x] API — Domain Services para regras de negócio
+- [x] API — Error Handling global com erros customizáveis
 - [x] API — Transações e Locks para integridade de dados
 - [x] API — Swagger para documentação
 - [x] API — Testes unitários com Vitest
 - [x] Docker Compose para ambiente local
-- [x] CI/CD com GitHub Actions por workspace
-- [ ] API — CRUD de Crops (safras) — em progresso
+- [x] CI/CD com GitHub Actions
 - [ ] API — Dashboard com métricas agregadas
 - [ ] Web — Interface do produtor (Next.js)
 - [ ] Workers — Processamento assíncrono de tarefas
