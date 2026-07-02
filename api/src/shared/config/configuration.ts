@@ -1,5 +1,6 @@
 export default () => ({
   PORT: process.env.PORT,
+  FRONTEND_URL: process.env.FRONTEND_URL,
   SECRET: process.env.SECRET,
   REFRESH_SECRET: process.env.REFRESH_SECRET,
   database: {
