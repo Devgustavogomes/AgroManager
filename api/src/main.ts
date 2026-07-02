@@ -3,9 +3,23 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
 
 export default async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const isProducao = process.env.NODE_ENV === 'production';
+
+  app.use(
+    helmet({
+      crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+      crossOriginResourcePolicy: { policy: 'same-site' },
+      referrerPolicy: {
+        policy: 'strict-origin-when-cross-origin',
+      },
+      strictTransportSecurity: isProducao ? undefined : false,
+    }),
+  );
 
   app.useGlobalPipes(new ZodValidationPipe());
 
@@ -15,12 +29,12 @@ export default async function bootstrap() {
 
   const config = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle('Minha API')
+    .setTitle('AgroManager API')
     .setVersion('1.0')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('docs', app, document);
 
   await app.listen(PORT, () => {
     console.log(`Server running on PORT ${PORT}`);
