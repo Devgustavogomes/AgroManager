@@ -21,6 +21,7 @@
   - [Transações e Locks (PostgreSQL)](#transações-e-locks-postgresql)
   - [Value Objects](#value-objects)
   - [Mappers e Separação de Camadas](#mappers-e-separação-de-camadas)
+  - [Segurança HTTP — Helmet e CORS](#segurança-http--helmet-e-cors)
 - [Infraestrutura e DevOps](#-infraestrutura-e-devops)
   - [Docker e Nginx](#docker-e-nginx)
   - [CI/CD — GitHub Actions](#cicd--github-actions)
@@ -111,6 +112,7 @@ O monorepo utiliza **NPM Workspaces** para gerenciar dependências de forma cent
 | **Cache / Sessões** | Redis 8 | Armazenamento de refresh tokens e sessões |
 | **Validação** | Zod 4 + nestjs-zod | Validação de schemas com inferência de tipos |
 | **Autenticação** | JWT (@nestjs/jwt) + bcryptjs | Tokens de acesso e hash de senhas |
+| **Segurança HTTP** | Helmet | Headers de segurança HTTP automatizados |
 | **Documentação** | Swagger (@nestjs/swagger) | Documentação interativa da API |
 | **Testes** | Vitest + SWC | Testes unitários com performance otimizada |
 | **Container** | Docker + Docker Compose | Containerização e orquestração local |
@@ -451,6 +453,78 @@ export class Slug {
 
 ---
 
+### Segurança HTTP — Helmet e CORS
+
+A API centraliza toda a configuração de segurança HTTP em uma função `setupSecurity()` no `main.ts`, que configura tanto o **CORS** quanto o **Helmet**:
+
+```typescript
+function setupSecurity(app: INestApplication, configService: ConfigService) {
+  const isProducao = process.env.NODE_ENV === 'production';
+
+  const originAllowed =
+    configService.get('FRONTEND_URL') || 'http://localhost:3000';
+
+  app.enableCors({
+    origin: originAllowed,
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  });
+
+  app.use(
+    helmet({
+      crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+      crossOriginResourcePolicy: { policy: 'same-site' },
+      referrerPolicy: {
+        policy: 'strict-origin-when-cross-origin',
+      },
+      strictTransportSecurity: isProducao ? undefined : false,
+    }),
+  );
+}
+```
+
+#### CORS
+
+O CORS é configurado com **origin restrita** — apenas a URL do frontend definida na variável de ambiente `FRONTEND_URL` pode fazer requisições cross-origin. Em desenvolvimento, o fallback é `http://localhost:3000`.
+
+**Configuração detalhada:**
+
+| Opção | Valor | Finalidade |
+|-------|-------|------------|
+| `origin` | `FRONTEND_URL` (env) | Restringe requisições cross-origin a uma única origem confiável |
+| `credentials` | `true` | Permite envio de cookies (necessário para o `refresh_token` httpOnly) |
+| `allowedHeaders` | `Content-Type`, `Authorization` | Limita headers aceitos ao mínimo necessário |
+| `methods` | `GET`, `POST`, `PUT`, `DELETE`, `OPTIONS` | Restringe métodos HTTP permitidos |
+
+**Por que `credentials: true`?** O fluxo de refresh token utiliza cookies `httpOnly` — sem essa flag, o navegador não enviaria o cookie `refresh_token` nas requisições cross-origin para `/auth/refresh`.
+
+#### Helmet
+
+O **Helmet** configura automaticamente headers HTTP de segurança, protegendo contra ataques comuns como XSS, clickjacking, MIME sniffing e injeção de dados.
+
+**Headers configurados:**
+
+| Header | Valor | Finalidade |
+|--------|-------|------------|
+| `Content-Security-Policy` | default (Helmet) | Previne XSS e injeção de dados |
+| `Cross-Origin-Opener-Policy` | `same-origin-allow-popups` | Permite popups de mesma origem (OAuth, pagamentos) |
+| `Cross-Origin-Resource-Policy` | `same-site` | Permite compartilhamento de recursos dentro do mesmo site |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` | Envia origin completa para same-origin, apenas origin para cross-origin |
+| `Strict-Transport-Security` | Ativo apenas em produção | Força HTTPS (desativado em dev para evitar problemas com `localhost`) |
+| `X-Content-Type-Options` | `nosniff` | Previne MIME type sniffing |
+| `X-Frame-Options` | `SAMEORIGIN` | Previne clickjacking |
+| `X-DNS-Prefetch-Control` | `off` | Desabilita DNS prefetching |
+| `X-Download-Options` | `noopen` | Previne abertura automática de downloads (IE) |
+| `X-Permitted-Cross-Domain-Policies` | `none` | Bloqueia políticas cross-domain (Flash/PDF) |
+
+**Decisões de customização do Helmet:**
+- **`crossOriginOpenerPolicy: 'same-origin-allow-popups'`** — O padrão do Helmet (`same-origin`) bloqueia completamente popups. A configuração `same-origin-allow-popups` permite fluxos de OAuth e janelas de pagamento sem comprometer o isolamento de contexto.
+- **`crossOriginResourcePolicy: 'same-site'`** — Permite que o frontend (mesmo domínio, porta diferente) acesse recursos da API.
+- **`strictTransportSecurity: false` em dev** — O HSTS força HTTPS e causa problemas com `localhost` em desenvolvimento. Em produção, o Helmet usa o valor padrão (`max-age=15552000; includeSubDomains`).
+
+---
+
 ### Mappers e Separação de Camadas
 
 Cada módulo possui **Mappers** que convertem dados entre as camadas:
@@ -663,6 +737,7 @@ Crie um arquivo `.env` na raiz do projeto:
 ```env
 # Servidor
 PORT=3000
+FRONTEND_URL=http://localhost:3000
 
 # PostgreSQL
 PGUSER=local_pg
@@ -734,6 +809,7 @@ POSTGRES_DB=local_pg
 - [x] API — Transações e Locks para integridade de dados
 - [x] API — Indexes em FKs para otimização de JOINs e OwnerGuard
 - [x] API — Swagger para documentação
+- [x] API — Segurança HTTP com Helmet e CORS
 - [x] API — Testes unitários com Vitest
 - [x] Docker Compose para ambiente local
 - [x] CI/CD com GitHub Actions
