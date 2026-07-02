@@ -2,6 +2,7 @@ import z from 'zod';
 
 export const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
+  FRONTEND_URL: z.string(),
   PGUSER: z.string(),
   PGPASSWORD: z.string(),
   PGHOST: z.string(),
