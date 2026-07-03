@@ -4,7 +4,7 @@ import { UpdateCultureInput } from '../dto/updateCulture.dto';
 import { CultureOutput } from '../dto/cultureOutput.dto';
 import { CultureMapper } from '../../infrastructure/culture.mapper';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
-import { Area } from 'src/shared/domain/value-object/area';
+import { Area } from 'src/shared/domain/value-objects/area';
 import { ValidateCultureCropsAreaService } from '../../domain/services/validateCultureCropsArea.service';
 import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
 

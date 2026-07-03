@@ -2,7 +2,7 @@ import { Mocked } from 'vitest';
 import { FindBySlugUseCase } from './findPropertyBySlug';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
 import { Property } from '../../domain/entities/property.entity';
-import { Area } from 'src/shared/domain/value-object/area';
+import { Area } from 'src/shared/domain/value-objects/area';
 import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
 
 describe('Find property by Slug', () => {

@@ -1,8 +1,8 @@
 import { Entity } from 'src/shared/domain/entities/entity';
 import { CropStatus } from '../constants/crop-status.enum';
 import { PestStatus } from '../constants/pest-status.enum';
-import { Optional } from 'src/shared/types/optional';
-import { Area } from 'src/shared/domain/value-object/area';
+import { Optional } from 'src/shared/application/types/optional';
+import { Area } from 'src/shared/domain/value-objects/area';
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
 
 interface CropProps {

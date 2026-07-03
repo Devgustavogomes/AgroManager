@@ -10,10 +10,10 @@ import {
   Body,
   Patch,
 } from '@nestjs/common';
-import { OwnerService } from 'src/shared/decorators/owner.decorator';
-import { AuthGuard } from 'src/shared/guards/auth.guard';
-import { OwnerGuard } from 'src/shared/guards/owner.guard';
-import { RolesGuards } from 'src/shared/guards/roles.guard';
+import { OwnerService } from 'src/shared/infrastructure/decorators/owner.decorator';
+import { AuthGuard } from 'src/shared/infrastructure/guards/auth.guard';
+import { OwnerGuard } from 'src/shared/infrastructure/guards/owner.guard';
+import { RolesGuards } from 'src/shared/infrastructure/guards/roles.guard';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,

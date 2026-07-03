@@ -1,5 +1,5 @@
 import { Entity } from 'src/shared/domain/entities/entity';
-import { Role } from 'src/shared/types/role';
+import { Role } from 'src/shared/application/types/role';
 
 interface ProducerLoginProps {
   producerId: string;

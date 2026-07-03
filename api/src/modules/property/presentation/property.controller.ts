@@ -12,9 +12,9 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from 'src/shared/guards/auth.guard';
+import { AuthGuard } from 'src/shared/infrastructure/guards/auth.guard';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
-import type { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
+import type { AuthenticatedRequest } from 'src/shared/application/types/authenticatedRequest';
 import { PropertyOutputDto } from '../application/dto/output.dto';
 import { CreatePropertyDto } from '../application/dto/create.dto';
 import { UpdatePropertyDto } from '../application/dto/update.dto';

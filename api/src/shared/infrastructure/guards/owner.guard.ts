@@ -5,9 +5,9 @@ import {
   Type,
 } from '@nestjs/common';
 import { ModuleRef, Reflector } from '@nestjs/core';
-import { OWNER_SERVICE_KEY } from 'src/shared/decorators/owner.decorator';
-import { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
-import { Role } from 'src/shared/types/role';
+import { OWNER_SERVICE_KEY } from 'src/shared/infrastructure/decorators/owner.decorator';
+import { AuthenticatedRequest } from 'src/shared/application/types/authenticatedRequest';
+import { Role } from 'src/shared/application/types/role';
 import { UnauthorizedError } from '../domain/errors/unauthorizedError';
 import { ForbiddenError } from '../domain/errors/forbiddenError';
 

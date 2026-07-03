@@ -1,7 +1,7 @@
 import { PropertyOutputDto } from '../../application/dto/output.dto';
 import { Property } from '../../domain/entities/property.entity';
 import { PropertyPersistence } from '../../domain/repositories/propertyRepository.contract';
-import { Area } from '../../../../shared/domain/value-object/area';
+import { Area } from '../../../../shared/domain/value-objects/area';
 import { Slug } from '../../domain/value-object/slug';
 
 export class PropertyMapper {

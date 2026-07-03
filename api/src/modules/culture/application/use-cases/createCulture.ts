@@ -3,7 +3,7 @@ import { CultureContract } from '../../domain/repositories/cultureRepository.int
 import { CreateCultureInput } from '../dto/createCulture.dto';
 import { CultureOutput } from '../dto/cultureOutput.dto';
 import { Culture } from '../../domain/entities/culture.entity';
-import { Area } from 'src/shared/domain/value-object/area';
+import { Area } from 'src/shared/domain/value-objects/area';
 import { CultureMapper } from '../../infrastructure/culture.mapper';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { ValidateCultureAreaService } from '../../domain/services/validateCultureArea.service';
