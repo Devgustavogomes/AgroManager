@@ -3,7 +3,7 @@ import { CropContract } from '../../domain/repositories/cropsRepository.contract
 import { CreateCropInput } from '../dto/createCrop.dto';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Crop } from '../../domain/entities/crop.entity';
-import { Area } from 'src/shared/domain/value-object/area';
+import { Area } from 'src/shared/domain/value-objects/area';
 import { CropMapper } from '../../infrastructure/crop.mapper';
 import { ValidateCultureCropsAreaService } from 'src/modules/culture/domain/services/validateCultureCropsArea.service';
 

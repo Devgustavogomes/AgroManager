@@ -5,7 +5,7 @@ import { Mocked } from 'vitest';
 import { CropStatus } from '../../domain/constants/crop-status.enum';
 import { PestStatus } from '../../domain/constants/pest-status.enum';
 import { Crop } from '../../domain/entities/crop.entity';
-import { Area } from 'src/shared/domain/value-object/area';
+import { Area } from 'src/shared/domain/value-objects/area';
 
 describe('UpdateCropUseCase', () => {
   let mockCropRepository: Mocked<CropContract>;

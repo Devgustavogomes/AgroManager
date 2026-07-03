@@ -1,4 +1,4 @@
-import { Role } from 'src/shared/types/role';
+import { Role } from 'src/shared/application/types/role';
 import { createProducerSchema } from './create.dto';
 import z from 'zod';
 import { createZodDto } from 'nestjs-zod';

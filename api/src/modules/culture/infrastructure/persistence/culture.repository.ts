@@ -8,7 +8,7 @@ import {
   CulturePersistence,
 } from '../../domain/repositories/cultureRepository.interface';
 import { PoolClient } from 'pg';
-import { Area } from 'src/shared/domain/value-object/area';
+import { Area } from 'src/shared/domain/value-objects/area';
 
 @Injectable()
 export class CultureRepository implements CultureContract {

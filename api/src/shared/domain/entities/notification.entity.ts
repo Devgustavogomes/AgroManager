@@ -1,4 +1,4 @@
-import { Optional } from 'src/shared/types/optional';
+import { Optional } from 'src/shared/application/types/optional';
 
 interface NotificationProps {
   notificationId: string;

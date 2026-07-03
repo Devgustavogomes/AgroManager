@@ -1,6 +1,6 @@
 import { Entity } from 'src/shared/domain/entities/entity';
-import { Optional } from 'src/shared/types/optional';
-import { Role } from 'src/shared/types/role';
+import { Optional } from 'src/shared/application/types/optional';
+import { Role } from 'src/shared/application/types/role';
 
 export interface ProducerProps {
   producerId: string;
