@@ -1,7 +1,7 @@
-export class Entity<Props> {
+export class Entity<Props, EventData = unknown> {
   protected props: Props;
 
-  protected domainEvents = [];
+  protected domainEvents: { event: string; data: EventData }[] = [];
 
   protected constructor(props: Props) {
     this.props = props;
