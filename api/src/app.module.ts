@@ -12,6 +12,7 @@ import { PropertyModule } from './modules/property/infrastructure/property.modul
 import { CropModule } from './modules/crop/infrastructure/crop.module';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalErrorHandler } from './shared/filters/globalErrorHandler';
+import { NotificationModule } from './modules/notification/infrastructure/notification.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { GlobalErrorHandler } from './shared/filters/globalErrorHandler';
     PropertyModule,
     CultureModule,
     CropModule,
+    NotificationModule,
   ],
   controllers: [],
   providers: [
