@@ -22,6 +22,10 @@
   - [Value Objects](#value-objects)
   - [Mappers e Separação de Camadas](#mappers-e-separação-de-camadas)
   - [Segurança HTTP — Helmet e CORS](#segurança-http--helmet-e-cors)
+- [Arquitetura de Eventos e Notificações](#-arquitetura-de-eventos-e-notificações)
+  - [Domain Events](#domain-events)
+  - [Event Emitter (NestJS)](#event-emitter-nestjs)
+  - [Notificações em Tempo Real (WebSocket)](#notificações-em-tempo-real-websocket)
 - [Infraestrutura e DevOps](#-infraestrutura-e-devops)
   - [Docker e Nginx](#docker-e-nginx)
   - [CI/CD — GitHub Actions](#cicd--github-actions)
@@ -47,12 +51,12 @@ O AgroManager é uma plataforma completa para gestão agrícola, projetada para 
 
 O projeto é estruturado como um **monorepo** que abriga quatro workspaces independentes:
 
-| Workspace | Descrição | Status |
-|-----------|-----------|--------|
-| `api/` | API REST construída com NestJS | 🟢 Em desenvolvimento avançado |
-| `infra/` | Módulos de infraestrutura compartilhados (Database, Redis) | 🟢 Em uso |
-| `web/` | Frontend web com Next.js | 🔴 Não iniciado |
-| `workers/` | Workers para processamento assíncrono | 🔴 Não iniciado |
+| Workspace  | Descrição                                                  | Status                         |
+| ---------- | ---------------------------------------------------------- | ------------------------------ |
+| `api/`     | API REST construída com NestJS                             | 🟢 Em desenvolvimento avançado |
+| `infra/`   | Módulos de infraestrutura compartilhados (Database, Redis) | 🟢 Em uso                      |
+| `web/`     | Frontend web com Next.js                                   | 🔴 Não iniciado                |
+| `workers/` | Workers para processamento assíncrono                      | 🔴 Não iniciado                |
 
 ---
 
@@ -68,13 +72,15 @@ AgroManager/
 │   │   │   ├── property/         # Propriedades (DDD completo)
 │   │   │   ├── culture/          # Culturas (DDD completo)
 │   │   │   ├── crop/             # Safras (DDD completo)
+│   │   │   ├── notification/     # Notificações (WebSocket + Domain Events)
 │   │   │   └── migration/        # Execução de migrations (Admin)
 │   │   └── shared/               # Código compartilhado
 │   │       ├── config/           # Configurações e validação de env
 │   │       ├── decorators/       # Decoradores customizados
 │   │       ├── domain/           # Entidades base, Value Objects e Erros
-│   │       │   ├── entities/     # Entidades base
+│   │       │   ├── entities/     # Entidades base (Entity + Notification)
 │   │       │   ├── errors/       # Hierarquia de erros customizados
+│   │       │   ├── providers/    # Contratos de providers (EventEmitter)
 │   │       │   └── value-object/ # Value Objects compartilhados
 │   │       ├── filters/          # Global Error Handler
 │   │       ├── guards/           # Guards de autenticação e autorização
@@ -103,22 +109,24 @@ O monorepo utiliza **NPM Workspaces** para gerenciar dependências de forma cent
 
 ## 🧰 Tech Stack
 
-| Camada | Tecnologia | Finalidade |
-|--------|-----------|------------|
-| **Runtime** | Node.js 26 | Ambiente de execução |
-| **Framework** | NestJS 11 | Framework de API com IoC e decoradores |
-| **Linguagem** | TypeScript 5 | Tipagem estática |
-| **Banco de Dados** | PostgreSQL 16 | Persistência relacional |
-| **Cache / Sessões** | Redis 8 | Armazenamento de refresh tokens e sessões |
-| **Validação** | Zod 4 + nestjs-zod | Validação de schemas com inferência de tipos |
-| **Autenticação** | JWT (@nestjs/jwt) + bcryptjs | Tokens de acesso e hash de senhas |
-| **Segurança HTTP** | Helmet | Headers de segurança HTTP automatizados |
-| **Documentação** | Swagger (@nestjs/swagger) | Documentação interativa da API |
-| **Testes** | Vitest + SWC | Testes unitários com performance otimizada |
-| **Container** | Docker + Docker Compose | Containerização e orquestração local |
-| **Reverse Proxy** | Nginx | Proxy reverso para a API |
-| **CI/CD** | GitHub Actions | Build, lint, testes e deploy automatizados |
-| **Qualidade** | ESLint + Prettier + Commitlint + Husky | Padronização de código e commits |
+| Camada              | Tecnologia                             | Finalidade                                   |
+| ------------------- | -------------------------------------- | -------------------------------------------- |
+| **Runtime**         | Node.js 26                             | Ambiente de execução                         |
+| **Framework**       | NestJS 11                              | Framework de API com IoC e decoradores       |
+| **Linguagem**       | TypeScript 5                           | Tipagem estática                             |
+| **Banco de Dados**  | PostgreSQL 16                          | Persistência relacional                      |
+| **Cache / Sessões** | Redis 8                                | Armazenamento de refresh tokens e sessões    |
+| **Validação**       | Zod 4 + nestjs-zod                     | Validação de schemas com inferência de tipos |
+| **Autenticação**    | JWT (@nestjs/jwt) + bcryptjs           | Tokens de acesso e hash de senhas            |
+| **Segurança HTTP**  | Helmet                                 | Headers de segurança HTTP automatizados      |
+| **WebSocket**       | Socket.IO (@nestjs/websockets)         | Notificações em tempo real via WebSocket     |
+| **Eventos**         | @nestjs/event-emitter (EventEmitter2)  | Pub/Sub interno para eventos de domínio      |
+| **Documentação**    | Swagger (@nestjs/swagger)              | Documentação interativa da API               |
+| **Testes**          | Vitest + SWC                           | Testes unitários com performance otimizada   |
+| **Container**       | Docker + Docker Compose                | Containerização e orquestração local         |
+| **Reverse Proxy**   | Nginx                                  | Proxy reverso para a API                     |
+| **CI/CD**           | GitHub Actions                         | Build, lint, testes e deploy automatizados   |
+| **Qualidade**       | ESLint + Prettier + Commitlint + Husky | Padronização de código e commits             |
 
 ---
 
@@ -149,6 +157,7 @@ modules/producer/
 ```
 
 **Por quê?**
+
 - As regras de negócio ficam nas **Entities** e **Domain Services**, isoladas de qualquer framework.
 - Os **Use Cases** atuam como **orquestradores**, coordenando o fluxo entre repositórios, domain services e entidades — sem implementar regras de negócio diretamente.
 - Os **Repositories** são injetados via Dependency Injection do NestJS usando `abstract class` como token de injeção, permitindo trocar a implementação sem alterar o domínio.
@@ -180,7 +189,7 @@ export class ValidateCultureAreaService {
 
     if (totalAllocated.getValue > propertyArea.getValue) {
       throw new InvalidAreaError(
-        'Culture sum area exceed property total area.',
+        "Culture sum area exceed property total area.",
       );
     }
   }
@@ -214,11 +223,11 @@ export class CreateCultureUseCase {
 
 **Domain Services existentes:**
 
-| Service | Módulo | Responsabilidade |
-|---------|--------|-----------------|
-| `ValidateCultureAreaService` | Culture | Valida se a soma das culturas não excede a área da propriedade |
-| `ValidateCultureCropsAreaService` | Culture | Valida se a soma dos crops não excede a área da cultura |
-| `ValidateMaxProperties` | Property | Valida o limite máximo de propriedades por produtor |
+| Service                           | Módulo   | Responsabilidade                                               |
+| --------------------------------- | -------- | -------------------------------------------------------------- |
+| `ValidateCultureAreaService`      | Culture  | Valida se a soma das culturas não excede a área da propriedade |
+| `ValidateCultureCropsAreaService` | Culture  | Valida se a soma dos crops não excede a área da cultura        |
+| `ValidateMaxProperties`           | Property | Valida o limite máximo de propriedades por produtor            |
 
 ---
 
@@ -240,21 +249,27 @@ export abstract class BaseError extends Error {
     this.name = this.constructor.name;
   }
 
-  get statusCode(): number { return this.status; }
-  get errorName(): string { return this.name; }
-  get errorMessage(): string { return this.message; }
+  get statusCode(): number {
+    return this.status;
+  }
+  get errorName(): string {
+    return this.name;
+  }
+  get errorMessage(): string {
+    return this.message;
+  }
 }
 ```
 
 **Erros disponíveis:**
 
-| Erro | Status HTTP | Uso |
-|------|-------------|-----|
-| `NotFoundError` | `404` | Recurso não encontrado |
-| `UnauthorizedError` | `401` | Falha de autenticação |
-| `ForbiddenError` | `403` | Sem permissão de acesso |
-| `ConflictError` | `409` | Conflito de recurso (ex: email duplicado, limite atingido) |
-| `InvalidAreaError` | `422` | Validação de área inválida (domínio) |
+| Erro                | Status HTTP | Uso                                                        |
+| ------------------- | ----------- | ---------------------------------------------------------- |
+| `NotFoundError`     | `404`       | Recurso não encontrado                                     |
+| `UnauthorizedError` | `401`       | Falha de autenticação                                      |
+| `ForbiddenError`    | `403`       | Sem permissão de acesso                                    |
+| `ConflictError`     | `409`       | Conflito de recurso (ex: email duplicado, limite atingido) |
+| `InvalidAreaError`  | `422`       | Validação de área inválida (domínio)                       |
 
 #### Global Error Handler
 
@@ -286,6 +301,7 @@ Isso elimina a necessidade de tratar erros manualmente em cada controller — ba
 O sistema de autenticação implementa um fluxo completo de **Access Token + Refresh Token** com sessões revogáveis:
 
 **Fluxo de Login:**
+
 1. O usuário envia email e senha
 2. A senha é verificada contra o hash armazenado (bcrypt, 10 rounds)
 3. São gerados dois tokens JWT:
@@ -294,6 +310,7 @@ O sistema de autenticação implementa um fluxo completo de **Access Token + Ref
 4. O Refresh Token é salvo no Redis com chave `refresh_{userId}` e TTL de 7 dias
 
 **Fluxo de Refresh:**
+
 1. O servidor lê o cookie `refresh_token`
 2. Verifica a assinatura do JWT com o `REFRESH_SECRET`
 3. Valida se o token no cookie é **exatamente igual** ao armazenado no Redis (previne reutilização de tokens antigos)
@@ -301,17 +318,19 @@ O sistema de autenticação implementa um fluxo completo de **Access Token + Ref
 5. Substitui o valor no Redis pelo novo Refresh Token
 
 **Fluxo de Logout:**
+
 1. O servidor deleta a chave `refresh_{userId}` do Redis
 2. O cookie `refresh_token` é limpo no navegador
 
 **Segurança do Cookie:**
+
 ```typescript
-res.cookie('refresh_token', tokens.refreshToken, {
-  httpOnly: true,                                    // Inacessível via JavaScript
-  secure: process.env.NODE_ENV === 'production',     // HTTPS only em produção
-  sameSite: 'strict',                                // Proteção contra CSRF
-  path: '/auth/refresh',                             // Escopo restrito
-  maxAge: 604800,                                    // 7 dias
+res.cookie("refresh_token", tokens.refreshToken, {
+  httpOnly: true, // Inacessível via JavaScript
+  secure: process.env.NODE_ENV === "production", // HTTPS only em produção
+  sameSite: "strict", // Proteção contra CSRF
+  path: "/auth/refresh", // Escopo restrito
+  maxAge: 604800, // 7 dias
 });
 ```
 
@@ -322,9 +341,11 @@ res.cookie('refresh_token', tokens.refreshToken, {
 A API implementa três níveis de guards que podem ser compostos de forma declarativa:
 
 #### `AuthGuard` — Autenticação via Bearer Token
+
 Extrai e verifica o JWT do header `Authorization: Bearer <token>`. Popula `request.producer` com o payload decodificado (id, username, role).
 
 #### `RolesGuard` — Controle de Acesso por Role (RBAC)
+
 Usa o decorator `@Roles()` para declarar quais roles podem acessar um endpoint. Exemplo de uso na rota de administração de migrations:
 
 ```typescript
@@ -349,6 +370,7 @@ async create(@Param() params: CultureIdParams) { ... }
 ```
 
 **Como funciona internamente:**
+
 1. O guard usa `Reflector` para ler os metadados do handler
 2. Resolve o service de ownership via `ModuleRef` (IoC container do NestJS)
 3. Chama `service.execute(producerId, resourceId)` que retorna um boolean
@@ -405,6 +427,7 @@ async execute(id: string, dto: UpdateCultureInput): Promise<CultureOutput> {
 ```
 
 **Locks:** Queries de leitura dentro de transações usam `FOR UPDATE` para evitar race conditions em cenários como:
+
 - Criação de propriedades (limite de 5 por produtor)
 - Atualização de área alocada de culturas (validação de soma de crops)
 - Verificação de ownership em operações concorrentes
@@ -416,12 +439,13 @@ async execute(id: string, dto: UpdateCultureInput): Promise<CultureOutput> {
 O domínio utiliza **Value Objects** para encapsular regras de validação e comportamento:
 
 #### `Area`
+
 Encapsula valores numéricos de área com validação de valor mínimo e arredondamento de precisão:
 
 ```typescript
 export class Area {
   static create(value: number): Area {
-    if (value < 0) throw new InvalidAreaError('Area must be greater than zero');
+    if (value < 0) throw new InvalidAreaError("Area must be greater than zero");
     return new Area(Math.round(value * 100) / 100);
   }
 
@@ -432,20 +456,21 @@ export class Area {
 ```
 
 #### `Slug`
+
 Gera slugs URL-friendly a partir de texto, normalizando caracteres Unicode, removendo acentos e formatando espaços:
 
 ```typescript
 export class Slug {
   static createFromText(text: string) {
     const slugText = text
-      .normalize('NFKD')
+      .normalize("NFKD")
       .toLowerCase()
       .trim()
-      .replace(/\s+/g, '-')
-      .replace(/[^\w-]+/g, '')
-      .replace(/_/g, '-')
-      .replace(/--+/g, '-')
-      .replace(/-$/g, '');
+      .replace(/\s+/g, "-")
+      .replace(/[^\w-]+/g, "")
+      .replace(/_/g, "-")
+      .replace(/--+/g, "-")
+      .replace(/-$/g, "");
     return new Slug(slugText);
   }
 }
@@ -459,24 +484,24 @@ A API centraliza toda a configuração de segurança HTTP em uma função `setup
 
 ```typescript
 function setupSecurity(app: INestApplication, configService: ConfigService) {
-  const isProducao = process.env.NODE_ENV === 'production';
+  const isProducao = process.env.NODE_ENV === "production";
 
   const originAllowed =
-    configService.get('FRONTEND_URL') || 'http://localhost:3000';
+    configService.get("FRONTEND_URL") || "http://localhost:3000";
 
   app.enableCors({
     origin: originAllowed,
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   });
 
   app.use(
     helmet({
-      crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
-      crossOriginResourcePolicy: { policy: 'same-site' },
+      crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+      crossOriginResourcePolicy: { policy: "same-site" },
       referrerPolicy: {
-        policy: 'strict-origin-when-cross-origin',
+        policy: "strict-origin-when-cross-origin",
       },
       strictTransportSecurity: isProducao ? undefined : false,
     }),
@@ -490,12 +515,12 @@ O CORS é configurado com **origin restrita** — apenas a URL do frontend defin
 
 **Configuração detalhada:**
 
-| Opção | Valor | Finalidade |
-|-------|-------|------------|
-| `origin` | `FRONTEND_URL` (env) | Restringe requisições cross-origin a uma única origem confiável |
-| `credentials` | `true` | Permite envio de cookies (necessário para o `refresh_token` httpOnly) |
-| `allowedHeaders` | `Content-Type`, `Authorization` | Limita headers aceitos ao mínimo necessário |
-| `methods` | `GET`, `POST`, `PUT`, `DELETE`, `OPTIONS` | Restringe métodos HTTP permitidos |
+| Opção            | Valor                                     | Finalidade                                                            |
+| ---------------- | ----------------------------------------- | --------------------------------------------------------------------- |
+| `origin`         | `FRONTEND_URL` (env)                      | Restringe requisições cross-origin a uma única origem confiável       |
+| `credentials`    | `true`                                    | Permite envio de cookies (necessário para o `refresh_token` httpOnly) |
+| `allowedHeaders` | `Content-Type`, `Authorization`           | Limita headers aceitos ao mínimo necessário                           |
+| `methods`        | `GET`, `POST`, `PUT`, `DELETE`, `OPTIONS` | Restringe métodos HTTP permitidos                                     |
 
 **Por que `credentials: true`?** O fluxo de refresh token utiliza cookies `httpOnly` — sem essa flag, o navegador não enviaria o cookie `refresh_token` nas requisições cross-origin para `/auth/refresh`.
 
@@ -505,20 +530,21 @@ O **Helmet** configura automaticamente headers HTTP de segurança, protegendo co
 
 **Headers configurados:**
 
-| Header | Valor | Finalidade |
-|--------|-------|------------|
-| `Content-Security-Policy` | default (Helmet) | Previne XSS e injeção de dados |
-| `Cross-Origin-Opener-Policy` | `same-origin-allow-popups` | Permite popups de mesma origem (OAuth, pagamentos) |
-| `Cross-Origin-Resource-Policy` | `same-site` | Permite compartilhamento de recursos dentro do mesmo site |
-| `Referrer-Policy` | `strict-origin-when-cross-origin` | Envia origin completa para same-origin, apenas origin para cross-origin |
-| `Strict-Transport-Security` | Ativo apenas em produção | Força HTTPS (desativado em dev para evitar problemas com `localhost`) |
-| `X-Content-Type-Options` | `nosniff` | Previne MIME type sniffing |
-| `X-Frame-Options` | `SAMEORIGIN` | Previne clickjacking |
-| `X-DNS-Prefetch-Control` | `off` | Desabilita DNS prefetching |
-| `X-Download-Options` | `noopen` | Previne abertura automática de downloads (IE) |
-| `X-Permitted-Cross-Domain-Policies` | `none` | Bloqueia políticas cross-domain (Flash/PDF) |
+| Header                              | Valor                             | Finalidade                                                              |
+| ----------------------------------- | --------------------------------- | ----------------------------------------------------------------------- |
+| `Content-Security-Policy`           | default (Helmet)                  | Previne XSS e injeção de dados                                          |
+| `Cross-Origin-Opener-Policy`        | `same-origin-allow-popups`        | Permite popups de mesma origem (OAuth, pagamentos)                      |
+| `Cross-Origin-Resource-Policy`      | `same-site`                       | Permite compartilhamento de recursos dentro do mesmo site               |
+| `Referrer-Policy`                   | `strict-origin-when-cross-origin` | Envia origin completa para same-origin, apenas origin para cross-origin |
+| `Strict-Transport-Security`         | Ativo apenas em produção          | Força HTTPS (desativado em dev para evitar problemas com `localhost`)   |
+| `X-Content-Type-Options`            | `nosniff`                         | Previne MIME type sniffing                                              |
+| `X-Frame-Options`                   | `SAMEORIGIN`                      | Previne clickjacking                                                    |
+| `X-DNS-Prefetch-Control`            | `off`                             | Desabilita DNS prefetching                                              |
+| `X-Download-Options`                | `noopen`                          | Previne abertura automática de downloads (IE)                           |
+| `X-Permitted-Cross-Domain-Policies` | `none`                            | Bloqueia políticas cross-domain (Flash/PDF)                             |
 
 **Decisões de customização do Helmet:**
+
 - **`crossOriginOpenerPolicy: 'same-origin-allow-popups'`** — O padrão do Helmet (`same-origin`) bloqueia completamente popups. A configuração `same-origin-allow-popups` permite fluxos de OAuth e janelas de pagamento sem comprometer o isolamento de contexto.
 - **`crossOriginResourcePolicy: 'same-site'`** — Permite que o frontend (mesmo domínio, porta diferente) acesse recursos da API.
 - **`strictTransportSecurity: false` em dev** — O HSTS força HTTPS e causa problemas com `localhost` em desenvolvimento. Em produção, o Helmet usa o valor padrão (`max-age=15552000; includeSubDomains`).
@@ -536,20 +562,125 @@ Isso garante que a camada de apresentação nunca receba dados internos (como `p
 
 ---
 
+## 📡 Arquitetura de Eventos e Notificações
+
+O AgroManager implementa uma arquitetura event-driven com três camadas complementares que formam um pipeline desacoplado: **Domain Events** → **Event Emitter** → **WebSocket Notifications**.
+
+```
+┌─────────────────┐      ┌──────────────────────┐      ┌─────────────────────────┐
+│  Domain Events  │─────▶│  NestJS EventEmitter  │─────▶│  WebSocket (Socket.IO)  │
+│  (Entidades)    │      │  (Pub/Sub Interno)    │      │  (Push para o Cliente)  │
+└─────────────────┘      └──────────────────────┘      └─────────────────────────┘
+    Camada de                Camada de                    Camada de
+    Domínio                  Aplicação                    Infraestrutura
+```
+
+---
+
+### Domain Events
+
+As entidades de domínio acumulam **Domain Events** durante a execução de regras de negócio. Os eventos são armazenados na própria entidade e despachados pelo use case após a persistência, garantindo que efeitos colaterais (como notificações) só aconteçam se a operação principal for bem-sucedida.
+
+#### Entidade Base com Suporte a Domain Events
+
+Todas as entidades herdam de `Entity<Props, EventData>`, que fornece a infraestrutura para acumular e recuperar eventos:
+
+```typescript
+export class Entity<Props, EventData = unknown> {
+  protected props: Props;
+  protected domainEvents: { event: string; data: EventData }[] = [];
+
+  public getDomainEvents() {
+    return this.domainEvents;
+  }
+
+  public clearDomainEvents(): void {
+    this.domainEvents = [];
+  }
+}
+```
+
+**Como funciona na prática:**
+
+1. A entidade registra eventos internamente durante operações de negócio (ex: `this.domainEvents.push({ event: 'crop.created', data: {...} })`)
+2. O use case persiste a entidade via repositório
+3. Após a persistência, o use case chama `entity.getDomainEvents()` e despacha cada evento via `EventEmitterContract`
+4. O use case chama `entity.clearDomainEvents()` para limpar os eventos processados
+
+**Por quê?**
+
+- Os eventos de domínio são gerados onde a regra de negócio acontece — **dentro da entidade** — mas só são despachados quando a operação é confirmada
+- A entidade permanece **agnóstica à infraestrutura** — ela não conhece o EventEmitter, apenas acumula eventos
+- Permite testar regras de negócio verificando os eventos acumulados, sem mocks de infraestrutura
+
+---
+
+### Event Emitter (NestJS)
+
+O **NestJS Event Emitter** (`@nestjs/event-emitter`) atua como barramento de eventos interno, implementando o padrão **Pub/Sub** para desacoplar quem produz eventos de quem os consome.
+
+#### Contrato e Implementação
+
+O contrato é definido na camada de domínio, mantendo a inversão de dependência:
+
+```typescript
+export interface EmitterPayload<T> {
+  event: string;
+  data: T;
+}
+
+export abstract class EventEmitterContract {
+  abstract emit<T>(payload: EmitterPayload<T>): void;
+}
+```
+
+A implementação na camada de infraestrutura delega ao `EventEmitter2` do NestJS:
+
+```typescript
+// Implementação (infraestrutura) — usa EventEmitter2 do NestJS
+export class EventEmitterProvider implements EventEmitterContract {
+  constructor(private readonly eventEmitter: EventEmitter2) {}
+
+  emit<T>(event: EmitterPayload<T>): void {
+    this.eventEmitter.emit(event.event, event.data);
+  }
+}
+```
+
+**Decisões técnicas:**
+
+- **`async: true`** — Os listeners são executados de forma assíncrona, sem bloquear o fluxo principal do use case. Isso garante que a resposta HTTP não espere o envio da notificação
+- **Desacoplamento total** — O use case emite o evento e retorna. Quem escuta e o que faz com o evento é responsabilidade do listener
+- **Escalável** — Adicionar um novo efeito colateral para um evento existente é criar um novo listener, sem modificar nenhum código existente (Open/Closed Principle)
+
+### Notificações em Tempo Real (WebSocket)
+
+O módulo de notificações utiliza **Socket.IO** via `@nestjs/websockets` para entregar notificações em tempo real aos produtores conectados.
+
+**Fluxo de conexão:**
+
+1. O cliente se conecta ao namespace `/notifications` enviando o JWT via `auth.token`
+2. O gateway verifica a assinatura do token
+3. O cliente é adicionado ao **room** `producer-{id}` — isso permite enviar notificações direcionadas
+4. Se o token for inválido, o cliente é desconectado imediatamente
+
+---
+
 ## 🐳 Infraestrutura e DevOps
 
 ### Docker e Nginx
 
 O ambiente local é orquestrado via `docker-compose.yml` com os seguintes serviços:
 
-| Serviço | Imagem | Porta | Finalidade |
-|---------|--------|-------|------------|
-| **nginx** | `nginx:1.29` | `8080:80` | Reverse proxy para a API |
-| **api** | Build local (`Dockerfile`) | `3000` (interna) | API NestJS com hot-reload |
-| **postgres** | `postgres:16` | `5432` (interna) | Banco de dados com healthcheck |
-| **redis** | `redis:8.2.3-alpine` | `6379` (interna) | Cache e sessões |
+| Serviço      | Imagem                     | Porta            | Finalidade                     |
+| ------------ | -------------------------- | ---------------- | ------------------------------ |
+| **nginx**    | `nginx:1.29`               | `8080:80`        | Reverse proxy para a API       |
+| **api**      | Build local (`Dockerfile`) | `3000` (interna) | API NestJS com hot-reload      |
+| **postgres** | `postgres:16`              | `5432` (interna) | Banco de dados com healthcheck |
+| **redis**    | `redis:8.2.3-alpine`       | `6379` (interna) | Cache e sessões                |
 
 A API em produção usa um **multi-stage Dockerfile** (`prod.Dockerfile`) com 3 estágios:
+
 1. **test-stage** — Instala dependências de dev e roda os testes
 2. **build-stage** — Instala apenas dependências de produção e compila o TypeScript
 3. **runtime** — Imagem final mínima, apenas com `node_modules` de produção e `dist/`
@@ -560,12 +691,12 @@ A API em produção usa um **multi-stage Dockerfile** (`prod.Dockerfile`) com 3 
 
 Os pipelines de CI/CD são organizados em workflows separados. Apenas o pipeline de deploy utiliza filtro de paths, garantindo que deploys ocorram somente quando o código da API é alterado:
 
-| Workflow | Trigger | O que faz |
-|----------|---------|-----------| 
-| `build.yml` | PR em `main`/`develop` | Build de todo o monorepo |
-| `test.yml` | PR em `main`/`develop` | Testes unitários (Vitest) |
-| `linting.yml` | PR em `main`/`develop` | ESLint, Prettier e Commitlint |
-| `deploy-api.yml` | Push em `main` — paths: `api/**` | Deploy via Render webhook |
+| Workflow         | Trigger                          | O que faz                     |
+| ---------------- | -------------------------------- | ----------------------------- |
+| `build.yml`      | PR em `main`/`develop`           | Build de todo o monorepo      |
+| `test.yml`       | PR em `main`/`develop`           | Testes unitários (Vitest)     |
+| `linting.yml`    | PR em `main`/`develop`           | ESLint, Prettier e Commitlint |
+| `deploy-api.yml` | Push em `main` — paths: `api/**` | Deploy via Render webhook     |
 
 O pipeline de testes executa `npm run test` na raiz, que roda os testes de todos os workspaces. Os workflows de build, test e linting ignoram PRs do Dependabot (quando aplicável) para economizar minutos de CI.
 
@@ -573,64 +704,70 @@ O pipeline de testes executa `npm run test` na raiz, que roda os testes de todos
 
 ### Qualidade de Código
 
-| Ferramenta | Finalidade |
-|------------|------------|
-| **ESLint** | Linting de código TypeScript |
-| **Prettier** | Formatação automática de código |
-| **Commitlint** | Validação de mensagens de commit (Conventional Commits) |
-| **Husky** | Git hooks para executar commitlint automaticamente no `commit-msg` |
-| **Dependabot** | Atualização automática de dependências NPM e Docker |
+| Ferramenta     | Finalidade                                                         |
+| -------------- | ------------------------------------------------------------------ |
+| **ESLint**     | Linting de código TypeScript                                       |
+| **Prettier**   | Formatação automática de código                                    |
+| **Commitlint** | Validação de mensagens de commit (Conventional Commits)            |
+| **Husky**      | Git hooks para executar commitlint automaticamente no `commit-msg` |
+| **Dependabot** | Atualização automática de dependências NPM e Docker                |
 
 ---
 
 ## 📦 Módulos da API
 
 ### Auth (`/auth`)
-| Método | Rota | Descrição | Auth |
-|--------|------|-----------|------|
-| `POST` | `/auth/login` | Login com email e senha | Não |
-| `POST` | `/auth/refresh` | Renovação de tokens | Cookie |
-| `GET` | `/auth/logout` | Logout (revoga sessão) | Bearer |
+
+| Método | Rota            | Descrição               | Auth   |
+| ------ | --------------- | ----------------------- | ------ |
+| `POST` | `/auth/login`   | Login com email e senha | Não    |
+| `POST` | `/auth/refresh` | Renovação de tokens     | Cookie |
+| `GET`  | `/auth/logout`  | Logout (revoga sessão)  | Bearer |
 
 ### Producer (`/producers`)
-| Método | Rota | Descrição | Auth |
-|--------|------|-----------|------|
-| `GET` | `/producers` | Buscar perfil do produtor logado | Bearer |
-| `POST` | `/producers` | Criar novo produtor | Não |
-| `PATCH` | `/producers` | Atualizar perfil | Bearer |
-| `DELETE` | `/producers` | Deletar conta | Bearer |
+
+| Método   | Rota         | Descrição                        | Auth   |
+| -------- | ------------ | -------------------------------- | ------ |
+| `GET`    | `/producers` | Buscar perfil do produtor logado | Bearer |
+| `POST`   | `/producers` | Criar novo produtor              | Não    |
+| `PATCH`  | `/producers` | Atualizar perfil                 | Bearer |
+| `DELETE` | `/producers` | Deletar conta                    | Bearer |
 
 ### Property (`/property`)
-| Método | Rota | Descrição | Auth |
-|--------|------|-----------|------|
-| `GET` | `/property/:slug` | Buscar propriedade por slug | Bearer |
-| `POST` | `/property` | Criar nova propriedade | Bearer |
-| `PATCH` | `/property/:slug` | Atualizar propriedade | Bearer |
-| `DELETE` | `/property/:slug` | Deletar propriedade | Bearer |
+
+| Método   | Rota              | Descrição                   | Auth   |
+| -------- | ----------------- | --------------------------- | ------ |
+| `GET`    | `/property/:slug` | Buscar propriedade por slug | Bearer |
+| `POST`   | `/property`       | Criar nova propriedade      | Bearer |
+| `PATCH`  | `/property/:slug` | Atualizar propriedade       | Bearer |
+| `DELETE` | `/property/:slug` | Deletar propriedade         | Bearer |
 
 ### Culture (`/:slug/cultures`)
-| Método | Rota | Descrição | Auth + Owner |
-|--------|------|-----------|------|
-| `GET` | `/:slug/cultures/:id` | Buscar cultura por ID | Bearer + OwnerGuard |
-| `POST` | `/:slug/cultures` | Criar nova cultura | Bearer + OwnerGuard |
-| `PATCH` | `/:slug/cultures/:id` | Atualizar cultura | Bearer + OwnerGuard |
-| `DELETE` | `/:slug/cultures` | Deletar cultura | Bearer + OwnerGuard |
+
+| Método   | Rota                  | Descrição             | Auth + Owner        |
+| -------- | --------------------- | --------------------- | ------------------- |
+| `GET`    | `/:slug/cultures/:id` | Buscar cultura por ID | Bearer + OwnerGuard |
+| `POST`   | `/:slug/cultures`     | Criar nova cultura    | Bearer + OwnerGuard |
+| `PATCH`  | `/:slug/cultures/:id` | Atualizar cultura     | Bearer + OwnerGuard |
+| `DELETE` | `/:slug/cultures`     | Deletar cultura       | Bearer + OwnerGuard |
 
 ### Crop (`/:cultureId/crop`)
-| Método | Rota | Descrição | Auth + Owner |
-|--------|------|-----------|------|
-| `POST` | `/:cultureId/crop` | Criar novo crop | Bearer + OwnerGuard |
-| `GET` | `/:cultureId/crop/:id` | Buscar crop por ID | Bearer + OwnerGuard |
-| `GET` | `/:cultureId/crop` | Listar crops da cultura | Bearer + OwnerGuard |
-| `PATCH` | `/:cultureId/crop/:id` | Atualizar crop | Bearer + OwnerGuard |
-| `DELETE` | `/:cultureId/crop/:id` | Deletar crop por ID | Bearer + OwnerGuard |
-| `DELETE` | `/:cultureId/crop` | Deletar todos os crops da cultura | Bearer + OwnerGuard |
+
+| Método   | Rota                   | Descrição                         | Auth + Owner        |
+| -------- | ---------------------- | --------------------------------- | ------------------- |
+| `POST`   | `/:cultureId/crop`     | Criar novo crop                   | Bearer + OwnerGuard |
+| `GET`    | `/:cultureId/crop/:id` | Buscar crop por ID                | Bearer + OwnerGuard |
+| `GET`    | `/:cultureId/crop`     | Listar crops da cultura           | Bearer + OwnerGuard |
+| `PATCH`  | `/:cultureId/crop/:id` | Atualizar crop                    | Bearer + OwnerGuard |
+| `DELETE` | `/:cultureId/crop/:id` | Deletar crop por ID               | Bearer + OwnerGuard |
+| `DELETE` | `/:cultureId/crop`     | Deletar todos os crops da cultura | Bearer + OwnerGuard |
 
 ### Migration (`/migration`) — Admin Only
-| Método | Rota | Descrição | Auth |
-|--------|------|-----------|------|
-| `GET` | `/migration` | Listar migrations pendentes (dry-run) | Bearer + Admin |
-| `POST` | `/migration` | Executar migrations | Bearer + Admin |
+
+| Método | Rota         | Descrição                             | Auth           |
+| ------ | ------------ | ------------------------------------- | -------------- |
+| `GET`  | `/migration` | Listar migrations pendentes (dry-run) | Bearer + Admin |
+| `POST` | `/migration` | Executar migrations                   | Bearer + Admin |
 
 > A documentação interativa completa está disponível via Swagger em `/api`.
 
@@ -657,6 +794,7 @@ O pipeline de testes executa `npm run test` na raiz, que roda os testes de todos
 ```
 
 **Detalhes:**
+
 - **Tipos numéricos:** `totalArea`, `arableArea` e `vegetationArea` usam `NUMERIC(10,2)` para precisão decimal; `allocatedArea` em cultures e crops usa `integer`
 - **Cascade Deletes:** Deletar um produtor remove todas as suas propriedades, que por sua vez removem suas culturas e safras automaticamente
 - **Constraints:** `email` e `slug` possuem constraints `UNIQUE`
@@ -665,11 +803,11 @@ O pipeline de testes executa `npm run test` na raiz, que roda os testes de todos
 
 O banco possui indexes nas colunas de chave estrangeira para otimizar JOINs e buscas por relacionamento:
 
-| Index | Tabela | Coluna |
-|-------|--------|--------|
+| Index                       | Tabela       | Coluna       |
+| --------------------------- | ------------ | ------------ |
 | `idx_properties_producerId` | `properties` | `producerId` |
-| `idx_cultures_propertyId` | `cultures` | `propertyId` |
-| `idx_crops_cultureId` | `crops` | `cultureId` |
+| `idx_cultures_propertyId`   | `cultures`   | `propertyId` |
+| `idx_crops_cultureId`       | `crops`      | `cultureId`  |
 
 Esses indexes beneficiam diretamente a **performance do OwnerGuard**, que executa queries com JOINs encadeados para verificar ownership. Por exemplo, o `IsCropOwnerUseCase` faz `crops → cultures → properties` para verificar se o crop pertence ao produtor autenticado — sem indexes, o PostgreSQL faria full table scans em cada JOIN.
 
@@ -769,29 +907,29 @@ POSTGRES_DB=local_pg
 
 ### Raiz do Monorepo
 
-| Script | Comando | Descrição |
-|--------|---------|-----------|
-| `compose:up` | `docker compose up` | Sobe todos os containers |
-| `compose:build` | `docker compose up --build` | Sobe com rebuild de imagens |
-| `compose:stop` | `docker compose stop` | Para todos os containers |
-| `compose:down` | `docker compose down` | Remove todos os containers |
-| `build` | `npm run build -ws` | Build de todos os workspaces |
-| `test` | `npm run test -ws` | Testes de todos os workspaces |
-| `lint` | `npm run lint -ws` | Lint de todos os workspaces |
-| `format` | `npm run format -ws` | Formatação de todos os workspaces |
-| `migrate` | `node-pg-migrate up` | Executa migrations |
+| Script          | Comando                     | Descrição                         |
+| --------------- | --------------------------- | --------------------------------- |
+| `compose:up`    | `docker compose up`         | Sobe todos os containers          |
+| `compose:build` | `docker compose up --build` | Sobe com rebuild de imagens       |
+| `compose:stop`  | `docker compose stop`       | Para todos os containers          |
+| `compose:down`  | `docker compose down`       | Remove todos os containers        |
+| `build`         | `npm run build -ws`         | Build de todos os workspaces      |
+| `test`          | `npm run test -ws`          | Testes de todos os workspaces     |
+| `lint`          | `npm run lint -ws`          | Lint de todos os workspaces       |
+| `format`        | `npm run format -ws`        | Formatação de todos os workspaces |
+| `migrate`       | `node-pg-migrate up`        | Executa migrations                |
 
 ### API Workspace (`-w api`)
 
-| Script | Comando | Descrição |
-|--------|---------|-----------|
-| `start:dev` | `nest start --watch` | Desenvolvimento com hot-reload |
-| `start:prod` | `node dist/src/main` | Execução em produção |
-| `build` | `nest build` | Compila o TypeScript |
-| `test` | `vitest run` | Roda testes unitários |
-| `test:watch` | `vitest` | Roda testes em modo watch |
-| `lint` | `eslint --fix` | Lint com auto-fix |
-| `format` | `prettier --write` | Formatação automática |
+| Script       | Comando              | Descrição                      |
+| ------------ | -------------------- | ------------------------------ |
+| `start:dev`  | `nest start --watch` | Desenvolvimento com hot-reload |
+| `start:prod` | `node dist/src/main` | Execução em produção           |
+| `build`      | `nest build`         | Compila o TypeScript           |
+| `test`       | `vitest run`         | Roda testes unitários          |
+| `test:watch` | `vitest`             | Roda testes em modo watch      |
+| `lint`       | `eslint --fix`       | Lint com auto-fix              |
+| `format`     | `prettier --write`   | Formatação automática          |
 
 ---
 
@@ -811,6 +949,9 @@ POSTGRES_DB=local_pg
 - [x] API — Swagger para documentação
 - [x] API — Segurança HTTP com Helmet e CORS
 - [x] API — Testes unitários com Vitest
+- [x] API — Domain Events nas entidades base
+- [x] API — Event Emitter com @nestjs/event-emitter
+- [x] API — Notificações em tempo real com WebSocket (Socket.IO)
 - [x] Docker Compose para ambiente local
 - [x] CI/CD com GitHub Actions
 - [ ] API — Dashboard com métricas agregadas
