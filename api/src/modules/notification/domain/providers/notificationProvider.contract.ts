@@ -7,5 +7,5 @@ export abstract class NotificationProviderContract {
 
   abstract sendToProducer(producerId: string, notification: Notification): void;
 
-  abstract sendtoAll(notification: Notification): void;
+  abstract sendToAll(notification: Notification): void;
 }

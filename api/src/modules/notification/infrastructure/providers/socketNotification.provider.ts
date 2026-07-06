@@ -3,6 +3,7 @@ import { Server } from 'socket.io';
 import { Notification } from 'src/shared/domain/entities/notification.entity';
 
 import { NotificationProviderContract } from '../../domain/providers/notificationProvider.contract';
+import { NotificationMapper } from '../notification.mapper';
 
 @Injectable()
 export class NotificationProvider implements NotificationProviderContract {
@@ -15,10 +16,13 @@ export class NotificationProvider implements NotificationProviderContract {
   sendToProducer(producerId: string, notification: Notification) {
     this.socketServer
       .to(`producer-${producerId}`)
-      .emit('notification', notification);
+      .emit('notification', NotificationMapper.toResponse(notification));
   }
 
-  sendtoAll(notification: Notification) {
-    this.socketServer.emit('notification', notification);
+  sendToAll(notification: Notification) {
+    this.socketServer.emit(
+      'notification',
+      NotificationMapper.toResponse(notification),
+    );
   }
 }
