@@ -3,7 +3,7 @@ import { LoginInputDto } from '../dto/login.dto';
 import { compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { JwtPayload } from 'src/shared/types/jwtPayload';
+import { JwtPayload } from 'src/shared/application/types/jwtPayload';
 import { TTL_REFRESH_TOKEN } from '../../domain/constants/ttlRefreshToken.constants';
 import { AuthContract } from '../../domain/repositories/authRepository.contract';
 import { UnauthorizedError } from 'src/shared/domain/errors/unauthorizedError';

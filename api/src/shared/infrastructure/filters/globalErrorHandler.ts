@@ -1,7 +1,7 @@
 import { Catch, ArgumentsHost } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
-import { BaseError } from '../domain/errors/baseError';
 import { Response } from 'express';
+import { BaseError } from 'src/shared/domain/errors/baseError';
 
 @Catch()
 export class GlobalErrorHandler extends BaseExceptionFilter {

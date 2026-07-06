@@ -10,9 +10,9 @@ import {
   HttpCode,
   Req,
 } from '@nestjs/common';
-import { AuthGuard } from 'src/shared/guards/auth.guard';
+import { AuthGuard } from 'src/shared/infrastructure/guards/auth.guard';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
-import type { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
+import type { AuthenticatedRequest } from 'src/shared/application/types/authenticatedRequest';
 import { ProducerOutput } from '../application/dto/output.dto';
 import { CreateProducerInput } from '../application/dto/create.dto';
 import { UpdateProducerDTO } from '../application/dto/update.dto';

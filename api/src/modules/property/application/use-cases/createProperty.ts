@@ -1,7 +1,7 @@
 import { PropertyMapper } from '../../infrastructure/persistence/property.mapper';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Property } from '../../domain/entities/property.entity';
-import { Area } from '../../../../shared/domain/value-object/area';
+import { Area } from '../../../../shared/domain/value-objects/area';
 import { Slug } from '../../domain/value-object/slug';
 import { CreatePropertyDto } from '../dto/create.dto';
 import { Injectable } from '@nestjs/common';

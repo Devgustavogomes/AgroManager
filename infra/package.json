@@ -2,15 +2,42 @@
   "name": "@agromanager/infra",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "build": "tsc"
+  },
   "exports": {
-    "./database/module": "./database/module.ts",
-    "./database/service": "./database/service.ts",
-    "./database/provider": "./database/provider.ts",
-    "./database/contract": "./database/contract.ts",
-    "./redis/module": "./redis/module.ts",
-    "./redis/service": "./redis/service.ts",
-    "./redis/provider": "./redis/provider.ts",
-    "./redis/contract": "./redis/contract.ts"
+    "./database/module": {
+      "types": "./dist/database/module.d.ts",
+      "default": "./dist/database/module.js"
+    },
+    "./database/service": {
+      "types": "./dist/database/service.d.ts",
+      "default": "./dist/database/service.js"
+    },
+    "./database/provider": {
+      "types": "./dist/database/provider.d.ts",
+      "default": "./dist/database/provider.js"
+    },
+    "./database/contract": {
+      "types": "./dist/database/contract.d.ts",
+      "default": "./dist/database/contract.js"
+    },
+    "./redis/module": {
+      "types": "./dist/redis/module.d.ts",
+      "default": "./dist/redis/module.js"
+    },
+    "./redis/service": {
+      "types": "./dist/redis/service.d.ts",
+      "default": "./dist/redis/service.js"
+    },
+    "./redis/provider": {
+      "types": "./dist/redis/provider.d.ts",
+      "default": "./dist/redis/provider.js"
+    },
+    "./redis/contract": {
+      "types": "./dist/redis/contract.d.ts",
+      "default": "./dist/redis/contract.js"
+    }
   },
   "dependencies": {
     "pg": "^8.22.0",

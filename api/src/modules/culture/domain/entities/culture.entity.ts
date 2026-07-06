@@ -1,7 +1,7 @@
 import { Entity } from 'src/shared/domain/entities/entity';
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
-import { Area } from 'src/shared/domain/value-object/area';
-import { Optional } from 'src/shared/types/optional';
+import { Area } from 'src/shared/domain/value-objects/area';
+import { Optional } from 'src/shared/application/types/optional';
 
 interface CultureProps {
   cultureId: string;

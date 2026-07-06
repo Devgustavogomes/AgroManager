@@ -2,7 +2,7 @@ import { Mocked } from 'vitest';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
 import { UpdatePropertyUseCase } from './updateProperty';
 import { Property } from '../../domain/entities/property.entity';
-import { Area } from 'src/shared/domain/value-object/area';
+import { Area } from 'src/shared/domain/value-objects/area';
 
 describe('Update Property', () => {
   let useCase: UpdatePropertyUseCase;
