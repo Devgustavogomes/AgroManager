@@ -8,8 +8,8 @@ import { ModuleRef, Reflector } from '@nestjs/core';
 import { OWNER_SERVICE_KEY } from 'src/shared/infrastructure/decorators/owner.decorator';
 import { AuthenticatedRequest } from 'src/shared/application/types/authenticatedRequest';
 import { Role } from 'src/shared/application/types/role';
-import { UnauthorizedError } from '../domain/errors/unauthorizedError';
-import { ForbiddenError } from '../domain/errors/forbiddenError';
+import { UnauthorizedError } from 'src/shared/domain/errors/unauthorizedError';
+import { ForbiddenError } from 'src/shared/domain/errors/forbiddenError';
 
 interface Service {
   execute(idProducer: string, idService: string): Promise<boolean>;
