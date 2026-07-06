@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
 import { UpdatePropertyDto } from '../dto/update.dto';
 import { Slug } from '../../domain/value-object/slug';
-import { Area } from 'src/shared/domain/value-object/area';
+import { Area } from 'src/shared/domain/value-objects/area';
 import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
 
 @Injectable()

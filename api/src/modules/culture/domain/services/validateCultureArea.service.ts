@@ -1,4 +1,4 @@
-import { Area } from 'src/shared/domain/value-object/area';
+import { Area } from 'src/shared/domain/value-objects/area';
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
 
 export class ValidateCultureAreaService {

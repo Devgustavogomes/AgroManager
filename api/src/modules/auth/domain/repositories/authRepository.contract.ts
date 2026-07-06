@@ -1,4 +1,4 @@
-import { Role } from 'src/shared/types/role';
+import { Role } from 'src/shared/application/types/role';
 import { ProducerLogin } from '../entities/producerLogin.entity';
 
 export interface ProducerLoginPersistence {

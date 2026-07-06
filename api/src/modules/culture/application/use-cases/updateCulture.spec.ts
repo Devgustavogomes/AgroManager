@@ -3,7 +3,7 @@ import { CultureContract } from '../../domain/repositories/cultureRepository.int
 import { UpdateCultureUseCase } from './updateCulture';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Culture } from '../../domain/entities/culture.entity';
-import { Area } from 'src/shared/domain/value-object/area';
+import { Area } from 'src/shared/domain/value-objects/area';
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
 
 describe('UpdateCultureUseCase', () => {

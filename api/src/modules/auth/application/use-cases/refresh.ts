@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { AuthContract } from '../../domain/repositories/authRepository.contract';
 import { TTL_REFRESH_TOKEN } from '../../domain/constants/ttlRefreshToken.constants';
 import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from 'src/shared/types/jwtPayload';
+import { JwtPayload } from 'src/shared/application/types/jwtPayload';
 import { ConfigService } from '@nestjs/config';
 import { UnauthorizedError } from 'src/shared/domain/errors/unauthorizedError';
 

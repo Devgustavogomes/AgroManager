@@ -1,4 +1,4 @@
-import { Area } from 'src/shared/domain/value-object/area';
+import { Area } from 'src/shared/domain/value-objects/area';
 import { Crop } from '../domain/entities/crop.entity';
 import { CropPersistence } from '../domain/repositories/cropsRepository.contract';
 import { CropOutput } from '../application/dto/cropOutput.dto';

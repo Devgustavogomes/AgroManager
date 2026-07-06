@@ -5,7 +5,7 @@ import { PestStatus } from '../../domain/constants/pest-status.enum';
 import { CropStatus } from '../../domain/constants/crop-status.enum';
 import { Crop } from '../../domain/entities/crop.entity';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
-import { Area } from 'src/shared/domain/value-object/area';
+import { Area } from 'src/shared/domain/value-objects/area';
 
 describe('CreateCropUseCase', () => {
   let mockCropRepository: Mocked<CropContract>;

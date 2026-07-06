@@ -1,5 +1,5 @@
 import { Culture } from '../entities/culture.entity';
-import { Area } from 'src/shared/domain/value-object/area';
+import { Area } from 'src/shared/domain/value-objects/area';
 
 export interface CulturePersistence {
   cultureId: string;

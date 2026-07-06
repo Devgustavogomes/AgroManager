@@ -10,10 +10,10 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import type { Response } from 'express';
-import type { AuthenticatedRequest } from 'src/shared/types/authenticatedRequest';
+import type { AuthenticatedRequest } from 'src/shared/application/types/authenticatedRequest';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import { LoginInputDto } from '../application/dto/login.dto';
-import { AuthGuard } from 'src/shared/guards/auth.guard';
+import { AuthGuard } from 'src/shared/infrastructure/guards/auth.guard';
 import { LoginUseCase } from '../application/use-cases/login';
 import { RefreshUseCase } from '../application/use-cases/refresh';
 import { LogoutUseCase } from '../application/use-cases/logout';
