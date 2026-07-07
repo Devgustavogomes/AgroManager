@@ -40,18 +40,16 @@ export class CreatePropertyUseCase {
       vegetationArea,
     });
 
-    const result = await this.dbService.transaction(
-      async (client: PoolClient) => {
-        const propertiesCount = await this.propertyRepository.count(
-          property,
-          client,
-        );
+    const result = await this.dbService.transaction(async (client) => {
+      const propertiesCount = await this.propertyRepository.count(
+        property,
+        client,
+      );
 
-        ValidateMaxProperties.execute(propertiesCount);
+      ValidateMaxProperties.execute(propertiesCount);
 
-        return await this.propertyRepository.create(property, client);
-      },
-    );
+      return await this.propertyRepository.create(property, client);
+    });
 
     return PropertyMapper.toResponse(result);
   }

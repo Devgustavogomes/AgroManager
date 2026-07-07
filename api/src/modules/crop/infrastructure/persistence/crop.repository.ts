@@ -53,13 +53,13 @@ export class CropRepository implements CropContract {
 
     const params = [cultureId];
 
-    const result = await this.databaseService.query<number>(
+    const result = await this.databaseService.query<{ allocatedArea: number }>(
       sql,
       params,
       client,
     );
 
-    return result[0] ?? 0;
+    return result[0].allocatedArea ?? 0;
   }
 
   async getCropsArea(cultureId: string, client: PoolClient): Promise<number> {
@@ -174,7 +174,7 @@ export class CropRepository implements CropContract {
   }
 
   async isOwner(producerId: string, cropId: string): Promise<boolean> {
-    const sql = `SELECT EXISTS (
+    const sql = `SELECT EXISTS as "isOwner" (
                 SELECT 1
                 FROM crops AS cr
                 INNER JOIN cultures AS cult 
@@ -187,8 +187,11 @@ export class CropRepository implements CropContract {
 
     const params = [cropId, producerId];
 
-    const result = await this.databaseService.query<boolean>(sql, params);
+    const result = await this.databaseService.query<{ isOwner: boolean }>(
+      sql,
+      params,
+    );
 
-    return result[0];
+    return result[0].isOwner;
   }
 }
