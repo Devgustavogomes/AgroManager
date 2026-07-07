@@ -5,7 +5,7 @@ import { CropOutput } from '../dto/cropOutput.dto';
 import { CropMapper } from '../../infrastructure/crop.mapper';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Area } from 'src/shared/domain/value-objects/area';
-import { ValidateCultureCropsAreaService } from 'src/modules/culture/domain/services/validateCultureCropsArea.service';
+import { ValidateCultureCropsAreaService } from 'src/shared/domain/services/validateCultureCropsArea.service';
 import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
 
 @Injectable()

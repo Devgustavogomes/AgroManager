@@ -5,7 +5,7 @@ import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Crop } from '../../domain/entities/crop.entity';
 import { Area } from 'src/shared/domain/value-objects/area';
 import { CropMapper } from '../../infrastructure/crop.mapper';
-import { ValidateCultureCropsAreaService } from 'src/modules/culture/domain/services/validateCultureCropsArea.service';
+import { ValidateCultureCropsAreaService } from 'src/shared/domain/services/validateCultureCropsArea.service';
 
 @Injectable()
 export class CreateCropUseCase {
