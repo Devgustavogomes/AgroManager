@@ -5,7 +5,6 @@ import { Area } from '../../../../shared/domain/value-objects/area';
 import { Slug } from '../../domain/value-object/slug';
 import { CreatePropertyDto } from '../dto/create.dto';
 import { Injectable } from '@nestjs/common';
-import { PoolClient } from 'pg';
 import { PropertyOutputDto } from '../dto/output.dto';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
 import { ValidateMaxProperties } from '../../domain/services/validateMaxProperties.service';
