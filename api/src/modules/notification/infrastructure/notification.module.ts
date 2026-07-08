@@ -6,6 +6,8 @@ import { ProducerCreatedListener } from '../application/listeners/producerCreate
 import { ProducerUpdatedListener } from '../application/listeners/producerUpdated.listener';
 import { PropertyCreatedListener } from '../application/listeners/propertyCreated.listener';
 import { PropertyUpdatedListener } from '../application/listeners/propertyUpdated.listener';
+import { CultureCreatedListener } from '../application/listeners/cultureCreated.listener';
+import { CultureUpdatedListener } from '../application/listeners/cultureUpdated.listener';
 
 @Module({
   providers: [
@@ -15,6 +17,8 @@ import { PropertyUpdatedListener } from '../application/listeners/propertyUpdate
     ProducerUpdatedListener,
     PropertyCreatedListener,
     PropertyUpdatedListener,
+    CultureCreatedListener,
+    CultureUpdatedListener,
   ],
   exports: [NotificationProviderContract],
 })
