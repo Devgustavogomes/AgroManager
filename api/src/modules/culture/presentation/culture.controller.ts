@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/shared/infrastructure/guards/auth.guard';
@@ -13,6 +14,7 @@ import { RolesGuards } from 'src/shared/infrastructure/guards/roles.guard';
 import { OwnerGuard } from 'src/shared/infrastructure/guards/owner.guard';
 import { OwnerService } from 'src/shared/infrastructure/decorators/owner.decorator';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
+import type { AuthenticatedRequest } from 'src/shared/application/types/authenticatedRequest';
 import { CreateCultureUseCase } from '../application/use-cases/createCulture';
 import { CultureIdParams } from '../application/dto/cultureIdParams.dto';
 import { IsCultureOwnerUseCase } from '../application/use-cases/isCultureOwner';
@@ -49,8 +51,13 @@ export class CultureController {
   async create(
     @Param() params: CultureIdParams,
     @Body() dto: CreateCultureInput,
+    @Req() req: AuthenticatedRequest,
   ) {
-    return await this.createCultureUseCase.execute(params.slug, dto);
+    return await this.createCultureUseCase.execute(
+      params.slug,
+      req.producer.id,
+      dto,
+    );
   }
 
   @ApiBearerAuth()
@@ -60,8 +67,13 @@ export class CultureController {
   async update(
     @Param() params: CultureIdParams,
     @Body() dto: UpdateCultureInput,
+    @Req() req: AuthenticatedRequest,
   ) {
-    return await this.updateCultureUseCase.execute(params.id!, dto);
+    return await this.updateCultureUseCase.execute(
+      params.id!,
+      req.producer.id,
+      dto,
+    );
   }
 
   @ApiBearerAuth()

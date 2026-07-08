@@ -5,11 +5,13 @@ import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Culture } from '../../domain/entities/culture.entity';
 import { Area } from 'src/shared/domain/value-objects/area';
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
+import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 
 describe('UpdateCultureUseCase', () => {
   let useCase: UpdateCultureUseCase;
   let mockCultureRepository: Mocked<CultureContract>;
   let mockDatabaseService: Mocked<DatabaseContract>;
+  let mockEventEmitter: Mocked<EventEmitterContract>;
 
   beforeEach(() => {
     mockCultureRepository = {
@@ -25,9 +27,14 @@ describe('UpdateCultureUseCase', () => {
       }),
     } as unknown as Mocked<DatabaseContract>;
 
+    mockEventEmitter = {
+      emit: vi.fn(),
+    };
+
     useCase = new UpdateCultureUseCase(
       mockCultureRepository,
       mockDatabaseService,
+      mockEventEmitter,
     );
   });
 
@@ -47,7 +54,7 @@ describe('UpdateCultureUseCase', () => {
     mockCultureRepository.cropSum.mockResolvedValue(0);
     mockCultureRepository.update.mockResolvedValue(culture);
 
-    await useCase.execute('1', dto);
+    await useCase.execute('1', '123', dto);
 
     expect(mockCultureRepository.update).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -83,6 +90,8 @@ describe('UpdateCultureUseCase', () => {
     mockCultureRepository.findById.mockResolvedValue(culture);
     mockCultureRepository.cropSum.mockResolvedValue(110);
 
-    await expect(useCase.execute('1', dto)).rejects.toThrow(InvalidAreaError);
+    await expect(useCase.execute('1', '123', dto)).rejects.toThrow(
+      InvalidAreaError,
+    );
   });
 });

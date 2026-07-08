@@ -6,15 +6,17 @@ import { Crop } from '../../domain/entities/crop.entity';
 import { Area } from 'src/shared/domain/value-objects/area';
 import { CropMapper } from '../../infrastructure/crop.mapper';
 import { ValidateCultureCropsAreaService } from 'src/shared/domain/services/validateCultureCropsArea.service';
+import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 
 @Injectable()
 export class CreateCropUseCase {
   constructor(
     private readonly repository: CropContract,
     private readonly databaseService: DatabaseContract,
+    private readonly eventEmitter: EventEmitterContract,
   ) {}
 
-  async execute(cultureId: string, dto: CreateCropInput) {
+  async execute(cultureId: string, producerId: string, dto: CreateCropInput) {
     const allocatedArea = Area.create(dto.allocatedArea);
 
     const plantingDate = new Date(dto.plantingDate);
@@ -34,7 +36,7 @@ export class CreateCropUseCase {
       harvestDateActual,
     });
 
-    return await this.databaseService.transaction(async (client) => {
+    const result = await this.databaseService.transaction(async (client) => {
       const cultureArea = await this.repository.getCultureArea(
         crop.cultureId,
         client,
@@ -49,7 +51,15 @@ export class CreateCropUseCase {
 
       const result = await this.repository.create(crop, client);
 
-      return CropMapper.toResponse([result])[0];
+      crop.getDomainEvents(producerId).forEach((event) => {
+        this.eventEmitter.emit(event);
+      });
+
+      crop.clearDomainEvents();
+
+      return result;
     });
+
+    return CropMapper.toResponse([result])[0];
   }
 }

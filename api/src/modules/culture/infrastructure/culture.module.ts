@@ -7,6 +7,8 @@ import { IsCultureOwnerUseCase } from '../application/use-cases/isCultureOwner';
 import { FindByIdCultureUseCase } from '../application/use-cases/findById';
 import { UpdateCultureUseCase } from '../application/use-cases/updateCulture';
 import { DeleteCultureUseCase } from '../application/use-cases/deleteCulture';
+import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
+import { EventEmitterProvider } from 'src/shared/infrastructure/providers/socketEmitter.provider';
 
 @Module({
   controllers: [CultureController],
@@ -17,6 +19,7 @@ import { DeleteCultureUseCase } from '../application/use-cases/deleteCulture';
     UpdateCultureUseCase,
     DeleteCultureUseCase,
     { provide: CultureContract, useClass: CultureRepository },
+    { provide: EventEmitterContract, useClass: EventEmitterProvider },
   ],
 })
 export class CultureModule {}
