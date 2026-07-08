@@ -9,6 +9,9 @@ import { Injectable } from '@nestjs/common';
 export class EventEmitterProvider implements EventEmitterContract {
   constructor(private readonly eventEmitter: EventEmitter2) {}
   emit<T>(event: EmitterPayload<T>): void {
-    this.eventEmitter.emit(event.event, event.data);
+    this.eventEmitter.emit(event.event, {
+      producerId: event.producerId,
+      data: event.data,
+    });
   }
 }
