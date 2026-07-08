@@ -6,10 +6,12 @@ import { CropStatus } from '../../domain/constants/crop-status.enum';
 import { Crop } from '../../domain/entities/crop.entity';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Area } from 'src/shared/domain/value-objects/area';
+import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 
 describe('CreateCropUseCase', () => {
   let mockCropRepository: Mocked<CropContract>;
   let mockDatabaseService: Mocked<DatabaseContract>;
+  let mockEventEmitter: Mocked<EventEmitterContract>;
   let useCase: CreateCropUseCase;
 
   beforeAll(() => {
@@ -25,11 +27,21 @@ describe('CreateCropUseCase', () => {
         return callback({});
       }),
     } as unknown as Mocked<DatabaseContract>;
-    useCase = new CreateCropUseCase(mockCropRepository, mockDatabaseService);
+
+    mockEventEmitter = {
+      emit: vi.fn(),
+    };
+
+    useCase = new CreateCropUseCase(
+      mockCropRepository,
+      mockDatabaseService,
+      mockEventEmitter,
+    );
   });
 
   it('should create a new crop successfully', async () => {
     const cultureId = '1';
+    const producerId = '123';
     const dto = {
       name: 'crop1',
       status: CropStatus.READY,
@@ -53,7 +65,7 @@ describe('CreateCropUseCase', () => {
     mockCropRepository.getCropsArea.mockResolvedValueOnce(0);
     mockCropRepository.create.mockResolvedValue(crop);
 
-    await useCase.execute(cultureId, dto);
+    await useCase.execute(cultureId, producerId, dto);
 
     expect(mockDatabaseService.transaction).toHaveBeenCalled();
     expect(mockCropRepository.getCultureArea).toHaveBeenCalledWith(
