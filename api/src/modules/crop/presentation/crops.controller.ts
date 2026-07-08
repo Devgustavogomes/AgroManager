@@ -9,6 +9,7 @@ import {
   Post,
   Body,
   Patch,
+  Req,
 } from '@nestjs/common';
 import { OwnerService } from 'src/shared/infrastructure/decorators/owner.decorator';
 import { AuthGuard } from 'src/shared/infrastructure/guards/auth.guard';
@@ -32,6 +33,7 @@ import { FindCropByCultureUseCase } from '../application/use-cases/findCropByCul
 import { DeleteCropByCultureUseCase } from '../application/use-cases/deleteCropByCulture';
 import { UpdateCropInput } from '../application/dto/updateCrop.dto';
 import { IsCropOwnerUseCase } from '../application/use-cases/isCropOwner';
+import type { AuthenticatedRequest } from 'src/shared/application/types/authenticatedRequest';
 
 @Controller(':cultureId/crop')
 @UseGuards(AuthGuard, RolesGuards, OwnerGuard)
@@ -49,8 +51,16 @@ export class CropController {
   @ApiCreatedResponse({ type: CropOutput })
   @Post('')
   @OwnerService(IsCultureOwnerUseCase, 'cultureId')
-  async create(@Param() params: IdCropDto, @Body() dto: CreateCropInput) {
-    return this.createCropUseCase.execute(params.cultureId, dto);
+  async create(
+    @Param() params: IdCropDto,
+    @Body() dto: CreateCropInput,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.createCropUseCase.execute(
+      params.cultureId,
+      req.producer.id,
+      dto,
+    );
   }
 
   @ApiBearerAuth()
@@ -73,8 +83,17 @@ export class CropController {
   @ApiOkResponse({ type: CropOutput })
   @Patch(':id')
   @OwnerService(IsCropOwnerUseCase)
-  async update(@Param() params: IdCropDto, @Body() dto: UpdateCropInput) {
-    return this.updateCropUseCase.execute(params.id!, params.cultureId, dto);
+  async update(
+    @Param() params: IdCropDto,
+    @Body() dto: UpdateCropInput,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.updateCropUseCase.execute(
+      params.id!,
+      params.cultureId,
+      req.producer.id,
+      dto,
+    );
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)

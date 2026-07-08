@@ -7,17 +7,20 @@ import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Area } from 'src/shared/domain/value-objects/area';
 import { ValidateCultureCropsAreaService } from 'src/shared/domain/services/validateCultureCropsArea.service';
 import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
+import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 
 @Injectable()
 export class UpdateCropUseCase {
   constructor(
     private readonly repository: CropContract,
     private readonly databaseService: DatabaseContract,
+    private readonly eventEmitter: EventEmitterContract,
   ) {}
 
   async execute(
     cropId: string,
     cultureId: string,
+    producerId: string,
     dto: UpdateCropInput,
   ): Promise<CropOutput> {
     const result = await this.databaseService.transaction(async (client) => {
@@ -51,7 +54,15 @@ export class UpdateCropUseCase {
         Area.create(cropsArea).sum(crop.allocatedArea),
       );
 
-      return await this.repository.update(crop, client);
+      const updatedCrop = await this.repository.update(crop, client);
+
+      crop.getDomainEvents(producerId).forEach((event) => {
+        this.eventEmitter.emit(event);
+      });
+
+      crop.clearDomainEvents();
+
+      return updatedCrop;
     });
 
     return CropMapper.toResponse([result])[0];

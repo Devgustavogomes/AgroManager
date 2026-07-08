@@ -8,6 +8,8 @@ import { PropertyCreatedListener } from '../application/listeners/propertyCreate
 import { PropertyUpdatedListener } from '../application/listeners/propertyUpdated.listener';
 import { CultureCreatedListener } from '../application/listeners/cultureCreated.listener';
 import { CultureUpdatedListener } from '../application/listeners/cultureUpdated.listener';
+import { CropCreatedListener } from '../application/listeners/cropCreated.listener';
+import { CropUpdatedListener } from '../application/listeners/cropUpdated.listener';
 
 @Module({
   providers: [
@@ -19,6 +21,8 @@ import { CultureUpdatedListener } from '../application/listeners/cultureUpdated.
     PropertyUpdatedListener,
     CultureCreatedListener,
     CultureUpdatedListener,
+    CropCreatedListener,
+    CropUpdatedListener,
   ],
   exports: [NotificationProviderContract],
 })

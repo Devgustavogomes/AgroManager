@@ -10,6 +10,8 @@ import { DeleteCropByCultureUseCase } from '../application/use-cases/deleteCropB
 import { CropRepository } from './persistence/crop.repository';
 import { CropContract } from '../domain/repositories/cropsRepository.contract';
 import { IsCropOwnerUseCase } from '../application/use-cases/isCropOwner';
+import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
+import { EventEmitterProvider } from 'src/shared/infrastructure/providers/socketEmitter.provider';
 
 @Module({
   controllers: [CropController],
@@ -22,6 +24,7 @@ import { IsCropOwnerUseCase } from '../application/use-cases/isCropOwner';
     DeleteCropByIdUseCase,
     DeleteCropByCultureUseCase,
     IsCropOwnerUseCase,
+    { provide: EventEmitterContract, useClass: EventEmitterProvider },
   ],
 })
 export class CropModule {}

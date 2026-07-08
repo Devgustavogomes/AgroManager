@@ -4,6 +4,7 @@ import { PestStatus } from '../constants/pest-status.enum';
 import { Optional } from 'src/shared/application/types/optional';
 import { Area } from 'src/shared/domain/value-objects/area';
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
+import { Notification } from 'src/shared/domain/entities/notification.entity';
 
 interface CropProps {
   cropId: string;
@@ -19,7 +20,7 @@ interface CropProps {
   updatedAt: Date | null;
 }
 
-export class Crop extends Entity<CropProps> {
+export class Crop extends Entity<CropProps, Notification> {
   private constructor(props: CropProps) {
     super(props);
     this.validateArea();
@@ -30,13 +31,24 @@ export class Crop extends Entity<CropProps> {
       'createdAt' | 'updatedAt' | 'cropId' | 'harvestDateActual'
     >,
   ) {
-    return new Crop({
+    const crop = new Crop({
       ...props,
       cropId: props.cropId ?? 'non-registered',
       harvestDateActual: props.harvestDateActual ?? null,
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? null,
     });
+
+    crop.domainEvents.push({
+      event: 'crop.created',
+      data: Notification.create({
+        event: 'crop.created',
+        title: 'Nova safra cadastrada',
+        content: `A safra "${crop.name}" foi cadastrada com sucesso.`,
+      }),
+    });
+
+    return crop;
   }
 
   public update(
@@ -84,6 +96,15 @@ export class Crop extends Entity<CropProps> {
     if (updated) {
       this.touch();
       this.validateArea();
+
+      this.domainEvents.push({
+        event: 'crop.updated',
+        data: Notification.create({
+          event: 'crop.updated',
+          title: 'Safra atualizada',
+          content: `A safra "${this.props.name}" foi atualizada com sucesso.`,
+        }),
+      });
     }
   }
 
