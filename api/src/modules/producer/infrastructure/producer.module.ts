@@ -6,6 +6,8 @@ import { CreateProducerUseCase } from '../application/use-cases/createProducer';
 import { DeleteProducerUseCase } from '../application/use-cases/deleteProducer';
 import { UpdateProducerUseCase } from '../application/use-cases/updateProducer';
 import { FindByIdProducerUseCase } from '../application/use-cases/findByIdProducer';
+import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
+import { EventEmitterProvider } from 'src/shared/infrastructure/providers/socketEmitter.provider';
 
 @Module({
   controllers: [ProducerController],
@@ -15,6 +17,7 @@ import { FindByIdProducerUseCase } from '../application/use-cases/findByIdProduc
     DeleteProducerUseCase,
     FindByIdProducerUseCase,
     { provide: ProducerContract, useClass: ProducerRepository },
+    { provide: EventEmitterContract, useClass: EventEmitterProvider },
   ],
 })
 export class ProducerModule {}

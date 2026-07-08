@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { CreateProducerUseCase } from './createProducer';
 import { ProducerContract } from '../../domain/repositories/producerRepository.contract';
+import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 
 vi.mock('bcryptjs', () => ({
   hash: vi.fn().mockResolvedValue('hashed_password'),
@@ -9,6 +10,7 @@ vi.mock('bcryptjs', () => ({
 describe('CreateProducerUseCase', () => {
   let useCase: CreateProducerUseCase;
   let mockProducerRepository: Mocked<ProducerContract>;
+  let mockEmitterProvider: Mocked<EventEmitterContract>;
 
   beforeEach(() => {
     mockProducerRepository = {
@@ -18,7 +20,14 @@ describe('CreateProducerUseCase', () => {
       remove: vi.fn(),
     };
 
-    useCase = new CreateProducerUseCase(mockProducerRepository);
+    mockEmitterProvider = {
+      emit: vi.fn(),
+    };
+
+    useCase = new CreateProducerUseCase(
+      mockProducerRepository,
+      mockEmitterProvider,
+    );
   });
 
   it('should create a producer', async () => {
