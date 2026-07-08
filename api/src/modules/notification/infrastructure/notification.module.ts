@@ -4,6 +4,8 @@ import { NotificationProviderContract } from '../domain/providers/notificationPr
 import { NotificationProvider } from './providers/socketNotification.provider';
 import { ProducerCreatedListener } from '../application/listeners/producerCreated.listener';
 import { ProducerUpdatedListener } from '../application/listeners/producerUpdated.listener';
+import { PropertyCreatedListener } from '../application/listeners/propertyCreated.listener';
+import { PropertyUpdatedListener } from '../application/listeners/propertyUpdated.listener';
 
 @Module({
   providers: [
@@ -11,6 +13,8 @@ import { ProducerUpdatedListener } from '../application/listeners/producerUpdate
     { provide: NotificationProviderContract, useClass: NotificationProvider },
     ProducerCreatedListener,
     ProducerUpdatedListener,
+    PropertyCreatedListener,
+    PropertyUpdatedListener,
   ],
   exports: [NotificationProviderContract],
 })
