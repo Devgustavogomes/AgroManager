@@ -7,16 +7,22 @@ import { Area } from 'src/shared/domain/value-objects/area';
 import { CultureMapper } from '../../infrastructure/culture.mapper';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { ValidateCultureAreaService } from '../../domain/services/validateCultureArea.service';
+import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 
 @Injectable()
 export class CreateCultureUseCase {
   constructor(
     private readonly cultureRepository: CultureContract,
     private readonly databaseService: DatabaseContract,
+    private readonly eventEmitter: EventEmitterContract,
   ) {}
 
-  async execute(slug: string, dto: CreateCultureInput): Promise<CultureOutput> {
-    return await this.databaseService.transaction(async (client) => {
+  async execute(
+    slug: string,
+    producerId: string,
+    dto: CreateCultureInput,
+  ): Promise<CultureOutput> {
+    const result = await this.databaseService.transaction(async (client) => {
       const [propertyId, propertyArea] = await Promise.all([
         this.cultureRepository.findPropertyBySlug(slug, client),
         this.cultureRepository.getPropertyArea(slug, client),
@@ -41,7 +47,15 @@ export class CreateCultureUseCase {
 
       const result = await this.cultureRepository.create(culture, client);
 
-      return CultureMapper.toResponse([result])[0];
+      culture.getDomainEvents(producerId).forEach((event) => {
+        this.eventEmitter.emit(event);
+      });
+
+      culture.clearDomainEvents();
+
+      return result;
     });
+
+    return CultureMapper.toResponse([result])[0];
   }
 }
