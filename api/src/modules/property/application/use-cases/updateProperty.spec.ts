@@ -3,10 +3,12 @@ import { PropertyContract } from '../../domain/repositories/propertyRepository.c
 import { UpdatePropertyUseCase } from './updateProperty';
 import { Property } from '../../domain/entities/property.entity';
 import { Area } from 'src/shared/domain/value-objects/area';
+import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 
 describe('Update Property', () => {
   let useCase: UpdatePropertyUseCase;
   let mockRepository: Mocked<PropertyContract>;
+  let mockEventEmitter: Mocked<EventEmitterContract>;
 
   beforeEach(() => {
     mockRepository = {
@@ -18,7 +20,11 @@ describe('Update Property', () => {
       isOwner: vi.fn(),
     };
 
-    useCase = new UpdatePropertyUseCase(mockRepository);
+    mockEventEmitter = {
+      emit: vi.fn(),
+    };
+
+    useCase = new UpdatePropertyUseCase(mockRepository, mockEventEmitter);
   });
 
   it('Should update a property succesfully', async () => {
@@ -48,7 +54,6 @@ describe('Update Property', () => {
     );
     expect(mockRepository.update).toHaveBeenCalledOnce();
     expect(mockRepository.update).toHaveBeenCalledWith(
-      'slug',
       'producer-123',
       propertyMock,
     );

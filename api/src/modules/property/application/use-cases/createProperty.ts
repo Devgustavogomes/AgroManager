@@ -8,12 +8,14 @@ import { Injectable } from '@nestjs/common';
 import { PropertyOutputDto } from '../dto/output.dto';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
 import { ValidateMaxProperties } from '../../domain/services/validateMaxProperties.service';
+import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 
 @Injectable()
 export class CreatePropertyUseCase {
   constructor(
     private propertyRepository: PropertyContract,
     private dbService: DatabaseContract,
+    private eventEmitter: EventEmitterContract,
   ) {}
 
   async execute(
@@ -49,6 +51,12 @@ export class CreatePropertyUseCase {
 
       return await this.propertyRepository.create(property, client);
     });
+
+    property.getDomainEvents(producerId).forEach((event) => {
+      this.eventEmitter.emit(event);
+    });
+
+    property.clearDomainEvents();
 
     return PropertyMapper.toResponse(result);
   }
