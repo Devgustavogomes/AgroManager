@@ -35,7 +35,7 @@
   "lint-staged": {
     "api/**/*.{ts,tsx}": [
       "eslint --fix",
-      "npm run test --workspace=api -- --related"
+      "npm run test --workspace=api -- --changed"
     ],
     "web/**/*.{ts,tsx}": [
       "eslint --fix"

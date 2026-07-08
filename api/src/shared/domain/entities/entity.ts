@@ -1,14 +1,20 @@
 export class Entity<Props, EventData = unknown> {
   protected props: Props;
 
-  protected domainEvents: { event: string; data: EventData }[] = [];
+  protected domainEvents: {
+    event: string;
+    data: EventData;
+  }[] = [];
 
   protected constructor(props: Props) {
     this.props = props;
   }
 
-  public getDomainEvents() {
-    return this.domainEvents;
+  public getDomainEvents(producerId: string) {
+    return this.domainEvents.map((e) => ({
+      ...e,
+      producerId,
+    }));
   }
 
   public clearDomainEvents(): void {

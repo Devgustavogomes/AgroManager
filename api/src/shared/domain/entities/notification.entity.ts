@@ -5,6 +5,7 @@ interface NotificationProps {
   event: string;
   title: string;
   content: string;
+  link?: string;
   read: boolean;
   createdAt: Date;
   updatedAt: Date | null;
@@ -51,6 +52,10 @@ export class Notification {
 
   get content() {
     return this.props.content;
+  }
+
+  get link() {
+    return this.props.link;
   }
 
   get read() {
