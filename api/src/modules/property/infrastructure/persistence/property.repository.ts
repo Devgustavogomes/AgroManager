@@ -70,11 +70,7 @@ export class PropertyRepository implements PropertyContract {
     return PropertyMapper.toDomain(result)[0];
   }
 
-  async update(
-    slug: string,
-    producerId: string,
-    property: Property,
-  ): Promise<Property> {
+  async update(producerId: string, property: Property): Promise<Property> {
     const sql = `UPDATE properties
                 SET
                 "name" = COALESCE($1, "name"),
@@ -96,7 +92,7 @@ export class PropertyRepository implements PropertyContract {
       property.vegetationArea,
       property.totalArea,
       property.updatedAt,
-      slug,
+      property.slug,
       producerId,
     ];
 

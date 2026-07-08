@@ -22,11 +22,7 @@ export abstract class PropertyContract {
 
   abstract create(property: Property, client: unknown): Promise<Property>;
 
-  abstract update(
-    slug: string,
-    producerId: string,
-    property: Property,
-  ): Promise<Property>;
+  abstract update(producerId: string, property: Property): Promise<Property>;
 
   abstract delete(slug: string, producerId: string): Promise<void>;
 

@@ -7,6 +7,8 @@ import { DeletePropertyUseCase } from '../application/use-cases/deleteProperty';
 import { PropertyController } from '../presentation/property.controller';
 import { UpdatePropertyUseCase } from '../application/use-cases/updateProperty';
 import { IsPropertyOwnerUseCase } from '../application/use-cases/isPropertyOwner';
+import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
+import { EventEmitterProvider } from 'src/shared/infrastructure/providers/socketEmitter.provider';
 
 @Module({
   controllers: [PropertyController],
@@ -17,6 +19,7 @@ import { IsPropertyOwnerUseCase } from '../application/use-cases/isPropertyOwner
     DeletePropertyUseCase,
     UpdatePropertyUseCase,
     IsPropertyOwnerUseCase,
+    { provide: EventEmitterContract, useClass: EventEmitterProvider },
   ],
 })
 export class PropertyModule {}

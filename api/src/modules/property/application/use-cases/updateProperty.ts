@@ -4,10 +4,15 @@ import { UpdatePropertyDto } from '../dto/update.dto';
 import { Slug } from '../../domain/value-object/slug';
 import { Area } from 'src/shared/domain/value-objects/area';
 import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
+import { PropertyMapper } from '../../infrastructure/persistence/property.mapper';
+import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 
 @Injectable()
 export class UpdatePropertyUseCase {
-  constructor(private readonly propertyRepository: PropertyContract) {}
+  constructor(
+    private readonly propertyRepository: PropertyContract,
+    private readonly eventEmitter: EventEmitterContract,
+  ) {}
 
   async execute(slug: string, producerId: string, dto: UpdatePropertyDto) {
     const property = await this.propertyRepository.findBySlug(slug, producerId);
@@ -31,6 +36,14 @@ export class UpdatePropertyUseCase {
           : undefined,
     });
 
-    return await this.propertyRepository.update(slug, producerId, property);
+    const result = await this.propertyRepository.update(producerId, property);
+
+    property.getDomainEvents(producerId).forEach((event) => {
+      this.eventEmitter.emit(event);
+    });
+
+    property.clearDomainEvents();
+
+    return PropertyMapper.toResponse(result);
   }
 }

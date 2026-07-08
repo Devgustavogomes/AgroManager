@@ -1,5 +1,6 @@
 export interface EmitterPayload<T> {
   event: string;
+  producerId: string;
   data: T;
 }
 

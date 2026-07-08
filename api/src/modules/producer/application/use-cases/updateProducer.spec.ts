@@ -2,10 +2,12 @@ import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { UpdateProducerUseCase } from './updateProducer';
 import { ProducerContract } from '../../domain/repositories/producerRepository.contract';
 import { Producer } from '../../domain/entities/producer.entity';
+import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 
 describe('UpdateProducerUseCase', () => {
   let useCase: UpdateProducerUseCase;
   let mockProducerRepository: Mocked<ProducerContract>;
+  let mockEmitterProvider: Mocked<EventEmitterContract>;
 
   beforeEach(() => {
     mockProducerRepository = {
@@ -15,7 +17,14 @@ describe('UpdateProducerUseCase', () => {
       remove: vi.fn(),
     };
 
-    useCase = new UpdateProducerUseCase(mockProducerRepository);
+    mockEmitterProvider = {
+      emit: vi.fn(),
+    };
+
+    useCase = new UpdateProducerUseCase(
+      mockProducerRepository,
+      mockEmitterProvider,
+    );
   });
 
   it('should update a producer', async () => {

@@ -4,11 +4,13 @@ import { PropertyContract } from '../../domain/repositories/propertyRepository.c
 import { CreatePropertyUseCase } from './createProperty';
 import { MAX_PROPERTIES_PER_PRODUCER } from '../../domain/constants/maxProperties.constant';
 import { ConflictError } from 'src/shared/domain/errors/conflictError';
+import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 
 describe('Create Property', () => {
   let useCase: CreatePropertyUseCase;
   let mockPropertyRepository: Mocked<PropertyContract>;
   let mockDatabaseService: Mocked<DatabaseContract>;
+  let mockEventEmitter: Mocked<EventEmitterContract>;
 
   beforeEach(() => {
     mockPropertyRepository = {
@@ -27,9 +29,14 @@ describe('Create Property', () => {
       }),
     } as unknown as Mocked<DatabaseContract>;
 
+    mockEventEmitter = {
+      emit: vi.fn(),
+    };
+
     useCase = new CreatePropertyUseCase(
       mockPropertyRepository,
       mockDatabaseService,
+      mockEventEmitter,
     );
   });
 

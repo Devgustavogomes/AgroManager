@@ -3,6 +3,7 @@ import { Optional } from 'src/shared/application/types/optional';
 import { Area } from '../../../../shared/domain/value-objects/area';
 import { Slug } from '../value-object/slug';
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
+import { Notification } from 'src/shared/domain/entities/notification.entity';
 
 export interface PropertyProps {
   propertyId?: string;
@@ -18,7 +19,7 @@ export interface PropertyProps {
   updatedAt: Date | null;
 }
 
-export class Property extends Entity<PropertyProps> {
+export class Property extends Entity<PropertyProps, Notification> {
   private constructor(props: PropertyProps) {
     super(props);
 
@@ -28,12 +29,24 @@ export class Property extends Entity<PropertyProps> {
   static create(
     props: Optional<PropertyProps, 'slug' | 'createdAt' | 'updatedAt'>,
   ) {
-    return new Property({
+    const property = new Property({
       ...props,
       slug: props.slug ?? Slug.createFromText(props.name),
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? null,
     });
+
+    property.domainEvents.push({
+      event: 'property.created',
+      data: Notification.create({
+        event: 'property.created',
+        title: `Nova propriedade cadastrada`,
+        content: `A propriedade "${property.name}" em ${property.city}-${property.state} foi cadastrada com sucesso, clique para gerenciá-la.`,
+        link: `/property/${property.slug}`,
+      }),
+    });
+
+    return property;
   }
 
   update(
@@ -85,6 +98,16 @@ export class Property extends Entity<PropertyProps> {
     if (updated) {
       this.touch();
       this.validateAreas();
+
+      this.domainEvents.push({
+        event: 'property.updated',
+        data: Notification.create({
+          event: 'property.updated',
+          title: `Propriedade atualizada`,
+          content: `A propriedade "${this.props.name}" em ${this.props.city}-${this.props.state} foi atualizada com sucesso, clique para gerenciá-la.`,
+          link: `/property/${this.props.slug.slug}`,
+        }),
+      });
     }
   }
 
