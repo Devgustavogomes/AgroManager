@@ -8,6 +8,7 @@ interface IEnv {
     host: string;
     port: number;
     database: string;
+    ssl: string;
   };
 }
 
@@ -24,7 +25,7 @@ export const DatabaseClientProvider = {
       password: dbConfig.password,
       host: dbConfig.host,
       port: dbConfig.port,
-      ssl: process.env.NODE_ENV === "production" ? true : false,
+      ssl: dbConfig.ssl === "true" ? {} : false,
       database: dbConfig.database,
       max: 20,
       idleTimeoutMillis: 80000,

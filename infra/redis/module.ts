@@ -9,6 +9,6 @@ import { CacheContract } from "./contract";
     redisProvider,
     { provide: CacheContract, useClass: RedisService },
   ],
-  exports: [CacheContract],
+  exports: [CacheContract, "REDIS_CLIENT"],
 })
 export class RedisModule {}
