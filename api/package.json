@@ -12,6 +12,7 @@
     "start": "nest start",
     "start:dev": "cross-env NODE_ENV=development nest start --watch ",
     "start:debug": "nest start --debug --watch",
+    "prestart:prod": "npm run migrate:prod",
     "start:prod": "cross-env NODE_ENV=production node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "vitest run",
