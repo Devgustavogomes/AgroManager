@@ -10,11 +10,14 @@ import { CultureCreatedListener } from '../application/listeners/cultureCreated.
 import { CultureUpdatedListener } from '../application/listeners/cultureUpdated.listener';
 import { CropCreatedListener } from '../application/listeners/cropCreated.listener';
 import { CropUpdatedListener } from '../application/listeners/cropUpdated.listener';
+import { NotificationContract } from '../domain/repostories/notificationRepository.contract';
+import { NotificationRepository } from './persistence/notification.repository';
 
 @Module({
   providers: [
     NotificationGateway,
     { provide: NotificationProviderContract, useClass: NotificationProvider },
+    { provide: NotificationContract, useClass: NotificationRepository },
     ProducerCreatedListener,
     ProducerUpdatedListener,
     PropertyCreatedListener,

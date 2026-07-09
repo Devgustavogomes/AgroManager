@@ -16,8 +16,11 @@ export class CultureUpdatedListener {
   async handleCultureUpdatedEvent(
     payload: Omit<EmitterPayload<Notification>, 'event'>,
   ) {
-    await this.notificationRepository.create(payload.producerId, payload.data);
+    const notification = await this.notificationRepository.create(
+      payload.producerId,
+      payload.data,
+    );
 
-    this.notificationService.sendToProducer(payload.producerId, payload.data);
+    this.notificationService.sendToProducer(payload.producerId, notification);
   }
 }
