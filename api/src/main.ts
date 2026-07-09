@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import cookieParser from 'cookie-parser';
 
 export default async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -19,6 +20,8 @@ export default async function bootstrap() {
   const PORT = configService.get('PORT') ?? 3000;
 
   app.set('trust proxy', 'loopback');
+
+  app.use(cookieParser());
 
   await app.listen(PORT, () => {
     console.log(`🚀 Server running on PORT ${PORT}`);
