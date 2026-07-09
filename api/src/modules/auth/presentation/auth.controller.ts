@@ -19,6 +19,7 @@ import { RefreshUseCase } from '../application/use-cases/refresh';
 import { LogoutUseCase } from '../application/use-cases/logout';
 import { TTL_REFRESH_TOKEN } from '../domain/constants/ttlRefreshToken.constants';
 import { Throttle } from '@nestjs/throttler';
+import { Cookies } from 'src/shared/infrastructure/decorators/cookies.decorator';
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -69,14 +70,10 @@ export class AuthController {
       },
     },
   })
-  @ApiBearerAuth()
   async refresh(
-    @Req() req: AuthenticatedRequest,
+    @Cookies('refresh_token') refreshToken: string,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const cookies = req.cookies as Record<string, string> | undefined;
-    const refreshToken = cookies?.['refresh_token'] ?? '';
-
     const tokens = await this.refreshUseCase.execute(refreshToken);
 
     res.cookie('refresh_token', tokens.newRefreshToken, {
