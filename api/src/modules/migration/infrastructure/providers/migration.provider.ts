@@ -3,9 +3,10 @@ import { runner } from 'node-pg-migrate';
 import { join } from 'node:path';
 import { PoolClient } from 'pg';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
+import { MigrationProviderContract } from '../../domain/providers/migration.provider.contract';
 
 @Injectable()
-export class MigrationService {
+export class MigrationProvider implements MigrationProviderContract {
   constructor(private readonly databaseService: DatabaseContract) {}
 
   async getMigrations(): Promise<unknown[]> {
@@ -15,7 +16,7 @@ export class MigrationService {
       return await runner({
         dbClient: client,
         direction: 'up',
-        dir: join(process.cwd(), 'migrations'),
+        dir: join(process.cwd(), '..', 'infra', 'database', 'migrations'),
         dryRun: true,
         migrationsTable: 'pgmigrations',
       });
@@ -34,7 +35,7 @@ export class MigrationService {
       await runner({
         dbClient: client,
         direction: 'up',
-        dir: join(process.cwd(), 'migrations'),
+        dir: join(process.cwd(), '..', 'infra', 'database', 'migrations'),
         dryRun: false,
         migrationsTable: 'pgmigrations',
       });

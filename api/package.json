@@ -17,8 +17,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
-    "migrate:prod": "node-pg-migrate up --envPath .env.production",
-    "migrate:dev": "node-pg-migrate up --envPath .env.development"
+    "migrate:prod": "node-pg-migrate up --envPath .env.production --migrations-dir ../infra/database/migrations",
+    "migrate:dev": "node-pg-migrate up --envPath .env.development --migrations-dir ../infra/database/migrations"
   },
   "dependencies": {
     "@agromanager/infra": "*",
