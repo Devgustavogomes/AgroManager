@@ -9,6 +9,7 @@
     "infra"
   ],
   "scripts": {
+    "setup": "npm run setup:env && npm run compose:build",
     "compose:up": "docker compose -f ./docker-compose.yml up",
     "compose:build": "docker compose -f ./docker-compose.yml up --build",
     "compose:stop": "docker compose -f ./docker-compose.yml stop",
@@ -19,6 +20,7 @@
     "lint": "npm run lint -ws --if-present",
     "format": "npm run format -ws --if-present",
     "migrate": "node-pg-migrate up --envPath .env.development",
+    "setup:env": "node -e \"const f=require('fs');['api','web','workers','infra'].forEach(d=>['development','test','production'].forEach(e=>{const t=d+'/.env.'+e;if(!f.existsSync(t))f.copyFileSync(d+'/.env.example',t)}))\"",
     "prepare": "husky"
   },
   "devDependencies": {
