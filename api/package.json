@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@agromanager/infra": "*",
+    "@nest-lab/throttler-storage-redis": "^1.2.0",
     "@nestjs-modules/ioredis": "^2.2.1",
     "@nestjs/common": "^11.1.26",
     "@nestjs/config": "^4.0.4",
@@ -31,6 +32,7 @@
     "@nestjs/platform-express": "^11.1.22",
     "@nestjs/platform-socket.io": "^11.1.27",
     "@nestjs/swagger": "^11.4.4",
+    "@nestjs/throttler": "^6.5.0",
     "@nestjs/websockets": "^11.1.27",
     "bcryptjs": "^3.0.2",
     "cross-env": "^10.1.0",

@@ -10,10 +10,13 @@ import { MigrationModule } from './modules/migration/module';
 import { CultureModule } from './modules/culture/infrastructure/culture.module';
 import { PropertyModule } from './modules/property/infrastructure/property.module';
 import { CropModule } from './modules/crop/infrastructure/crop.module';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { GlobalErrorHandler } from './shared/infrastructure/filters/globalErrorHandler';
 import { NotificationModule } from './modules/notification/infrastructure/notification.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
+import { Redis } from 'ioredis';
 
 @Module({
   imports: [
@@ -22,6 +25,14 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
       load: [configuration],
       validate: (env) => envSchema.parse(env),
+    }),
+    ThrottlerModule.forRootAsync({
+      imports: [RedisModule],
+      inject: ['REDIS_CLIENT'],
+      useFactory: (redis: Redis) => ({
+        throttlers: [{ ttl: 60000, limit: 30 }],
+        storage: new ThrottlerStorageRedisService(redis),
+      }),
     }),
     EventEmitterModule.forRoot(),
     ProducerModule,
@@ -39,6 +50,10 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     {
       provide: APP_FILTER,
       useClass: GlobalErrorHandler,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
   ],
 })

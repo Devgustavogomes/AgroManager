@@ -1,13 +1,13 @@
-import { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AppModule } from './app.module';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 export default async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService, { strict: false });
 
   app.useGlobalPipes(new ZodValidationPipe());
@@ -17,12 +17,18 @@ export default async function bootstrap() {
   setupSwagger(app);
 
   const PORT = configService.get('PORT') ?? 3000;
+
+  app.set('trust proxy', 'loopback');
+
   await app.listen(PORT, () => {
     console.log(`🚀 Server running on PORT ${PORT}`);
   });
 }
 
-function setupSecurity(app: INestApplication, configService: ConfigService) {
+function setupSecurity(
+  app: NestExpressApplication,
+  configService: ConfigService,
+) {
   const isProducao = process.env.NODE_ENV === 'production';
 
   const originAllowed =
@@ -47,7 +53,7 @@ function setupSecurity(app: INestApplication, configService: ConfigService) {
   );
 }
 
-function setupSwagger(app: INestApplication) {
+function setupSwagger(app: NestExpressApplication) {
   const config = new DocumentBuilder()
     .addBearerAuth()
     .setTitle('AgroManager API')
