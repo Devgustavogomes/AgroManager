@@ -821,85 +821,36 @@ Esses indexes beneficiam diretamente a **performance do OwnerGuard**, que execut
 - [Docker](https://www.docker.com/) e Docker Compose
 - [Git](https://git-scm.com/)
 
-### Instalação
+### Instalação e Execução
 
 ```bash
 # Clone o repositório
-git clone https://github.com/Devgustavogomes/AgroManager-backend.git
-cd AgroManager-backend
+git clone https://github.com/Devgustavogomes/AgroManager
+cd AgroManager
 
-# Instale as dependências de todo o monorepo
-npm install
-
-# Crie o arquivo de variáveis de ambiente
-cp .env.example .env
+# Setup + start (cria os .env e sobe todos os containers)
+npm run setup
 ```
 
-### Rodando com Docker
+O comando `setup` faz tudo automaticamente:
 
-```bash
-# Sobe todos os containers (API + Postgres + Redis + Nginx)
-npm run compose:up
-
-# Ou com rebuild de imagens
-npm run compose:build
-```
+1. Cria os arquivos `.env.development`, `.env.test` e `.env.production` em cada workspace a partir do `.env.example` (sem sobrescrever arquivos existentes)
+2. Sobe todos os containers via Docker Compose com build das imagens
 
 A API estará acessível em `http://localhost:8080` (via Nginx).
 
-### Rodando sem Docker (apenas a API)
-
-```bash
-# Certifique-se de ter PostgreSQL e Redis rodando localmente
-npm run start:dev -w api
-```
-
-### Rodando Migrations
-
-```bash
-npm run migrate
-```
-
-### Rodando Testes
-
-```bash
-npm run test -w api
-```
-
----
-
 ## 🔑 Variáveis de Ambiente
 
-Crie um arquivo `.env` na raiz do projeto:
+Cada workspace possui seu próprio `.env.example` com as variáveis necessárias. O comando `npm run setup:env` cria automaticamente os arquivos `.env.development`, `.env.test` e `.env.production` a partir dos exemplos.
 
-```env
-# Servidor
-PORT=3000
-FRONTEND_URL=http://localhost:3000
+| Workspace  | Variáveis                                     |
+| ---------- | --------------------------------------------- |
+| `api/`     | Porta, banco de dados, JWT secrets, Redis     |
+| `infra/`   | Credenciais do PostgreSQL para Docker Compose |
+| `web/`     | URL da API, porta do frontend                 |
+| `workers/` | Porta do worker                               |
 
-# PostgreSQL
-PGUSER=local_pg
-PGPASSWORD=local_password_pg
-PGHOST=postgres
-PGPORT=5432
-PGDATABASE=local_pg
-PGSSLMODE=disable
-
-# JWT
-SECRET=your_jwt_secret
-REFRESH_SECRET=your_refresh_secret
-
-# Redis
-REDIS_HOST=redis
-REDIS_PORT=6379
-REDIS_PASSWORD=
-REDIS_USERNAME=default
-
-# Docker (Postgres)
-POSTGRES_USER=local_pg
-POSTGRES_PASSWORD=local_password_pg
-POSTGRES_DB=local_pg
-```
+Consulte o `.env.example` de cada workspace para ver todas as variáveis disponíveis.
 
 ---
 
@@ -907,17 +858,19 @@ POSTGRES_DB=local_pg
 
 ### Raiz do Monorepo
 
-| Script          | Comando                     | Descrição                         |
-| --------------- | --------------------------- | --------------------------------- |
-| `compose:up`    | `docker compose up`         | Sobe todos os containers          |
-| `compose:build` | `docker compose up --build` | Sobe com rebuild de imagens       |
-| `compose:stop`  | `docker compose stop`       | Para todos os containers          |
-| `compose:down`  | `docker compose down`       | Remove todos os containers        |
-| `build`         | `npm run build -ws`         | Build de todos os workspaces      |
-| `test`          | `npm run test -ws`          | Testes de todos os workspaces     |
-| `lint`          | `npm run lint -ws`          | Lint de todos os workspaces       |
-| `format`        | `npm run format -ws`        | Formatação de todos os workspaces |
-| `migrate`       | `node-pg-migrate up`        | Executa migrations                |
+| Script          | Comando                     | Descrição                                              |
+| --------------- | --------------------------- | ------------------------------------------------------ |
+| `setup`         | `setup:env + compose:build` | Setup completo: cria .env's e sobe os containers       |
+| `setup:env`     | `node -e ...`               | Cria .env.{development,test,production} nos workspaces |
+| `compose:up`    | `docker compose up`         | Sobe todos os containers                               |
+| `compose:build` | `docker compose up --build` | Sobe com rebuild de imagens                            |
+| `compose:stop`  | `docker compose stop`       | Para todos os containers                               |
+| `compose:down`  | `docker compose down`       | Remove todos os containers                             |
+| `build`         | `npm run build -ws`         | Build de todos os workspaces                           |
+| `test`          | `npm run test -ws`          | Testes de todos os workspaces                          |
+| `lint`          | `npm run lint -ws`          | Lint de todos os workspaces                            |
+| `format`        | `npm run format -ws`        | Formatação de todos os workspaces                      |
+| `migrate`       | `node-pg-migrate up`        | Executa migrations                                     |
 
 ### API Workspace (`-w api`)
 

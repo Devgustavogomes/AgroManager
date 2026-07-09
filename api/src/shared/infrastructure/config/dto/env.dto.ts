@@ -15,4 +15,5 @@ export const envSchema = z.object({
   REDIS_PORT: z.string(),
   REDIS_PASSWORD: z.string(),
   REDIS_USERNAME: z.string(),
+  REDIS_SSL: z.string(),
 });

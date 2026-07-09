@@ -16,5 +16,6 @@ export default () => ({
     REDIS_PORT: process.env.REDIS_PORT,
     REDIS_PASSWORD: process.env.REDIS_PASSWORD,
     REDIS_USERNAME: process.env.REDIS_USERNAME,
+    REDIS_SSL: process.env.REDIS_SSL,
   },
 });
