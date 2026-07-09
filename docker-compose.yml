@@ -7,6 +7,8 @@ services:
       - "8080:80"
     depends_on:
       - api
+    networks:
+      - api
   api:
     build:
       context: .
@@ -18,7 +20,13 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     container_name: api
+    networks:
+      - api
+      - database
+      - cache
 
   postgres:
     image: postgres:16
@@ -31,11 +39,13 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "local_pg", "-d", "local_pg"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
       timeout: 5s
       retries: 5
       start_period: 10s
+    networks:
+      - database
 
   redis:
     image: redis:8.2.3-alpine
@@ -46,7 +56,20 @@ services:
       - ./infra/.env
     volumes:
       - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - cache
 
 volumes:
   postgres-data:
   redis-data:
+
+networks:
+  api:
+  database:
+  cache:
