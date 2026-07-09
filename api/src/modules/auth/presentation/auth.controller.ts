@@ -18,6 +18,7 @@ import { LoginUseCase } from '../application/use-cases/login';
 import { RefreshUseCase } from '../application/use-cases/refresh';
 import { LogoutUseCase } from '../application/use-cases/logout';
 import { TTL_REFRESH_TOKEN } from '../domain/constants/ttlRefreshToken.constants';
+import { Throttle } from '@nestjs/throttler';
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -26,6 +27,7 @@ export class AuthController {
     private readonly logoutUseCase: LogoutUseCase,
   ) {}
 
+  @Throttle({ default: { limit: 3, ttl: 60000 * 15 } })
   @Post('login')
   @ApiOkResponse({
     schema: {
