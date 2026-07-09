@@ -6,7 +6,7 @@ import configuration from './shared/infrastructure/config/configuration';
 import { envSchema } from './shared/infrastructure/config/dto/env.dto';
 import { AuthModule } from './modules/auth/infrastructure/auth.module';
 import { RedisModule } from '@agromanager/infra/redis/module';
-import { MigrationModule } from './modules/migration/module';
+import { MigrationModule } from './modules/migration/infrastructure/migration.module';
 import { CultureModule } from './modules/culture/infrastructure/culture.module';
 import { PropertyModule } from './modules/property/infrastructure/property.module';
 import { CropModule } from './modules/crop/infrastructure/crop.module';

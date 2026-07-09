@@ -6,37 +6,9 @@
     "build": "tsc"
   },
   "exports": {
-    "./database/module": {
-      "types": "./dist/database/module.d.ts",
-      "default": "./dist/database/module.js"
-    },
-    "./database/service": {
-      "types": "./dist/database/service.d.ts",
-      "default": "./dist/database/service.js"
-    },
-    "./database/provider": {
-      "types": "./dist/database/provider.d.ts",
-      "default": "./dist/database/provider.js"
-    },
-    "./database/contract": {
-      "types": "./dist/database/contract.d.ts",
-      "default": "./dist/database/contract.js"
-    },
-    "./redis/module": {
-      "types": "./dist/redis/module.d.ts",
-      "default": "./dist/redis/module.js"
-    },
-    "./redis/service": {
-      "types": "./dist/redis/service.d.ts",
-      "default": "./dist/redis/service.js"
-    },
-    "./redis/provider": {
-      "types": "./dist/redis/provider.d.ts",
-      "default": "./dist/redis/provider.js"
-    },
-    "./redis/contract": {
-      "types": "./dist/redis/contract.d.ts",
-      "default": "./dist/redis/contract.js"
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js"
     }
   },
   "dependencies": {
