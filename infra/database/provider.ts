@@ -25,7 +25,7 @@ export const DatabaseClientProvider = {
       password: dbConfig.password,
       host: dbConfig.host,
       port: dbConfig.port,
-      ssl: dbConfig.ssl === "true" ? {} : false,
+      ssl: dbConfig.ssl === "require" ? { rejectUnauthorized: false } : false,
       database: dbConfig.database,
       max: 20,
       idleTimeoutMillis: 80000,
