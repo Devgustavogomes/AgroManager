@@ -8,7 +8,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import cookieParser from 'cookie-parser';
 
 export default async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    bufferLogs: true,
+  });
+
   const configService = app.get(ConfigService, { strict: false });
 
   app.useGlobalPipes(new ZodValidationPipe());
