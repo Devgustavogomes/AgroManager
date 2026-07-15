@@ -1,10 +1,13 @@
 import { ConfigService } from "@nestjs/config";
 import Redis from "ioredis";
+import { PinoLogger } from "nestjs-pino";
 
 export const redisProvider = {
   provide: "REDIS_CLIENT",
-  inject: [ConfigService],
-  useFactory: (configService: ConfigService) => {
+  inject: [ConfigService, PinoLogger],
+  useFactory: (configService: ConfigService, logger: PinoLogger) => {
+    logger.setContext("redis-provider");
+
     const client = new Redis({
       username: configService.get<string>("REDIS_USERNAME"),
       password: configService.get<string>("REDIS_PASSWORD"),
@@ -15,10 +18,10 @@ export const redisProvider = {
       enableReadyCheck: true,
     });
 
-    client.on("connect", () => console.log("[Redis] connected!"));
-    client.on("ready", () => console.log("[Redis] Ready for commands!"));
-    client.on("error", (err) => console.error("[Redis] Error:", err));
-    client.on("reconnecting", () => console.log("[Redis] Reconnecting..."));
+    client.on("connect", () => logger.info("[Redis] connected!"));
+    client.on("ready", () => logger.info("[Redis] Ready for commands!"));
+    client.on("error", (err) => logger.error("[Redis] Error:", err));
+    client.on("reconnecting", () => logger.warn("[Redis] Reconnecting..."));
 
     return client;
   },

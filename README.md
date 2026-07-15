@@ -22,6 +22,10 @@
   - [Value Objects](#value-objects)
   - [Mappers e Separação de Camadas](#mappers-e-separação-de-camadas)
   - [Segurança HTTP — Helmet e CORS](#segurança-http--helmet-e-cors)
+- [Observabilidade (OpenTelemetry + Pino)](#-observabilidade-opentelemetry--pino)
+  - [Logging Estruturado com Pino](#logging-estruturado-com-pino)
+  - [Tracing e Métricas com OpenTelemetry](#tracing-e-métricas-com-opentelemetry)
+  - [Correlação de Logs e Traces](#correlação-de-logs-e-traces)
 - [Arquitetura de Eventos e Notificações](#-arquitetura-de-eventos-e-notificações)
   - [Domain Events](#domain-events)
   - [Event Emitter (NestJS)](#event-emitter-nestjs)
@@ -119,12 +123,14 @@ O monorepo utiliza **NPM Workspaces** para gerenciar dependências de forma cent
 | **Validação**       | Zod 4 + nestjs-zod                     | Validação de schemas com inferência de tipos |
 | **Autenticação**    | JWT (@nestjs/jwt) + bcryptjs           | Tokens de acesso e hash de senhas            |
 | **Segurança HTTP**  | Helmet                                 | Headers de segurança HTTP automatizados      |
+| **Logging**         | Pino (nestjs-pino) + pino-pretty       | Logging estruturado com JSON em produção     |
+| **Observabilidade** | OpenTelemetry SDK + OTLP Exporters     | Tracing distribuído e métricas automáticas   |
 | **WebSocket**       | Socket.IO (@nestjs/websockets)         | Notificações em tempo real via WebSocket     |
 | **Eventos**         | @nestjs/event-emitter (EventEmitter2)  | Pub/Sub interno para eventos de domínio      |
 | **Documentação**    | Swagger (@nestjs/swagger)              | Documentação interativa da API               |
 | **Testes**          | Vitest + SWC                           | Testes unitários com performance otimizada   |
 | **Container**       | Docker + Docker Compose                | Containerização e orquestração local         |
-| **Reverse Proxy**   | Nginx                                  | Proxy reverso para a API                     |
+| **Reverse Proxy**   | Nginx                                  | Proxy reverso com suporte a WebSocket        |
 | **CI/CD**           | GitHub Actions                         | Build, lint, testes e deploy automatizados   |
 | **Qualidade**       | ESLint + Prettier + Commitlint + Husky | Padronização de código e commits             |
 
@@ -562,6 +568,81 @@ Isso garante que a camada de apresentação nunca receba dados internos (como `p
 
 ---
 
+## 🔭 Observabilidade (OpenTelemetry + Pino)
+
+A aplicação implementa uma stack de observabilidade completa com três pilares: **Logging estruturado**, **Tracing distribuído** e **Métricas**, integrados de ponta a ponta para permitir correlação entre logs e traces.
+
+```
+┌──────────────────┐      ┌───────────────────────┐      ┌──────────────────────────┐
+│   Pino Logger    │─────▶│  OpenTelemetry SDK    │─────▶│  OTLP Collector / Cloud  │
+│  (Logs JSON)     │      │  (Traces + Metrics)   │      │  (Grafana, Jaeger, etc.) │
+└──────────────────┘      └───────────────────────┘      └──────────────────────────┘
+    Logging                   Tracing + Métricas             Backends
+    Estruturado               Automáticas                    Externos
+```
+
+---
+
+### Logging Estruturado com Pino
+
+Todo o logging da aplicação foi migrado de `console.log` para **Pino** via `nestjs-pino`, garantindo logs estruturados em JSON com níveis de severidade e contexto enriquecido.
+
+**Configuração por ambiente:**
+
+| Ambiente        | Transport                      | Nível   | Formato                               |
+| --------------- | ------------------------------ | ------- | ------------------------------------- |
+| **Development** | `pino-pretty`                  | `debug` | Logs coloridos e legíveis no terminal |
+| **Production**  | `pino-opentelemetry-transport` | `info`  | Logs JSON exportados via OTLP         |
+
+**Onde o Pino é utilizado:**
+
+| Componente           | Tipo de Log                                                           |
+| -------------------- | --------------------------------------------------------------------- |
+| `GlobalErrorHandler` | `warn` para erros de negócio (4xx), `error` para erros críticos (5xx) |
+| `DatabaseService`    | `info` na conexão bem-sucedida, `error` em falha de conexão           |
+| `RedisProvider`      | `info` em connect/ready, `error` em falhas, `warn` em reconexão       |
+| `MigrationProvider`  | `info` após migrations concluídas, `error` em falhas                  |
+
+O logger é injetado via `@InjectPinoLogger(ClassName.name)` em cada provider, garantindo que todo log carregue o contexto do componente que o emitiu.
+
+**Decisões técnicas:**
+
+- **`bufferLogs: true`** no bootstrap — os logs gerados durante a inicialização do NestJS são bufferizados até o Pino estar pronto, evitando perda de logs
+- **`@InjectPinoLogger`** ao invés de `PinoLogger` direto — permite definir o contexto (nome da classe) no momento da injeção, sem precisar chamar `setContext()` manualmente
+
+---
+
+### Tracing e Métricas com OpenTelemetry
+
+A instrumentação é configurada no arquivo `instrumentation.ts`, que é carregado **antes** do bootstrap do NestJS via `--require`, garantindo que o SDK intercepte todas as bibliotecas antes de serem importadas.
+
+**Como funciona:**
+
+1. O `instrumentation.ts` é carregado primeiro via `NODE_OPTIONS="--require ./src/instrumentation.ts"`
+2. O OpenTelemetry SDK inicializa e instrumenta automaticamente bibliotecas como `pg`, `ioredis`, `http` e `express`
+3. Cada requisição gera um trace com spans detalhados de cada operação (query SQL, comando Redis, chamada HTTP)
+
+**Exportação adaptativa:**
+
+| Condição                               | Trace Exporter    | Metric Exporter   |
+| -------------------------------------- | ----------------- | ----------------- |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` definido | OTLP HTTP (Cloud) | OTLP HTTP (Cloud) |
+| Sem endpoint configurado               | Console (debug)   | Console (debug)   |
+
+Em desenvolvimento, traces e métricas são exibidos no console para debug. Em produção, são exportados via OTLP HTTP para o backend configurado (Grafana Cloud, Jaeger, etc.).
+
+**Auto-instrumentações habilitadas:** O SDK usa `@opentelemetry/auto-instrumentations-node`, que instrumenta automaticamente `pg`, `ioredis`, `http`, `express` e outras bibliotecas — sem necessidade de código manual em cada módulo.
+
+---
+
+### Correlação de Logs e Traces
+
+O Pino é configurado com um **mixin** que injeta automaticamente o `traceId` e `spanId` do OpenTelemetry em cada log emitido durante uma requisição. Isso permite correlacionar logs e traces no backend de observabilidade.
+
+Na prática, cada log emitido durante o processamento de uma requisição carrega o `traceId` e `spanId` ativos, permitindo localizar no Jaeger/Grafana o trace exato que gerou aquele log — e vice-versa.
+
+---
+
 ## 📡 Arquitetura de Eventos e Notificações
 
 O AgroManager implementa uma arquitetura event-driven com três camadas complementares que formam um pipeline desacoplado: **Domain Events** → **Event Emitter** → **WebSocket Notifications**.
@@ -670,20 +751,49 @@ O módulo de notificações utiliza **Socket.IO** via `@nestjs/websockets` para 
 
 ### Docker e Nginx
 
-O ambiente local é orquestrado via `docker-compose.yml` com os seguintes serviços:
+O ambiente é orquestrado via `docker-compose.yml` com os seguintes serviços:
 
-| Serviço      | Imagem                     | Porta            | Finalidade                     |
-| ------------ | -------------------------- | ---------------- | ------------------------------ |
-| **nginx**    | `nginx:1.29`               | `8080:80`        | Reverse proxy para a API       |
-| **api**      | Build local (`Dockerfile`) | `3000` (interna) | API NestJS com hot-reload      |
-| **postgres** | `postgres:16`              | `5432` (interna) | Banco de dados com healthcheck |
-| **redis**    | `redis:8.2.3-alpine`       | `6379` (interna) | Cache e sessões                |
+| Serviço      | Imagem                          | Porta            | Finalidade                     |
+| ------------ | ------------------------------- | ---------------- | ------------------------------ |
+| **nginx**    | `nginx:1.29`                    | `8080:80`        | Reverse proxy para a API       |
+| **api**      | Build local (`prod.Dockerfile`) | `3000` (interna) | API NestJS em produção         |
+| **postgres** | `postgres:16`                   | `5432` (interna) | Banco de dados com healthcheck |
+| **redis**    | `redis:8.2.3-alpine`            | `6379` (interna) | Cache e sessões                |
+
+#### Redes Isoladas
+
+Os containers são organizados em **redes Docker isoladas** para segmentar a comunicação e seguir o princípio de menor privilégio:
+
+| Rede       | Serviços conectados | Finalidade                       |
+| ---------- | ------------------- | -------------------------------- |
+| `api`      | nginx, api          | Comunicação entre proxy e API    |
+| `database` | api, postgres       | Acesso ao banco de dados isolado |
+| `cache`    | api, redis          | Acesso ao Redis isolado          |
+
+Isso garante que o Nginx não tenha acesso direto ao banco de dados ou ao Redis, e que o Postgres e Redis não se comuniquem entre si.
+
+#### Healthchecks
+
+Todos os serviços de dados possuem **healthchecks** configurados, garantindo que a API só inicie após as dependências estarem prontas:
+
+- **PostgreSQL** — `pg_isready` com variáveis dinâmicas (`$$POSTGRES_USER`, `$$POSTGRES_DB`)
+- **Redis** — `redis-cli ping` para verificar disponibilidade
+
+A API depende de ambos via `condition: service_healthy`, evitando erros de conexão durante o startup.
+
+#### Nginx — Suporte a WebSocket
+
+O Nginx foi configurado para suportar **WebSocket** (necessário para as notificações em tempo real via Socket.IO), com os headers `Upgrade` e `Connection` configurados no proxy, além de `server_tokens off` para ocultar a versão do Nginx nos headers de resposta.
+
+#### Multi-stage Dockerfile
 
 A API em produção usa um **multi-stage Dockerfile** (`prod.Dockerfile`) com 3 estágios:
 
-1. **test-stage** — Instala dependências de dev e roda os testes
-2. **build-stage** — Instala apenas dependências de produção e compila o TypeScript
-3. **runtime** — Imagem final mínima, apenas com `node_modules` de produção e `dist/`
+1. **test-stage** — Instala dependências, compila o workspace `infra/` e roda os testes da API
+2. **build-stage** — Reutiliza o estágio anterior e compila o workspace `api/`
+3. **runtime** — Instala apenas dependências de produção, copia os `dist/` compilados e as migrations
+
+O Dockerfile opera no contexto do monorepo (build context na raiz), permitindo que o `npm ci` resolva corretamente os workspaces `api/` e `infra/` com um único `package-lock.json`.
 
 ---
 
@@ -843,12 +953,18 @@ A API estará acessível em `http://localhost:8080` (via Nginx).
 
 Cada workspace possui seu próprio `.env.example` com as variáveis necessárias. O comando `npm run setup:env` cria automaticamente os arquivos `.env.development`, `.env.test` e `.env.production` a partir dos exemplos.
 
-| Workspace  | Variáveis                                     |
-| ---------- | --------------------------------------------- |
-| `api/`     | Porta, banco de dados, JWT secrets, Redis     |
-| `infra/`   | Credenciais do PostgreSQL para Docker Compose |
-| `web/`     | URL da API, porta do frontend                 |
-| `workers/` | Porta do worker                               |
+| Workspace  | Variáveis                                                |
+| ---------- | -------------------------------------------------------- |
+| `api/`     | Porta, banco de dados, JWT secrets, Redis, OTLP Endpoint |
+| `infra/`   | Credenciais do PostgreSQL e Redis para Docker Compose    |
+| `web/`     | URL da API, porta do frontend                            |
+| `workers/` | Porta do worker                                          |
+
+**Variável de observabilidade:**
+
+| Variável                      | Obrigatória | Descrição                                                                              |
+| ----------------------------- | ----------- | -------------------------------------------------------------------------------------- |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | Não         | Endpoint do collector OTLP. Se não definida, traces e métricas são exibidos no console |
 
 Consulte o `.env.example` de cada workspace para ver todas as variáveis disponíveis.
 
@@ -874,15 +990,15 @@ Consulte o `.env.example` de cada workspace para ver todas as variáveis dispon�
 
 ### API Workspace (`-w api`)
 
-| Script       | Comando              | Descrição                      |
-| ------------ | -------------------- | ------------------------------ |
-| `start:dev`  | `nest start --watch` | Desenvolvimento com hot-reload |
-| `start:prod` | `node dist/src/main` | Execução em produção           |
-| `build`      | `nest build`         | Compila o TypeScript           |
-| `test`       | `vitest run`         | Roda testes unitários          |
-| `test:watch` | `vitest`             | Roda testes em modo watch      |
-| `lint`       | `eslint --fix`       | Lint com auto-fix              |
-| `format`     | `prettier --write`   | Formatação automática          |
+| Script       | Comando                                            | Descrição                                   |
+| ------------ | -------------------------------------------------- | ------------------------------------------- |
+| `start:dev`  | `nest start --watch` + `--require instrumentation` | Desenvolvimento com hot-reload e telemetria |
+| `start:prod` | `node --require instrumentation dist/src/main`     | Execução em produção com telemetria         |
+| `build`      | `nest build`                                       | Compila o TypeScript                        |
+| `test`       | `vitest run`                                       | Roda testes unitários                       |
+| `test:watch` | `vitest`                                           | Roda testes em modo watch                   |
+| `lint`       | `eslint --fix`                                     | Lint com auto-fix                           |
+| `format`     | `prettier --write`                                 | Formatação automática                       |
 
 ---
 
@@ -905,7 +1021,11 @@ Consulte o `.env.example` de cada workspace para ver todas as variáveis dispon�
 - [x] API — Domain Events nas entidades base
 - [x] API — Event Emitter com @nestjs/event-emitter
 - [x] API — Notificações em tempo real com WebSocket (Socket.IO)
-- [x] Docker Compose para ambiente local
+- [x] API — Observabilidade com OpenTelemetry (tracing + métricas)
+- [x] API — Logging estruturado com Pino (correlação com traces)
+- [x] Docker Compose com redes isoladas e healthchecks
+- [x] Nginx com suporte a WebSocket
+- [x] Multi-stage Dockerfile com suporte a monorepo
 - [x] CI/CD com GitHub Actions
 - [ ] API — Dashboard com métricas agregadas
 - [ ] Web — Interface do produtor (Next.js)

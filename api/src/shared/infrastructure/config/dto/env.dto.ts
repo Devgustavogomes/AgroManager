@@ -16,4 +16,5 @@ export const envSchema = z.object({
   REDIS_PASSWORD: z.string(),
   REDIS_USERNAME: z.string(),
   REDIS_SSL: z.string(),
+  OTEL_EXPORTER_OTLP_ENDPOINT: z.string().optional(),
 });
