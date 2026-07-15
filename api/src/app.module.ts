@@ -57,7 +57,6 @@ import { trace } from '@opentelemetry/api';
             : {
                 target: 'pino-pretty',
               },
-        autoLogging: false,
       },
     }),
     ProducerModule,
