@@ -4,10 +4,15 @@ import { join } from 'node:path';
 import { PoolClient } from 'pg';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { MigrationProviderContract } from '../../domain/providers/migration.provider.contract';
+import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 
 @Injectable()
 export class MigrationProvider implements MigrationProviderContract {
-  constructor(private readonly databaseService: DatabaseContract) {}
+  constructor(
+    private readonly databaseService: DatabaseContract,
+    @InjectPinoLogger(MigrationProvider.name)
+    private readonly logger: PinoLogger,
+  ) {}
 
   async getMigrations(): Promise<unknown[]> {
     let client: PoolClient | undefined;
@@ -21,7 +26,7 @@ export class MigrationProvider implements MigrationProviderContract {
         migrationsTable: 'pgmigrations',
       });
     } catch (err: unknown) {
-      console.error('Migration failed', err);
+      this.logger.error(err, '[Migration] failed');
       throw err;
     } finally {
       client?.release();
@@ -39,8 +44,9 @@ export class MigrationProvider implements MigrationProviderContract {
         dryRun: false,
         migrationsTable: 'pgmigrations',
       });
+      this.logger.info('[Migration] completed');
     } catch (err: unknown) {
-      console.error('Migration failed', err);
+      this.logger.error(err, '[Migration] failed');
       throw err;
     } finally {
       client?.release();
