@@ -17,6 +17,8 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
 import { Redis } from 'ioredis';
+import { LoggerModule } from 'nestjs-pino';
+import { trace } from '@opentelemetry/api';
 
 @Module({
   imports: [
@@ -35,6 +37,28 @@ import { Redis } from 'ioredis';
       }),
     }),
     EventEmitterModule.forRoot(),
+    LoggerModule.forRoot({
+      pinoHttp: {
+        name: 'api-agromager',
+        level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+        mixin() {
+          const spanAtivo = trace.getActiveSpan();
+          if (!spanAtivo) return {};
+
+          const { traceId, spanId } = spanAtivo.spanContext();
+          return { traceId, spanId };
+        },
+        transport:
+          process.env.NODE_ENV === 'production'
+            ? {
+                target: 'pino-opentelemetry-transport',
+                options: {}, // adicionar configuracao do collector
+              }
+            : {
+                target: 'pino-pretty',
+              },
+      },
+    }),
     ProducerModule,
     DatabaseModule,
     AuthModule,

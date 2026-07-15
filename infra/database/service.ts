@@ -9,19 +9,23 @@ import {
 import { Pool } from "pg";
 import type { PoolClient } from "pg";
 import { DatabaseContract } from "./contract";
+import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 @Injectable()
 export class DatabaseService
   implements OnModuleDestroy, OnModuleInit, DatabaseContract
 {
-  constructor(@Inject("DATABASE_CLIENT") private readonly pool: Pool) {}
+  constructor(
+    @Inject("DATABASE_CLIENT") private readonly pool: Pool,
+    @InjectPinoLogger(DatabaseService.name) private readonly logger: PinoLogger,
+  ) {}
 
   async onModuleInit() {
     try {
       const client = await this.pool.connect();
       client.release();
-      console.log("Connected to database");
+      this.logger.info("[Database] connected!");
     } catch (err) {
-      console.error("Database connection failed", err);
+      this.logger.error(err, "[Database] connection failed");
       throw err;
     }
   }
