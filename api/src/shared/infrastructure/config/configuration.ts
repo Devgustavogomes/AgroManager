@@ -18,4 +18,7 @@ export default () => ({
     REDIS_USERNAME: process.env.REDIS_USERNAME,
     REDIS_SSL: process.env.REDIS_SSL,
   },
+  otel: {
+    OTEL_EXPORTER_OTLP_ENDPOINT: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
+  },
 });
