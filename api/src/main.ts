@@ -6,19 +6,22 @@ import { ZodValidationPipe } from 'nestjs-zod';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import cookieParser from 'cookie-parser';
+import { Logger } from 'nestjs-pino';
 
 export default async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
   });
 
-  const configService = app.get(ConfigService, { strict: false });
+  const logger = setupLogger(app);
 
-  app.useGlobalPipes(new ZodValidationPipe());
+  const configService = app.get(ConfigService, { strict: false });
 
   setupSecurity(app, configService);
 
   setupSwagger(app);
+
+  app.useGlobalPipes(new ZodValidationPipe());
 
   const PORT = configService.get('PORT') ?? 3000;
 
@@ -27,8 +30,14 @@ export default async function bootstrap() {
   app.use(cookieParser());
 
   await app.listen(PORT, () => {
-    console.log(`🚀 Server running on PORT ${PORT}`);
+    logger.log(`🚀 Server running on PORT ${PORT}`);
   });
+}
+
+function setupLogger(app: NestExpressApplication) {
+  const logger = app.get(Logger);
+  app.useLogger(logger);
+  return logger;
 }
 
 function setupSecurity(
@@ -70,4 +79,4 @@ function setupSwagger(app: NestExpressApplication) {
   SwaggerModule.setup('docs', app, document);
 }
 
-bootstrap().catch(console.error);
+void bootstrap();
