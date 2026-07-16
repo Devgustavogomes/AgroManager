@@ -1,5 +1,5 @@
 import { Mocked } from 'vitest';
-import { CultureContract } from '../../domain/repositories/cultureRepository.interface';
+import { CultureContract } from '../../domain/repositories/cultureRepository.contract';
 import { UpdateCultureUseCase } from './updateCulture';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Culture } from '../../domain/entities/culture.entity';

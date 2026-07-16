@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CultureContract } from '../domain/repositories/cultureRepository.interface';
+import { CultureContract } from '../domain/repositories/cultureRepository.contract';
 import { CultureController } from '../presentation/culture.controller';
 import { CultureRepository } from './persistence/culture.repository';
 import { CreateCultureUseCase } from '../application/use-cases/createCulture';

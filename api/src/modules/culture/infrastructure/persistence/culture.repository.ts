@@ -6,7 +6,7 @@ import { CultureMapper } from '../culture.mapper';
 import {
   CultureContract,
   CulturePersistence,
-} from '../../domain/repositories/cultureRepository.interface';
+} from '../../domain/repositories/cultureRepository.contract';
 import { PoolClient } from 'pg';
 import { Area } from 'src/shared/domain/value-objects/area';
 

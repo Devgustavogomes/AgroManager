@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CultureContract } from '../../domain/repositories/cultureRepository.interface';
+import { CultureContract } from '../../domain/repositories/cultureRepository.contract';
 
 @Injectable()
 export class DeleteCultureUseCase {
