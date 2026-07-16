@@ -73,12 +73,12 @@ export class PropertyRepository implements PropertyContract {
   async update(producerId: string, property: Property): Promise<Property> {
     const sql = `UPDATE properties
                 SET
-                "name" = COALESCE($1, "name"),
-                "city" = COALESCE($2, "city"),
-                "state" = COALESCE($3, "state"),
-                "arableArea" = COALESCE($4, "arableArea"),
-                "vegetationArea" = COALESCE($5, "vegetationArea"),
-                "totalArea" = COALESCE($6, "totalArea"),
+                "name" = $1,
+                "city" = $2,
+                "state" = $3,
+                "arableArea" = $4,
+                "vegetationArea" = $5,
+                "totalArea" = $6,
                 "updatedAt" = $7
                 WHERE "slug" = $8
                 AND "producerId" = $9

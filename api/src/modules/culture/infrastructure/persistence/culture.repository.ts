@@ -73,8 +73,8 @@ export class CultureRepository implements CultureContract {
   async update(culture: Culture, client?: PoolClient): Promise<Culture> {
     const sql = `UPDATE cultures
                 SET
-                name = COALESCE($1, name),
-               "allocatedArea" = COALESCE($2,"allocatedArea")
+                name = $1,
+               "allocatedArea" = $2
                 WHERE "cultureId" = $3
                 RETURNING *`;
 
