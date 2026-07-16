@@ -2,7 +2,10 @@ import { Entity } from 'src/shared/domain/entities/entity';
 import { CropStatus } from '../constants/crop-status.enum';
 import { PestStatus } from '../constants/pest-status.enum';
 import { Optional } from 'src/shared/application/types/optional';
-import { Area } from 'src/shared/domain/value-objects/area';
+import {
+  Area,
+  MINIMUM_ALLOCATED_AREA,
+} from 'src/shared/domain/value-objects/area';
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
 import { Notification } from 'src/shared/domain/entities/notification.entity';
 
@@ -49,6 +52,10 @@ export class Crop extends Entity<CropProps, Notification> {
     });
 
     return crop;
+  }
+
+  public static reconstitute(props: CropProps) {
+    return new Crop(props);
   }
 
   public update(
@@ -113,8 +120,10 @@ export class Crop extends Entity<CropProps, Notification> {
   }
 
   private validateArea() {
-    if (this.props.allocatedArea.getValue <= 0) {
-      throw new InvalidAreaError('Allocated area must be greater than 0');
+    if (this.props.allocatedArea.getValue < MINIMUM_ALLOCATED_AREA) {
+      throw new InvalidAreaError(
+        `Allocated area must be at least ${MINIMUM_ALLOCATED_AREA}`,
+      );
     }
   }
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CultureContract } from '../../domain/repositories/cultureRepository.interface';
+import { CultureContract } from '../../domain/repositories/cultureRepository.contract';
 import { UpdateCultureInput } from '../dto/updateCulture.dto';
 import { CultureOutput } from '../dto/cultureOutput.dto';
 import { CultureMapper } from '../../infrastructure/culture.mapper';

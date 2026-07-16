@@ -1,6 +1,9 @@
 import { Entity } from 'src/shared/domain/entities/entity';
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
-import { Area } from 'src/shared/domain/value-objects/area';
+import {
+  Area,
+  MINIMUM_ALLOCATED_AREA,
+} from 'src/shared/domain/value-objects/area';
 import { Optional } from 'src/shared/application/types/optional';
 import { Notification } from 'src/shared/domain/entities/notification.entity';
 
@@ -41,6 +44,10 @@ export class Culture extends Entity<CultureProps, Notification> {
     return culture;
   }
 
+  static reconstitute(props: CultureProps) {
+    return new Culture(props);
+  }
+
   update(property: Partial<Pick<CultureProps, 'name' | 'allocatedArea'>>) {
     let updated = false;
 
@@ -68,8 +75,10 @@ export class Culture extends Entity<CultureProps, Notification> {
   }
 
   private validateAreas() {
-    if (this.props.allocatedArea.getValue < 1) {
-      throw new InvalidAreaError('Allocated area must be greater than 0');
+    if (this.props.allocatedArea.getValue < MINIMUM_ALLOCATED_AREA) {
+      throw new InvalidAreaError(
+        `Allocated area must be at least ${MINIMUM_ALLOCATED_AREA}`,
+      );
     }
   }
 

@@ -1,5 +1,7 @@
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
 
+export const MINIMUM_ALLOCATED_AREA = 1;
+
 export class Area {
   private constructor(private value: number) {}
 

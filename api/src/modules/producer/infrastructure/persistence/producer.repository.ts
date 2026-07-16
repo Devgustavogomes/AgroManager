@@ -49,8 +49,8 @@ export class ProducerRepository implements ProducerContract {
   async update(id: string, data: Producer): Promise<Producer> {
     const sql = `UPDATE producers
                 SET 
-                username = COALESCE($1, username),
-                email = COALESCE($2, email)
+                username = $1,
+                email = $2
                 WHERE "producerId" = $3
                 RETURNING *;
                 `;

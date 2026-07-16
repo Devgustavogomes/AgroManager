@@ -7,7 +7,7 @@ export interface CropPersistence {
   cultureId: string;
   name: string;
   status: CropStatus;
-  allocatedArea: number;
+  allocatedArea: string;
   plantingDate: string;
   harvestDateExpected: string;
   harvestDateActual: string | null;

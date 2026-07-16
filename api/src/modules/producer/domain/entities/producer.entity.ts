@@ -41,6 +41,10 @@ export class Producer extends Entity<ProducerProps, Notification> {
     return producer;
   }
 
+  static reconstitute(props: ProducerProps): Producer {
+    return new Producer(props);
+  }
+
   update(props: Partial<Pick<ProducerProps, 'email' | 'username'>>) {
     let updated = false;
 

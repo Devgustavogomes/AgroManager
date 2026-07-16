@@ -32,7 +32,7 @@ CREATE TABLE "cultures" (
   "cultureId" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   "propertyId" UUID NOT NULL,
   "name" varchar NOT NULL,
-  "allocatedArea" integer DEFAULT 0,
+  "allocatedArea" NUMERIC(10,2) DEFAULT 0,
   "createdAt" timestamp DEFAULT NOW(),
   "updatedAt" timestamp,
 
@@ -48,7 +48,7 @@ CREATE TABLE "crops" (
   "cultureId" UUID NOT NULL,
   "name" varchar NOT NULL,
   "status" varchar NOT NULL,
-  "allocatedArea" integer NOT NULL,
+  "allocatedArea" NUMERIC(10,2) NOT NULL,
   "plantingDate" date NOT NULL,
   "harvestDateExpected" date NOT NULL,
   "harvestDateActual" date,
