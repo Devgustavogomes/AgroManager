@@ -7,7 +7,7 @@ export class ProducerMapper {
     return data
       .values()
       .map((r) =>
-        Producer.create({
+        Producer.reconstitute({
           producerId: r.producerId,
           username: r.username,
           email: r.email,

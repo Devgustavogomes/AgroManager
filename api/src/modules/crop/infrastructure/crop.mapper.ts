@@ -8,7 +8,7 @@ export class CropMapper {
     return data
       .values()
       .map((r) =>
-        Crop.create({
+        Crop.reconstitute({
           cropId: r.cropId,
           cultureId: r.cultureId,
           name: r.name,

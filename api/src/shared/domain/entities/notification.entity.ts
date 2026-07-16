@@ -33,6 +33,10 @@ export class Notification {
     });
   }
 
+  public static reconstitute(props: NotificationProps) {
+    return new Notification(props);
+  }
+
   public readNotification() {
     this.props.read = true;
     this.props.updatedAt = new Date();

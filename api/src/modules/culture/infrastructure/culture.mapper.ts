@@ -8,7 +8,7 @@ export class CultureMapper {
     return data
       .values()
       .map((r) =>
-        Culture.create({
+        Culture.reconstitute({
           cultureId: r.cultureId,
           propertyId: r.propertyId,
           name: r.name,

@@ -44,6 +44,10 @@ export class Culture extends Entity<CultureProps, Notification> {
     return culture;
   }
 
+  static reconstitute(props: CultureProps) {
+    return new Culture(props);
+  }
+
   update(property: Partial<Pick<CultureProps, 'name' | 'allocatedArea'>>) {
     let updated = false;
 

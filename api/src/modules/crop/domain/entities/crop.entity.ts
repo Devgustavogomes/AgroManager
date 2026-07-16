@@ -54,6 +54,10 @@ export class Crop extends Entity<CropProps, Notification> {
     return crop;
   }
 
+  public static reconstitute(props: CropProps) {
+    return new Crop(props);
+  }
+
   public update(
     crop: Partial<
       Omit<CropProps, 'cropId' | 'cultureId' | 'createdAt' | 'updatedAt'>
