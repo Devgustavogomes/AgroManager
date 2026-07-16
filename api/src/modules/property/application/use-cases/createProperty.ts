@@ -1,4 +1,3 @@
-import { PropertyMapper } from '../../infrastructure/persistence/property.mapper';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Property } from '../../domain/entities/property.entity';
 import { Area } from '../../../../shared/domain/value-objects/area';
@@ -9,6 +8,7 @@ import { PropertyOutputDto } from '../dto/output.dto';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
 import { ValidateMaxProperties } from '../../domain/services/validateMaxProperties.service';
 import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
+import { PropertyMapper } from '../../infrastructure/property.mapper';
 
 @Injectable()
 export class CreatePropertyUseCase {

@@ -1,8 +1,8 @@
-import { PropertyOutputDto } from '../../application/dto/output.dto';
-import { Property } from '../../domain/entities/property.entity';
-import { PropertyPersistence } from '../../domain/repositories/propertyRepository.contract';
-import { Area } from '../../../../shared/domain/value-objects/area';
-import { Slug } from '../../domain/value-object/slug';
+import { Area } from 'src/shared/domain/value-objects/area';
+import { Slug } from '../domain/value-object/slug';
+import { Property } from '../domain/entities/property.entity';
+import { PropertyPersistence } from '../domain/repositories/propertyRepository.contract';
+import { PropertyOutputDto } from '../application/dto/output.dto';
 
 export class PropertyMapper {
   static toDomain(data: PropertyPersistence[]): Property[] {

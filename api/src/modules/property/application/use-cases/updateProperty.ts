@@ -4,8 +4,8 @@ import { UpdatePropertyDto } from '../dto/update.dto';
 import { Slug } from '../../domain/value-object/slug';
 import { Area } from 'src/shared/domain/value-objects/area';
 import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
-import { PropertyMapper } from '../../infrastructure/persistence/property.mapper';
 import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
+import { PropertyMapper } from '../../infrastructure/property.mapper';
 
 @Injectable()
 export class UpdatePropertyUseCase {
