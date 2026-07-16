@@ -106,13 +106,13 @@ export class CultureRepository implements CultureContract {
 
     const params = [id];
 
-    const result = await this.databaseService.query<{ sum: number }>(
+    const result = await this.databaseService.query<{ sum: string }>(
       sql,
       params,
       client,
     );
 
-    return result[0].sum;
+    return Number(result[0].sum);
   }
 
   async getPropertyArea(slug: string, client: PoolClient): Promise<Area> {
@@ -123,13 +123,11 @@ export class CultureRepository implements CultureContract {
 
     const params = [slug];
 
-    const result = await this.databaseService.query<{ totalArea: number }>(
-      sql,
-      params,
-      client,
-    );
+    const result = await this.databaseService.query<{
+      totalArea: string;
+    }>(sql, params, client);
 
-    return Area.create(result[0].totalArea);
+    return Area.create(Number(result[0].totalArea));
   }
 
   async cultureAreaSum(propertyId: string, client: PoolClient): Promise<Area> {
@@ -140,13 +138,13 @@ export class CultureRepository implements CultureContract {
 
     const params = [propertyId];
 
-    const result = await this.databaseService.query<{ sum: number }>(
+    const result = await this.databaseService.query<{ sum: string }>(
       sql,
       params,
       client,
     );
 
-    return Area.create(result[0].sum);
+    return Area.create(Number(result[0].sum));
   }
 
   async isOwner(producerId: string, cultureId: string): Promise<boolean> {

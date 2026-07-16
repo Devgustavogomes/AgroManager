@@ -13,7 +13,7 @@ export class CropMapper {
           cultureId: r.cultureId,
           name: r.name,
           status: r.status,
-          allocatedArea: Area.create(r.allocatedArea),
+          allocatedArea: Area.create(Number(r.allocatedArea)),
           plantingDate: new Date(r.plantingDate),
           harvestDateExpected: new Date(r.harvestDateExpected),
           harvestDateActual: r.harvestDateActual

@@ -53,30 +53,30 @@ export class CropRepository implements CropContract {
 
     const params = [cultureId];
 
-    const result = await this.databaseService.query<{ allocatedArea: number }>(
+    const result = await this.databaseService.query<{ allocatedArea: string }>(
       sql,
       params,
       client,
     );
 
-    return result[0].allocatedArea ?? 0;
+    return Number(result[0].allocatedArea ?? 0);
   }
 
   async getCropsArea(cultureId: string, client: PoolClient): Promise<number> {
-    const sql = `SELECT COALESCE(SUM("allocatedArea"), 0)
+    const sql = `SELECT COALESCE(SUM("allocatedArea"), 0) as sum
                 FROM crops
                 WHERE "cultureId" = $1
                 FOR UPDATE`;
 
     const params = [cultureId];
 
-    const result = await this.databaseService.query<number>(
+    const result = await this.databaseService.query<{ sum: string }>(
       sql,
       params,
       client,
     );
 
-    return result[0];
+    return Number(result[0].sum);
   }
 
   async create(crop: Crop, cliente: PoolClient): Promise<Crop> {
