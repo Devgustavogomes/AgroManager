@@ -27,7 +27,7 @@
     "@nestjs-modules/ioredis": "^2.2.1",
     "@nestjs/common": "^11.1.26",
     "@nestjs/config": "^4.0.4",
-    "@nestjs/core": "^11.1.18",
+    "@nestjs/core": "^11.1.28",
     "@nestjs/event-emitter": "^3.1.0",
     "@nestjs/jwt": "^11.0.1",
     "@nestjs/platform-express": "^11.1.28",
