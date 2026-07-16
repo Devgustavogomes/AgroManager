@@ -33,9 +33,9 @@ export class DatabaseService
     await this.pool.end();
   }
 
-  async query<T = any>(
+  async query<T = unknown>(
     sql: string,
-    params?: any[],
+    params?: unknown[],
     client?: PoolClient,
   ): Promise<T[]> {
     const exec = client || this.pool;
