@@ -1,6 +1,6 @@
-import { ProducerOutput } from '../../application/dto/output.dto';
-import { Producer } from '../../domain/entities/producer.entity';
-import { ProducerPersistence } from '../../domain/repositories/producerRepository.contract';
+import { ProducerOutput } from '../application/dto/output.dto';
+import { Producer } from '../domain/entities/producer.entity';
+import { ProducerPersistence } from '../domain/repositories/producerRepository.contract';
 
 export class ProducerMapper {
   static toDomain(data: ProducerPersistence[]): Producer[] {

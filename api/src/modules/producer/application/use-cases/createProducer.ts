@@ -4,8 +4,8 @@ import { CreateProducerInput } from '../dto/create.dto';
 import { ProducerOutput } from '../dto/output.dto';
 import { hash } from 'bcryptjs';
 import { Producer } from '../../domain/entities/producer.entity';
-import { ProducerMapper } from '../../infrastructure/persistence/producer.mapper';
 import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
+import { ProducerMapper } from '../../infrastructure/producer.mapper';
 
 @Injectable()
 export class CreateProducerUseCase {
