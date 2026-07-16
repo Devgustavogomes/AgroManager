@@ -99,20 +99,20 @@ export class CultureRepository implements CultureContract {
   }
 
   async cropSum(id: string, client?: PoolClient): Promise<number> {
-    const sql = `SELECT COALESCE(SUM("allocatedArea"), 0) as sum
+    const sql = `SELECT COALESCE(SUM("allocatedArea"), 0) AS "cropsArea"
                 FROM crops
                 WHERE "cultureId" = $1
                 FOR UPDATE`;
 
     const params = [id];
 
-    const result = await this.databaseService.query<{ sum: string }>(
+    const result = await this.databaseService.query<{ cropsArea: string }>(
       sql,
       params,
       client,
     );
 
-    return Number(result[0].sum);
+    return Number(result[0].cropsArea);
   }
 
   async getPropertyArea(slug: string, client: PoolClient): Promise<Area> {
@@ -131,20 +131,20 @@ export class CultureRepository implements CultureContract {
   }
 
   async cultureAreaSum(propertyId: string, client: PoolClient): Promise<Area> {
-    const sql = `SELECT COALESCE(SUM("allocatedArea"), 0) as sum
+    const sql = `SELECT COALESCE(SUM("allocatedArea"), 0) AS "culturesArea"
                 FROM cultures
                 WHERE "propertyId" = $1
                 FOR UPDATE`;
 
     const params = [propertyId];
 
-    const result = await this.databaseService.query<{ sum: string }>(
+    const result = await this.databaseService.query<{ culturesArea: string }>(
       sql,
       params,
       client,
     );
 
-    return Area.create(Number(result[0].sum));
+    return Area.create(Number(result[0].culturesArea));
   }
 
   async isOwner(producerId: string, cultureId: string): Promise<boolean> {
