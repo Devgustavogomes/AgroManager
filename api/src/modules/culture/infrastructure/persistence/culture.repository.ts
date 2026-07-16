@@ -157,7 +157,6 @@ export class CultureRepository implements CultureContract {
                         ON cult."propertyId" = prop."propertyId"
                     WHERE cult."cultureId" = $1
                     AND prop."producerId" = $2
-                    FOR UPDATE
                 ) AS hasProperty`;
 
     const params = [cultureId, producerId];
