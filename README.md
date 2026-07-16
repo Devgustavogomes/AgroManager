@@ -436,7 +436,6 @@ async execute(id: string, dto: UpdateCultureInput): Promise<CultureOutput> {
 
 - Criação de propriedades (limite de 5 por produtor)
 - Atualização de área alocada de culturas (validação de soma de crops)
-- Verificação de ownership em operações concorrentes
 
 ---
 

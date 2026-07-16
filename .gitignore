@@ -57,4 +57,4 @@ postgres-data
 redis-data
 
 # Codebase reviews
-codebase_review_v3.md
+codebase_review_v*.md

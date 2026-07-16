@@ -4,7 +4,7 @@ import { NotificationPersistence } from '../domain/providers/notificationProvide
 export class NotificationMapper {
   static toDomain(data: NotificationPersistence[]): Notification[] {
     return data.map((r) =>
-      Notification.create({
+      Notification.reconstitute({
         notificationId: r.notificationId,
         event: r.event,
         title: r.title,

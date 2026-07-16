@@ -7,7 +7,7 @@ import { Slug } from '../../domain/value-object/slug';
 export class PropertyMapper {
   static toDomain(data: PropertyPersistence[]): Property[] {
     return data.map((r) =>
-      Property.create({
+      Property.reconstitute({
         ...r,
         slug: Slug.createFromText(r.slug),
         totalArea: Area.create(Number(r.totalArea)),

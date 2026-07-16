@@ -19,6 +19,8 @@ import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
 import { Redis } from 'ioredis';
 import { LoggerModule } from 'nestjs-pino';
 import { trace } from '@opentelemetry/api';
+import { TerminusModule } from '@nestjs/terminus';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -80,8 +82,9 @@ import { trace } from '@opentelemetry/api';
     CultureModule,
     CropModule,
     NotificationModule,
+    TerminusModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_FILTER,

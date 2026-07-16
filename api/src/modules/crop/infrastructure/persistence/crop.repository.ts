@@ -53,30 +53,30 @@ export class CropRepository implements CropContract {
 
     const params = [cultureId];
 
-    const result = await this.databaseService.query<{ allocatedArea: number }>(
+    const result = await this.databaseService.query<{ allocatedArea: string }>(
       sql,
       params,
       client,
     );
 
-    return result[0].allocatedArea ?? 0;
+    return Number(result[0].allocatedArea ?? 0);
   }
 
   async getCropsArea(cultureId: string, client: PoolClient): Promise<number> {
-    const sql = `SELECT COALESCE(SUM("allocatedArea"), 0)
+    const sql = `SELECT COALESCE(SUM("allocatedArea"), 0) AS "cropsArea"
                 FROM crops
                 WHERE "cultureId" = $1
                 FOR UPDATE`;
 
     const params = [cultureId];
 
-    const result = await this.databaseService.query<number>(
+    const result = await this.databaseService.query<{ cropsArea: string }>(
       sql,
       params,
       client,
     );
 
-    return result[0];
+    return Number(result[0].cropsArea);
   }
 
   async create(crop: Crop, cliente: PoolClient): Promise<Crop> {
@@ -174,7 +174,7 @@ export class CropRepository implements CropContract {
   }
 
   async isOwner(producerId: string, cropId: string): Promise<boolean> {
-    const sql = `SELECT EXISTS as "isOwner" (
+    const sql = `SELECT EXISTS (
                 SELECT 1
                 FROM crops AS cr
                 INNER JOIN cultures AS cult 
@@ -183,7 +183,7 @@ export class CropRepository implements CropContract {
                     ON pr."propertyId" = cult."propertyId"
                 WHERE cr."cropId" = $1
                 AND pr."producerId" = $2
-            )`;
+            ) as "isOwner"`;
 
     const params = [cropId, producerId];
 

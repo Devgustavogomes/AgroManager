@@ -8,12 +8,12 @@ export class CropMapper {
     return data
       .values()
       .map((r) =>
-        Crop.create({
+        Crop.reconstitute({
           cropId: r.cropId,
           cultureId: r.cultureId,
           name: r.name,
           status: r.status,
-          allocatedArea: Area.create(r.allocatedArea),
+          allocatedArea: Area.create(Number(r.allocatedArea)),
           plantingDate: new Date(r.plantingDate),
           harvestDateExpected: new Date(r.harvestDateExpected),
           harvestDateActual: r.harvestDateActual

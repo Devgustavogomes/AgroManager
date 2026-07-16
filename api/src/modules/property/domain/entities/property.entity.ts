@@ -49,6 +49,10 @@ export class Property extends Entity<PropertyProps, Notification> {
     return property;
   }
 
+  static reconstitute(props: PropertyProps) {
+    return new Property(props);
+  }
+
   update(
     property: Partial<
       Omit<
