@@ -4,8 +4,8 @@ import {
   ProducerPersistence,
 } from '../../domain/repositories/producerRepository.contract';
 import { Producer } from '../../domain/entities/producer.entity';
-import { ProducerMapper } from './producer.mapper';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
+import { ProducerMapper } from '../producer.mapper';
 
 @Injectable()
 export class ProducerRepository implements ProducerContract {

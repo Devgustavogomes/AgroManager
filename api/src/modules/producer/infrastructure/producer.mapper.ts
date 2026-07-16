@@ -1,6 +1,6 @@
-import { ProducerOutput } from '../../application/dto/output.dto';
-import { Producer } from '../../domain/entities/producer.entity';
-import { ProducerPersistence } from '../../domain/repositories/producerRepository.contract';
+import { ProducerOutput } from '../application/dto/output.dto';
+import { Producer } from '../domain/entities/producer.entity';
+import { ProducerPersistence } from '../domain/repositories/producerRepository.contract';
 
 export class ProducerMapper {
   static toDomain(data: ProducerPersistence[]): Producer[] {
@@ -27,10 +27,8 @@ export class ProducerMapper {
         username: r.username,
         email: r.email,
         role: r.role,
-        createdAt:
-          r.createdAt instanceof Date ? r.createdAt.toISOString() : r.createdAt,
-        updatedAt:
-          r.updatedAt instanceof Date ? r.updatedAt.toISOString() : r.updatedAt,
+        createdAt: r.createdAt.toISOString(),
+        updatedAt: r.updatedAt ? r.updatedAt.toISOString() : null,
       }))
       .toArray();
   }

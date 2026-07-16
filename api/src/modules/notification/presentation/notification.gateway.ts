@@ -34,20 +34,21 @@ export class NotificationGateway implements OnGatewayConnection {
   async handleConnection(client: Socket) {
     const authHeader: string | undefined = client.handshake.auth?.token;
 
-    if (!authHeader) {
-      throw new ForbiddenError('Missing Token');
-    }
-
-    const token: string = authHeader.split(' ')[1];
-
     try {
+      if (!authHeader) {
+        throw new ForbiddenError('Missing Token');
+      }
+
+      const token: string = authHeader.split(' ')[1];
+
       const payload: JwtPayload = await this.jwtService.verifyAsync(token);
 
       const producerId = payload.id;
 
       await client.join(`producer-${producerId}`);
-    } catch {
+    } catch (error) {
       client.disconnect(true);
+      throw error;
     }
   }
 }
