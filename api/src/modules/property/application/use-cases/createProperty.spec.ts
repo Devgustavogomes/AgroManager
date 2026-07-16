@@ -5,6 +5,9 @@ import { CreatePropertyUseCase } from './createProperty';
 import { MAX_PROPERTIES_PER_PRODUCER } from '../../domain/constants/maxProperties.constant';
 import { ConflictError } from 'src/shared/domain/errors/conflictError';
 import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
+import { Property } from '../../domain/entities/property.entity';
+import { ValidateMaxProperties } from '../../domain/services/validateMaxProperties.service';
+import { PropertyMapper } from '../../infrastructure/property.mapper';
 
 describe('Create Property', () => {
   let useCase: CreatePropertyUseCase;
@@ -54,11 +57,37 @@ describe('Create Property', () => {
 
     mockPropertyRepository.create.mockImplementation((p) => Promise.resolve(p));
 
+    const validateMaxProperties = vi.spyOn(ValidateMaxProperties, 'execute');
+
+    const getDomainEventsSpy = vi.spyOn(Property.prototype, 'getDomainEvents');
+
+    const clearEventsSpy = vi.spyOn(Property.prototype, 'clearDomainEvents');
+
+    const propertyMapper = vi.spyOn(PropertyMapper, 'toResponse');
+
     await useCase.execute('123', dto);
 
     expect(mockDatabaseService.transaction).toHaveBeenCalledOnce();
-    expect(mockPropertyRepository.count).toHaveBeenCalledOnce();
-    expect(mockPropertyRepository.create).toHaveBeenCalledOnce();
+
+    expect(mockPropertyRepository.count).toHaveBeenCalledWith(
+      expect.any(Property),
+      expect.anything(),
+    );
+
+    expect(validateMaxProperties).toHaveBeenCalledOnce();
+
+    expect(mockPropertyRepository.create).toHaveBeenCalledWith(
+      expect.any(Property),
+      expect.anything(),
+    );
+
+    expect(getDomainEventsSpy).toHaveBeenCalledOnce();
+
+    expect(mockEventEmitter.emit).toHaveBeenCalled();
+
+    expect(clearEventsSpy).toHaveBeenCalledOnce();
+
+    expect(propertyMapper).toHaveBeenCalledOnce();
   });
   it('Should not create a property if producer has a 5 properties', async () => {
     const dto = {
