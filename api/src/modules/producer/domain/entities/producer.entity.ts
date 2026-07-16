@@ -9,8 +9,8 @@ export interface ProducerProps {
   email: string;
   role: Role;
   hashedPassword: string;
-  createdAt: Date | string;
-  updatedAt: Date | string | null;
+  createdAt: Date;
+  updatedAt: Date | null;
 }
 
 export class Producer extends Entity<ProducerProps, Notification> {
@@ -88,10 +88,10 @@ export class Producer extends Entity<ProducerProps, Notification> {
   get role(): Role {
     return this.props.role;
   }
-  get createdAt(): Date | string {
+  get createdAt(): Date {
     return this.props.createdAt;
   }
-  get updatedAt(): Date | string | null {
+  get updatedAt(): Date | null {
     return this.props.updatedAt;
   }
   get producerId(): string {

@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { ProducerContract } from '../../domain/repositories/producerRepository.contract';
 import { ProducerOutput } from '../dto/output.dto';
 import { UpdateProducerDTO } from '../dto/update.dto';
-import { ProducerMapper } from '../../infrastructure/persistence/producer.mapper';
 import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
 import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
+import { ProducerMapper } from '../../infrastructure/producer.mapper';
 @Injectable()
 export class UpdateProducerUseCase {
   constructor(

@@ -12,7 +12,7 @@ interface CultureProps {
   name: string;
   allocatedArea: Area;
   propertyId: string;
-  createdAt: Date | string;
+  createdAt: Date;
   updatedAt: Date | null;
 }
 
@@ -102,7 +102,7 @@ export class Culture extends Entity<CultureProps, Notification> {
     return this.props.cultureId;
   }
 
-  get createdAt() {
+  get createdAt(): Date {
     return this.props.createdAt;
   }
 

@@ -6,7 +6,7 @@ import {
   PropertyPersistence,
 } from '../../domain/repositories/propertyRepository.contract';
 import { Property } from '../../domain/entities/property.entity';
-import { PropertyMapper } from './property.mapper';
+import { PropertyMapper } from '../property.mapper';
 
 @Injectable()
 export class PropertyRepository implements PropertyContract {

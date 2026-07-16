@@ -7,8 +7,8 @@ export interface ProducerPersistence {
   email: string;
   hashedPassword: string;
   role: Role;
-  createdAt: string;
-  updatedAt: string | null;
+  createdAt: Date;
+  updatedAt: Date | null;
 }
 
 export abstract class ProducerContract {
