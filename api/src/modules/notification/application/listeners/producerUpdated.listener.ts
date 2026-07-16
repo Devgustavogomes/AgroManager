@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { NotificationProviderContract } from '../../domain/providers/notificationProvider.contract';
 import { Notification } from 'src/shared/domain/entities/notification.entity';
-import { NotificationContract } from '../../domain/repostories/notificationRepository.contract';
+import { NotificationContract } from '../../domain/repositories/notificationRepository.contract';
 import type { EmitterPayload } from 'src/shared/domain/providers/emitterProvider.contract';
 
 @Injectable()
