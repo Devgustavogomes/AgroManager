@@ -27,10 +27,8 @@ export class ProducerMapper {
         username: r.username,
         email: r.email,
         role: r.role,
-        createdAt:
-          r.createdAt instanceof Date ? r.createdAt.toISOString() : r.createdAt,
-        updatedAt:
-          r.updatedAt instanceof Date ? r.updatedAt.toISOString() : r.updatedAt,
+        createdAt: r.createdAt.toISOString(),
+        updatedAt: r.updatedAt ? r.updatedAt.toISOString() : null,
       }))
       .toArray();
   }
