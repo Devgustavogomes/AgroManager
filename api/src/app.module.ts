@@ -52,7 +52,19 @@ import { trace } from '@opentelemetry/api';
           process.env.NODE_ENV === 'production'
             ? {
                 target: 'pino-opentelemetry-transport',
-                options: {}, // adicionar configuracao do collector
+                options: {
+                  collectorUrl: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
+                  resourceAttributes: {
+                    'service.name': 'agromanager-api',
+                  },
+                  headers: {
+                    Authorization:
+                      process.env.OTEL_EXPORTER_OTLP_HEADERS?.replace(
+                        'Authorization=',
+                        '',
+                      ),
+                  },
+                },
               }
             : {
                 target: 'pino-pretty',
