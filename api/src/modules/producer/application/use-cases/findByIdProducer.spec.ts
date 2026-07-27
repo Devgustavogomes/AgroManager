@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import { FindByIdProducerUseCase } from './findByIdProducer';
 import { ProducerContract } from '../../domain/repositories/producerRepository.contract';
-import { Producer } from '../../domain/entities/producer.entity';
 import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
+import { makeFakeProducer } from 'test/factories/makeProducer';
 
 describe('FindByIdProducerUseCase', () => {
   let useCase: FindByIdProducerUseCase;
@@ -20,11 +20,8 @@ describe('FindByIdProducerUseCase', () => {
   });
 
   it('should find a producer by id', async () => {
-    const producer = Producer.create({
-      username: 'Gustavo',
-      email: 'gustavo@example.com',
-      hashedPassword: 'hashed_password',
-    });
+    const producer = makeFakeProducer();
+
     mockProducerRepository.findById.mockResolvedValue(producer);
 
     await useCase.execute('some-id');
