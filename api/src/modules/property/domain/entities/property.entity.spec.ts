@@ -33,7 +33,7 @@ describe('Property Entity', () => {
 
   it('Should emit a property.created domain event upon creation', () => {
     const property = Property.create(validProps);
-    const events = property.getDomainEvents('');
+    const events = property.getDomainEvents();
 
     expect(events).toHaveLength(1);
     expect(events[0].event).toBe('property.created');
@@ -64,7 +64,7 @@ describe('Property Entity', () => {
     expect(property.slug).toBe('fazenda-nova');
     expect(property.updatedAt).toBeInstanceOf(Date);
 
-    const events = property.getDomainEvents('');
+    const events = property.getDomainEvents();
     expect(events).toHaveLength(1);
     expect(events[0].event).toBe('property.updated');
   });
@@ -92,6 +92,6 @@ describe('Property Entity', () => {
 
     expect(property.propertyId).toBe('prop-123');
     expect(property.slug).toBe('fazenda-reconstituida');
-    expect(property.getDomainEvents('')).toHaveLength(0);
+    expect(property.getDomainEvents()).toHaveLength(0);
   });
 });
