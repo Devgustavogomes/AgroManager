@@ -3,10 +3,9 @@ import { Optional } from 'src/shared/application/types/optional';
 import { Area } from '../../../../shared/domain/value-objects/area';
 import { Slug } from '../value-object/slug';
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
-import { Notification } from 'src/shared/domain/entities/notification.entity';
 
 export interface PropertyProps {
-  propertyId?: string;
+  propertyId: string;
   producerId: string;
   name: string;
   slug: Slug;
@@ -19,7 +18,10 @@ export interface PropertyProps {
   updatedAt: Date | null;
 }
 
-export class Property extends Entity<PropertyProps, Notification> {
+export class Property extends Entity<
+  PropertyProps,
+  { propertyName: string; city: string; state: string; slug: string }
+> {
   private constructor(props: PropertyProps) {
     super(props);
 
@@ -38,12 +40,12 @@ export class Property extends Entity<PropertyProps, Notification> {
 
     property.domainEvents.push({
       event: 'property.created',
-      data: Notification.create({
-        event: 'property.created',
-        title: `Nova propriedade cadastrada`,
-        content: `A propriedade "${property.name}" em ${property.city}-${property.state} foi cadastrada com sucesso, clique para gerenciá-la.`,
-        link: `/property/${property.slug}`,
-      }),
+      data: {
+        propertyName: property.name,
+        city: property.city,
+        state: property.state,
+        slug: property.slug,
+      },
     });
 
     return property;
@@ -105,12 +107,12 @@ export class Property extends Entity<PropertyProps, Notification> {
 
       this.domainEvents.push({
         event: 'property.updated',
-        data: Notification.create({
-          event: 'property.updated',
-          title: `Propriedade atualizada`,
-          content: `A propriedade "${this.props.name}" em ${this.props.city}-${this.props.state} foi atualizada com sucesso, clique para gerenciá-la.`,
-          link: `/property/${this.props.slug.slug}`,
-        }),
+        data: {
+          propertyName: this.props.name,
+          city: this.props.city,
+          state: this.props.state,
+          slug: this.props.slug.slug,
+        },
       });
     }
   }

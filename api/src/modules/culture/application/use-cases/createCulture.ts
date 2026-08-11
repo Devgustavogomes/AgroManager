@@ -9,12 +9,15 @@ import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { ValidateCultureAreaService } from '../../domain/services/validateCultureArea.service';
 import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 
+import { IdGeneratorContract } from 'src/shared/domain/providers/idGenerator.contract';
+
 @Injectable()
 export class CreateCultureUseCase {
   constructor(
     private readonly cultureRepository: CultureContract,
     private readonly databaseService: DatabaseContract,
     private readonly eventEmitter: EventEmitterContract,
+    private readonly idGenerator: IdGeneratorContract,
   ) {}
 
   async execute(
@@ -37,6 +40,7 @@ export class CreateCultureUseCase {
         name: dto.name,
         allocatedArea: Area.create(dto.allocatedArea),
         propertyId,
+        cultureId: this.idGenerator.generate(),
       });
 
       ValidateCultureAreaService.execute(

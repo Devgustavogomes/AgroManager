@@ -1,7 +1,6 @@
 import { Entity } from 'src/shared/domain/entities/entity';
 import { Optional } from 'src/shared/application/types/optional';
 import { Role } from 'src/shared/application/types/role';
-import { Notification } from 'src/shared/domain/entities/notification.entity';
 
 export interface ProducerProps {
   producerId: string;
@@ -13,29 +12,22 @@ export interface ProducerProps {
   updatedAt: Date | null;
 }
 
-export class Producer extends Entity<ProducerProps, Notification> {
+export class Producer extends Entity<ProducerProps, { username: string }> {
   static create(
-    props: Optional<
-      ProducerProps,
-      'role' | 'createdAt' | 'updatedAt' | 'producerId'
-    >,
+    props: Optional<ProducerProps, 'role' | 'createdAt' | 'updatedAt'>,
   ): Producer {
     const producer = new Producer({
       ...props,
       role: props.role ?? Role.USER,
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? null,
-      producerId: props.producerId ?? 'non-registered',
     });
 
     producer.domainEvents.push({
       event: 'producer.created',
-      data: Notification.create({
-        title: 'Produtor cadastrado',
-        content:
-          'Seu cadastro foi realizado com sucesso. Bem-vindo ao AgroManager!',
-        event: 'producer.created',
-      }),
+      data: {
+        username: producer.username,
+      },
     });
 
     return producer;
@@ -63,11 +55,9 @@ export class Producer extends Entity<ProducerProps, Notification> {
 
       this.domainEvents.push({
         event: 'producer.updated',
-        data: Notification.create({
-          title: 'Dados alterados',
-          content: 'Suas informações de perfil foram atualizadas com sucesso.',
-          event: 'producer.updated',
-        }),
+        data: {
+          username: this.props.username,
+        },
       });
     }
   }

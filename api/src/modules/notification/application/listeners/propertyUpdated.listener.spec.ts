@@ -4,12 +4,14 @@ import { NotificationProviderContract } from '../../domain/providers/notificatio
 import { NotificationContract } from '../../domain/repositories/notificationRepository.contract';
 import { PinoLogger } from 'nestjs-pino';
 import { Mocked } from 'vitest';
+import { IdGeneratorContract } from 'src/shared/domain/providers/idGenerator.contract';
 import { makeFakeNotification } from '../../../../../test/factories/makeNotification';
 
 describe('PropertyUpdatedListener', () => {
   let mockNotificationProvider: Mocked<NotificationProviderContract>;
   let mockNotificationRepository: Mocked<NotificationContract>;
   let mockLogger: Mocked<PinoLogger>;
+  let mockIdGenerator: Mocked<IdGeneratorContract>;
   let listener: PropertyUpdatedListener;
 
   beforeEach(() => {
@@ -25,9 +27,14 @@ describe('PropertyUpdatedListener', () => {
       error: vi.fn(),
     } as unknown as Mocked<PinoLogger>;
 
+    mockIdGenerator = {
+      generate: vi.fn().mockReturnValue('test-uuid'),
+    };
+
     listener = new PropertyUpdatedListener(
       mockNotificationProvider,
       mockNotificationRepository,
+      mockIdGenerator,
       mockLogger,
     );
   });
@@ -36,7 +43,12 @@ describe('PropertyUpdatedListener', () => {
     const fakeNotification = makeFakeNotification();
     const payload = {
       producerId: 'producer-123',
-      data: fakeNotification,
+      data: {
+        propertyName: 'Fazenda do Sol',
+        city: 'São Paulo',
+        state: 'SP',
+        slug: 'fazenda-do-sol',
+      },
     };
     mockNotificationRepository.create.mockResolvedValueOnce(fakeNotification);
 
@@ -48,10 +60,14 @@ describe('PropertyUpdatedListener', () => {
   });
 
   it('Should log error if handling fails', async () => {
-    const fakeNotification = makeFakeNotification();
     const payload = {
       producerId: 'producer-123',
-      data: fakeNotification,
+      data: {
+        propertyName: 'Fazenda do Sol',
+        city: 'São Paulo',
+        state: 'SP',
+        slug: 'fazenda-do-sol',
+      },
     };
 
     const error = new Error('Database Error');

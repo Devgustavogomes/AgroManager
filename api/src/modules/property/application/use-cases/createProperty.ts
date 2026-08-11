@@ -10,12 +10,15 @@ import { ValidateMaxProperties } from '../../domain/services/validateMaxProperti
 import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 import { PropertyMapper } from '../../infrastructure/property.mapper';
 
+import { IdGeneratorContract } from 'src/shared/domain/providers/idGenerator.contract';
+
 @Injectable()
 export class CreatePropertyUseCase {
   constructor(
     private propertyRepository: PropertyContract,
     private dbService: DatabaseContract,
     private eventEmitter: EventEmitterContract,
+    private idGenerator: IdGeneratorContract,
   ) {}
 
   async execute(
@@ -34,6 +37,7 @@ export class CreatePropertyUseCase {
 
     const property = Property.create({
       ...dto,
+      propertyId: this.idGenerator.generate(),
       producerId,
       slug,
       totalArea,

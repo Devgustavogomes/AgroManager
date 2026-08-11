@@ -12,6 +12,8 @@ import { CropContract } from '../domain/repositories/cropsRepository.contract';
 import { IsCropOwnerUseCase } from '../application/use-cases/isCropOwner';
 import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 import { EventEmitterProvider } from 'src/shared/infrastructure/providers/socketEmitter.provider';
+import { IdGeneratorContract } from 'src/shared/domain/providers/idGenerator.contract';
+import { UuidV7Generator } from 'src/shared/infrastructure/providers/uuidGenerator.provider';
 
 @Module({
   controllers: [CropController],
@@ -25,6 +27,7 @@ import { EventEmitterProvider } from 'src/shared/infrastructure/providers/socket
     DeleteCropByCultureUseCase,
     IsCropOwnerUseCase,
     { provide: EventEmitterContract, useClass: EventEmitterProvider },
+    { provide: IdGeneratorContract, useClass: UuidV7Generator },
   ],
 })
 export class CropModule {}

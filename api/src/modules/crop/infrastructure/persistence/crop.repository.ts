@@ -81,6 +81,7 @@ export class CropRepository implements CropContract {
 
   async create(crop: Crop, cliente: PoolClient): Promise<Crop> {
     const sql = `INSERT INTO crops (
+                "cropId",
                 "cultureId",
                 name,
                 status, 
@@ -97,11 +98,13 @@ export class CropRepository implements CropContract {
                  $5, 
                  $6, 
                  $7, 
-                 $8)
+                 $8,
+                 $9)
                 RETURNING *
                   `;
 
     const params = [
+      crop.cropId,
       crop.cultureId,
       crop.name,
       crop.status,

@@ -19,14 +19,10 @@ export class Notification {
   }
 
   public static create(
-    props: Optional<
-      NotificationProps,
-      'notificationId' | 'read' | 'createdAt' | 'updatedAt'
-    >,
+    props: Optional<NotificationProps, 'read' | 'createdAt' | 'updatedAt'>,
   ) {
     return new Notification({
       ...props,
-      notificationId: props.notificationId ?? 'non-registered',
       read: props.read ?? false,
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? null,

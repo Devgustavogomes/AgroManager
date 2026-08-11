@@ -50,17 +50,24 @@ export class CultureRepository implements CultureContract {
 
   async create(culture: Culture): Promise<Culture> {
     const sql = `INSERT INTO cultures (
+                    "cultureId",
                     "propertyId",
                     name,
                    "allocatedArea"
                 ) VALUES (
                     $1,
                     $2,
-                    $3
+                    $3,
+                    $4
                 ) 
                 RETURNING *`;
 
-    const params = [culture.propertyId, culture.name, culture.allocatedArea];
+    const params = [
+      culture.cultureId,
+      culture.propertyId,
+      culture.name,
+      culture.allocatedArea,
+    ];
 
     const result = await this.databaseService.query<CulturePersistence>(
       sql,

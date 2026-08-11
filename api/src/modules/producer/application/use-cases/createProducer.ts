@@ -7,11 +7,14 @@ import { Producer } from '../../domain/entities/producer.entity';
 import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 import { ProducerMapper } from '../../infrastructure/producer.mapper';
 
+import { IdGeneratorContract } from 'src/shared/domain/providers/idGenerator.contract';
+
 @Injectable()
 export class CreateProducerUseCase {
   constructor(
     private readonly producerRepository: ProducerContract,
     private readonly emitterProvider: EventEmitterContract,
+    private readonly idGenerator: IdGeneratorContract,
   ) {}
 
   async execute(data: CreateProducerInput): Promise<ProducerOutput> {
@@ -22,6 +25,7 @@ export class CreateProducerUseCase {
     const producer = Producer.create({
       ...rest,
       hashedPassword,
+      producerId: this.idGenerator.generate(),
     });
 
     const result = await this.producerRepository.create(producer);
