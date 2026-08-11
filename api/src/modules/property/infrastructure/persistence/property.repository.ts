@@ -34,6 +34,7 @@ export class PropertyRepository implements PropertyContract {
 
   async create(property: Property, client: PoolClient): Promise<Property> {
     const sql = `INSERT INTO properties (
+      "propertyId",
       "producerId",
       "name",
       "city",
@@ -48,10 +49,12 @@ export class PropertyRepository implements PropertyContract {
       $4,
       $5,
       $6,
-      $7
+      $7,
+      $8
     ) RETURNING *`;
 
     const params = [
+      property.propertyId,
       property.producerId,
       property.name,
       property.city,

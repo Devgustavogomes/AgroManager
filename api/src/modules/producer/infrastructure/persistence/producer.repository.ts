@@ -27,16 +27,23 @@ export class ProducerRepository implements ProducerContract {
 
   async create(producer: Producer): Promise<Producer> {
     const sql = `INSERT INTO producers 
-                (username, 
+                ("producerId",
+                username, 
                 email, 
                 "hashedPassword")
                 VALUES
                 ($1,
                 $2,
-                $3)
+                $3,
+                $4)
                 RETURNING *;`;
 
-    const params = [producer.username, producer.email, producer.hashedPassword];
+    const params = [
+      producer.producerId,
+      producer.username,
+      producer.email,
+      producer.hashedPassword,
+    ];
 
     const result = await this.databaseService.query<ProducerPersistence>(
       sql,
