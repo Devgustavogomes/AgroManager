@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 import {
   Notification,
   NotificationProps,
-} from '../../src/shared/domain/entities/notification.entity';
+} from '../../src/modules/notification/domain/entities/notification.entity';
 
 type Override = Partial<NotificationProps>;
 

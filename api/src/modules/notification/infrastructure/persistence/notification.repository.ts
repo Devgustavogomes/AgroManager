@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { NotificationContract } from '../../domain/repositories/notificationRepository.contract';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
-import { Notification } from 'src/shared/domain/entities/notification.entity';
+import { Notification } from 'src/modules/notification/domain/entities/notification.entity';
 import { NotificationMapper } from '../notification.mapper';
 import { NotificationPersistence } from '../../domain/providers/notificationProvider.contract';
 
@@ -14,6 +14,7 @@ export class NotificationRepository implements NotificationContract {
     notification: Notification,
   ): Promise<Notification> {
     const sql = `INSERT INTO "notifications"(
+                  "notificationId",
                   "producerId",
                   "event",
                   "title",
@@ -30,10 +31,12 @@ export class NotificationRepository implements NotificationContract {
                   $5,
                   $6,
                   $7,
+                  $8,
                   NULL
                 ) RETURNING *`;
 
     const params = [
+      notification.notificationId,
       producerId,
       notification.event,
       notification.title,

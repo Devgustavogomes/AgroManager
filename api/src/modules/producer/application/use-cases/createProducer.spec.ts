@@ -4,11 +4,13 @@ import { ProducerContract } from '../../domain/repositories/producerRepository.c
 import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 import { Producer } from '../../domain/entities/producer.entity';
 import { ProducerMapper } from '../../infrastructure/producer.mapper';
+import { IdGeneratorContract } from 'src/shared/domain/providers/idGenerator.contract';
 
 describe('CreateProducerUseCase', () => {
   let useCase: CreateProducerUseCase;
   let mockProducerRepository: Mocked<ProducerContract>;
   let mockEmitterProvider: Mocked<EventEmitterContract>;
+  let mockIdGenerator: Mocked<IdGeneratorContract>;
 
   beforeEach(() => {
     mockProducerRepository = {
@@ -22,9 +24,14 @@ describe('CreateProducerUseCase', () => {
       emit: vi.fn(),
     };
 
+    mockIdGenerator = {
+      generate: vi.fn().mockReturnValue('test-uuid'),
+    };
+
     useCase = new CreateProducerUseCase(
       mockProducerRepository,
       mockEmitterProvider,
+      mockIdGenerator,
     );
   });
 

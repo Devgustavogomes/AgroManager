@@ -5,7 +5,6 @@ import {
   MINIMUM_ALLOCATED_AREA,
 } from 'src/shared/domain/value-objects/area';
 import { Optional } from 'src/shared/application/types/optional';
-import { Notification } from 'src/shared/domain/entities/notification.entity';
 
 export interface CultureProps {
   cultureId: string;
@@ -16,29 +15,24 @@ export interface CultureProps {
   updatedAt: Date | null;
 }
 
-export class Culture extends Entity<CultureProps, Notification> {
+export class Culture extends Entity<CultureProps, { cultureName: string }> {
   private constructor(props: CultureProps) {
     super(props);
     this.validateAreas();
   }
 
-  static create(
-    props: Optional<CultureProps, 'createdAt' | 'updatedAt' | 'cultureId'>,
-  ) {
+  static create(props: Optional<CultureProps, 'createdAt' | 'updatedAt'>) {
     const culture = new Culture({
       ...props,
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? null,
-      cultureId: props.cultureId ?? 'non-registered',
     });
 
     culture.domainEvents.push({
       event: 'culture.created',
-      data: Notification.create({
-        event: 'culture.created',
-        title: 'Nova cultura cadastrada',
-        content: `A cultura "${culture.name}" foi cadastrada com sucesso.`,
-      }),
+      data: {
+        cultureName: culture.name,
+      },
     });
 
     return culture;
@@ -65,11 +59,9 @@ export class Culture extends Entity<CultureProps, Notification> {
 
       this.domainEvents.push({
         event: 'culture.updated',
-        data: Notification.create({
-          event: 'culture.updated',
-          title: 'Cultura atualizada',
-          content: `A cultura "${this.props.name}" foi atualizada com sucesso.`,
-        }),
+        data: {
+          cultureName: this.props.name,
+        },
       });
     }
   }

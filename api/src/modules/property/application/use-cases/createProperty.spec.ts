@@ -8,12 +8,14 @@ import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvide
 import { Property } from '../../domain/entities/property.entity';
 import { ValidateMaxProperties } from '../../domain/services/validateMaxProperties.service';
 import { PropertyMapper } from '../../infrastructure/property.mapper';
+import { IdGeneratorContract } from 'src/shared/domain/providers/idGenerator.contract';
 
 describe('Create Property', () => {
   let useCase: CreatePropertyUseCase;
   let mockPropertyRepository: Mocked<PropertyContract>;
   let mockDatabaseService: Mocked<DatabaseContract>;
   let mockEventEmitter: Mocked<EventEmitterContract>;
+  let mockIdGenerator: Mocked<IdGeneratorContract>;
 
   beforeEach(() => {
     mockPropertyRepository = {
@@ -36,10 +38,15 @@ describe('Create Property', () => {
       emit: vi.fn(),
     };
 
+    mockIdGenerator = {
+      generate: vi.fn().mockReturnValue('test-uuid'),
+    };
+
     useCase = new CreatePropertyUseCase(
       mockPropertyRepository,
       mockDatabaseService,
       mockEventEmitter,
+      mockIdGenerator,
     );
   });
 

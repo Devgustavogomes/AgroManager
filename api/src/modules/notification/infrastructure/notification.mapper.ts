@@ -1,4 +1,4 @@
-import { Notification } from 'src/shared/domain/entities/notification.entity';
+import { Notification } from 'src/modules/notification/domain/entities/notification.entity';
 import { NotificationPersistence } from '../domain/providers/notificationProvider.contract';
 
 export class NotificationMapper {

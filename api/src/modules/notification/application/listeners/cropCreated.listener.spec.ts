@@ -4,12 +4,15 @@ import { NotificationProviderContract } from '../../domain/providers/notificatio
 import { NotificationContract } from '../../domain/repositories/notificationRepository.contract';
 import { PinoLogger } from 'nestjs-pino';
 import { Mocked } from 'vitest';
+import { IdGeneratorContract } from 'src/shared/domain/providers/idGenerator.contract';
+import { Notification } from 'src/modules/notification/domain/entities/notification.entity';
 import { makeFakeNotification } from '../../../../../test/factories/makeNotification';
 
 describe('CropCreatedListener', () => {
   let mockNotificationProvider: Mocked<NotificationProviderContract>;
   let mockNotificationRepository: Mocked<NotificationContract>;
   let mockLogger: Mocked<PinoLogger>;
+  let mockIdGenerator: Mocked<IdGeneratorContract>;
   let listener: CropCreatedListener;
 
   beforeEach(() => {
@@ -25,9 +28,14 @@ describe('CropCreatedListener', () => {
       error: vi.fn(),
     } as unknown as Mocked<PinoLogger>;
 
+    mockIdGenerator = {
+      generate: vi.fn().mockReturnValue('test-uuid'),
+    };
+
     listener = new CropCreatedListener(
       mockNotificationProvider,
       mockNotificationRepository,
+      mockIdGenerator,
       mockLogger,
     );
   });
@@ -36,7 +44,7 @@ describe('CropCreatedListener', () => {
     const fakeNotification = makeFakeNotification();
     const payload = {
       producerId: 'producer-123',
-      data: fakeNotification,
+      data: { cropName: 'Safra de Milho' },
     };
     mockNotificationRepository.create.mockResolvedValueOnce(fakeNotification);
 
@@ -45,21 +53,20 @@ describe('CropCreatedListener', () => {
     expect(mockNotificationRepository.create).toHaveBeenCalledOnce();
     expect(mockNotificationRepository.create).toHaveBeenCalledWith(
       payload.producerId,
-      payload.data,
+      expect.any(Notification),
     );
     expect(mockNotificationProvider.sendToProducer).toHaveBeenCalledOnce();
     expect(mockNotificationProvider.sendToProducer).toHaveBeenCalledWith(
       payload.producerId,
-      fakeNotification,
+      expect.any(Notification),
     );
     expect(mockLogger.error).not.toHaveBeenCalled();
   });
 
   it('Should log error if handling fails', async () => {
-    const fakeNotification = makeFakeNotification();
     const payload = {
       producerId: 'producer-123',
-      data: fakeNotification,
+      data: { cropName: 'Safra de Milho' },
     };
 
     const error = new Error('Database Error');

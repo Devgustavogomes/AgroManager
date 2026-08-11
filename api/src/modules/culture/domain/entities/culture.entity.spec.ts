@@ -8,6 +8,7 @@ describe('Culture Entity', () => {
     name: 'Milho',
     allocatedArea: Area.create(50),
     propertyId: 'property-123',
+    cultureId: 'test-id',
   };
 
   it('Should create a culture successfully with default values', () => {
@@ -19,7 +20,7 @@ describe('Culture Entity', () => {
     );
     expect(culture.propertyId).toBe(validProps.propertyId);
 
-    expect(culture.cultureId).toBe('non-registered');
+    expect(culture.cultureId).toBe('test-id');
     expect(culture.createdAt).toBeInstanceOf(Date);
     expect(culture.updatedAt).toBeNull();
   });
@@ -42,10 +43,7 @@ describe('Culture Entity', () => {
 
     expect(events).toHaveLength(1);
     expect(events[0].event).toBe('culture.created');
-    expect(events[0].data.title).toBe('Nova cultura cadastrada');
-    expect(events[0].data.content).toBe(
-      'A cultura "Milho" foi cadastrada com sucesso.',
-    );
+    expect(events[0].data.cultureName).toBe('Milho');
   });
 
   it('Should throw InvalidAreaError if allocated area is less than minimum', () => {
@@ -73,7 +71,7 @@ describe('Culture Entity', () => {
     const events = culture.getDomainEvents();
     expect(events).toHaveLength(1);
     expect(events[0].event).toBe('culture.updated');
-    expect(events[0].data.title).toBe('Cultura atualizada');
+    expect(events[0].data.cultureName).toBe('Soja');
   });
 
   it('Should reconstitute an existing culture without triggering creation events', () => {

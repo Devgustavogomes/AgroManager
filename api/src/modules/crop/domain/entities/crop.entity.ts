@@ -7,7 +7,6 @@ import {
   MINIMUM_ALLOCATED_AREA,
 } from 'src/shared/domain/value-objects/area';
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
-import { Notification } from 'src/shared/domain/entities/notification.entity';
 
 export interface CropProps {
   cropId: string;
@@ -23,20 +22,16 @@ export interface CropProps {
   updatedAt: Date | null;
 }
 
-export class Crop extends Entity<CropProps, Notification> {
+export class Crop extends Entity<CropProps, { cropName: string }> {
   private constructor(props: CropProps) {
     super(props);
     this.validateArea();
   }
   public static create(
-    props: Optional<
-      CropProps,
-      'createdAt' | 'updatedAt' | 'cropId' | 'harvestDateActual'
-    >,
+    props: Optional<CropProps, 'createdAt' | 'updatedAt' | 'harvestDateActual'>,
   ) {
     const crop = new Crop({
       ...props,
-      cropId: props.cropId ?? 'non-registered',
       harvestDateActual: props.harvestDateActual ?? null,
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? null,
@@ -44,11 +39,9 @@ export class Crop extends Entity<CropProps, Notification> {
 
     crop.domainEvents.push({
       event: 'crop.created',
-      data: Notification.create({
-        event: 'crop.created',
-        title: 'Nova safra cadastrada',
-        content: `A safra "${crop.name}" foi cadastrada com sucesso.`,
-      }),
+      data: {
+        cropName: crop.name,
+      },
     });
 
     return crop;
@@ -106,11 +99,9 @@ export class Crop extends Entity<CropProps, Notification> {
 
       this.domainEvents.push({
         event: 'crop.updated',
-        data: Notification.create({
-          event: 'crop.updated',
-          title: 'Safra atualizada',
-          content: `A safra "${this.props.name}" foi atualizada com sucesso.`,
-        }),
+        data: {
+          cropName: this.props.name,
+        },
       });
     }
   }
