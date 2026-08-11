@@ -21,7 +21,7 @@ export class PropertyMapper {
 
   static toResponse(entity: Property): PropertyOutputDto {
     return {
-      propertyId: entity.propertyId ?? 'non-registered',
+      propertyId: entity.propertyId,
       producerId: entity.producerId,
       name: entity.name,
       slug: entity.slug,

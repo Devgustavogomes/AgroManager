@@ -14,6 +14,7 @@ describe('Crop Entity', () => {
     plantingDate: new Date('2023-01-01'),
     harvestDateExpected: new Date('2023-06-01'),
     pestStatus: PestStatus.NONE,
+    cropId: 'test-id',
   };
 
   it('Should create a crop successfully with default values', () => {
@@ -26,7 +27,7 @@ describe('Crop Entity', () => {
     expect(crop.harvestDateExpected).toBe(validProps.harvestDateExpected);
     expect(crop.pestStatus).toBe(validProps.pestStatus);
 
-    expect(crop.cropId).toBe('non-registered');
+    expect(crop.cropId).toBe('test-id');
     expect(crop.harvestDateActual).toBeNull();
     expect(crop.createdAt).toBeInstanceOf(Date);
     expect(crop.updatedAt).toBeNull();
@@ -53,10 +54,7 @@ describe('Crop Entity', () => {
 
     expect(events).toHaveLength(1);
     expect(events[0].event).toBe('crop.created');
-    expect(events[0].data.title).toBe('Nova safra cadastrada');
-    expect(events[0].data.content).toBe(
-      'A safra "Safra de Milho" foi cadastrada com sucesso.',
-    );
+    expect(events[0].data.cropName).toBe('Safra de Milho');
   });
 
   it('Should throw InvalidAreaError if allocated area is less than minimum', () => {
@@ -88,7 +86,7 @@ describe('Crop Entity', () => {
     const events = crop.getDomainEvents();
     expect(events).toHaveLength(1);
     expect(events[0].event).toBe('crop.updated');
-    expect(events[0].data.title).toBe('Safra atualizada');
+    expect(events[0].data.cropName).toBe('Safra de Soja');
   });
 
   it('Should reconstitute an existing crop without triggering creation events', () => {

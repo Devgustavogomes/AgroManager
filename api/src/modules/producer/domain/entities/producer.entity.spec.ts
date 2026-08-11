@@ -7,6 +7,7 @@ describe('Producer Entity', () => {
     username: 'john_doe',
     email: 'john@example.com',
     hashedPassword: 'hashed_password',
+    producerId: 'test-id',
   };
 
   it('Should create a producer successfully with default values', () => {
@@ -17,7 +18,7 @@ describe('Producer Entity', () => {
     expect(producer.hashedPassword).toBe(validProps.hashedPassword);
 
     expect(producer.role).toBe(Role.USER);
-    expect(producer.producerId).toBe('non-registered');
+    expect(producer.producerId).toBe('test-id');
     expect(producer.createdAt).toBeInstanceOf(Date);
     expect(producer.updatedAt).toBeNull();
   });
@@ -42,7 +43,7 @@ describe('Producer Entity', () => {
 
     expect(events).toHaveLength(1);
     expect(events[0].event).toBe('producer.created');
-    expect(events[0].data.title).toBe('Produtor cadastrado');
+    expect(events[0].data.username).toBe(validProps.username);
   });
 
   it('Should update producer fields and touch updatedAt', () => {
@@ -61,7 +62,7 @@ describe('Producer Entity', () => {
     const events = producer.getDomainEvents();
     expect(events).toHaveLength(1);
     expect(events[0].event).toBe('producer.updated');
-    expect(events[0].data.title).toBe('Dados alterados');
+    expect(events[0].data.username).toBe('jane_doe');
   });
 
   it('Should reconstitute an existing producer without triggering creation events', () => {

@@ -13,6 +13,7 @@ describe('Property Entity', () => {
     totalArea: Area.create(100),
     arableArea: Area.create(60),
     vegetationArea: Area.create(40),
+    propertyId: 'test-property-id',
   };
 
   it('Should create a property successfully and generate a slug', () => {
@@ -37,6 +38,7 @@ describe('Property Entity', () => {
 
     expect(events).toHaveLength(1);
     expect(events[0].event).toBe('property.created');
+    expect(events[0].data.propertyName).toBe(validProps.name);
   });
 
   it('Should throw InvalidAreaError if arable + vegetation area exceeds total area', () => {
@@ -67,6 +69,7 @@ describe('Property Entity', () => {
     const events = property.getDomainEvents();
     expect(events).toHaveLength(1);
     expect(events[0].event).toBe('property.updated');
+    expect(events[0].data.propertyName).toBe('Fazenda Nova');
   });
 
   it('Should validate areas again when updating area fields', () => {
