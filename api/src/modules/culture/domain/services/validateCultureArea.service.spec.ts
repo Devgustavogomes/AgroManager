@@ -38,4 +38,17 @@ describe('ValidateCultureAreaService', () => {
       );
     }).toThrow('Culture sum area exceed property total area.');
   });
+  it('should not throw error when total sum equals property area (boundary case)', () => {
+    const propertyArea = Area.create(100);
+    const existingCulturesArea = Area.create(60);
+    const newCultureArea = Area.create(40); // 60 + 40 = 100 == 100
+
+    expect(() => {
+      ValidateCultureAreaService.execute(
+        propertyArea,
+        existingCulturesArea,
+        newCultureArea,
+      );
+    }).not.toThrow();
+  });
 });
