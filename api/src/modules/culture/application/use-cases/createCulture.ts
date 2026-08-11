@@ -47,8 +47,8 @@ export class CreateCultureUseCase {
 
       const result = await this.cultureRepository.create(culture, client);
 
-      culture.getDomainEvents(producerId).forEach((event) => {
-        this.eventEmitter.emit(event);
+      culture.getDomainEvents().forEach((event) => {
+        this.eventEmitter.emit({ ...event, producerId });
       });
 
       culture.clearDomainEvents();

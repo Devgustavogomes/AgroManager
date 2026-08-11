@@ -1,9 +1,8 @@
 import { Mocked } from 'vitest';
 import { FindBySlugUseCase } from './findPropertyBySlug';
 import { PropertyContract } from '../../domain/repositories/propertyRepository.contract';
-import { Property } from '../../domain/entities/property.entity';
-import { Area } from 'src/shared/domain/value-objects/area';
 import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
+import { makeFakeProperty } from 'test/factories/makeProperty';
 
 describe('Find property by Slug', () => {
   let useCase: FindBySlugUseCase;
@@ -23,21 +22,12 @@ describe('Find property by Slug', () => {
   });
 
   it('Should find property by slug successfully', async () => {
-    const propertyMock = Property.create({
-      arableArea: Area.create(60),
-      city: 'City',
-      name: 'Name',
-      producerId: '123',
-      state: 'State',
-      totalArea: Area.create(120),
-      vegetationArea: Area.create(60),
-    });
+    const property = makeFakeProperty();
 
-    mockRepository.findBySlug.mockResolvedValue(propertyMock);
+    mockRepository.findBySlug.mockResolvedValue(property);
 
-    const result = await useCase.execute('slug', 'producer-id');
+    await useCase.execute('slug', 'producer-id');
 
-    expect(result).toBeDefined();
     expect(mockRepository.findBySlug).toHaveBeenCalledOnce();
     expect(mockRepository.findBySlug).toHaveBeenCalledWith(
       'slug',

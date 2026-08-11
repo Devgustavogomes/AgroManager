@@ -3,6 +3,9 @@ import { UpdateProducerUseCase } from './updateProducer';
 import { ProducerContract } from '../../domain/repositories/producerRepository.contract';
 import { Producer } from '../../domain/entities/producer.entity';
 import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
+import { ProducerMapper } from '../../infrastructure/producer.mapper';
+import { makeFakeProducer } from 'test/factories/makeProducer';
+import { NotFoundError } from 'src/shared/domain/errors/notFoundError';
 
 describe('UpdateProducerUseCase', () => {
   let useCase: UpdateProducerUseCase;
@@ -29,11 +32,14 @@ describe('UpdateProducerUseCase', () => {
 
   it('should update a producer', async () => {
     const producerUpdatePayload = { username: 'producer2' };
-    const producerMock = Producer.create({
-      username: 'Gustavo',
-      email: 'gustavo@example.com',
-      hashedPassword: 'hashed_password',
-    });
+
+    const producerMock = makeFakeProducer();
+
+    const getDomainEvents = vi.spyOn(Producer.prototype, 'getDomainEvents');
+
+    const clearDomainEvents = vi.spyOn(Producer.prototype, 'clearDomainEvents');
+
+    const producerMapper = vi.spyOn(ProducerMapper, 'toResponse');
 
     mockProducerRepository.findById.mockResolvedValue(producerMock);
     mockProducerRepository.update.mockResolvedValue(producerMock);
@@ -44,6 +50,22 @@ describe('UpdateProducerUseCase', () => {
       'some-id',
       producerMock,
     );
+
     expect(mockProducerRepository.update).toHaveBeenCalledOnce();
+
+    expect(getDomainEvents).toHaveBeenCalledOnce();
+
+    expect(mockEmitterProvider.emit).toHaveBeenCalled();
+
+    expect(clearDomainEvents).toHaveBeenCalledOnce();
+    expect(producerMapper).toHaveBeenCalledOnce();
+  });
+
+  it('should throw NotFoundError if producer is not found', async () => {
+    mockProducerRepository.findById.mockResolvedValue(undefined);
+
+    await expect(useCase.execute('non-existing-id', {})).rejects.toThrow(
+      NotFoundError,
+    );
   });
 });

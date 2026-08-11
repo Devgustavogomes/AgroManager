@@ -26,8 +26,8 @@ export class CreateProducerUseCase {
 
     const result = await this.producerRepository.create(producer);
 
-    producer.getDomainEvents(result.producerId).forEach((event) => {
-      this.emitterProvider.emit(event);
+    producer.getDomainEvents().forEach((event) => {
+      this.emitterProvider.emit({ ...event, producerId: result.producerId });
     });
 
     producer.clearDomainEvents();

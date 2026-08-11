@@ -56,8 +56,8 @@ export class UpdateCropUseCase {
 
       const updatedCrop = await this.repository.update(crop, client);
 
-      crop.getDomainEvents(producerId).forEach((event) => {
-        this.eventEmitter.emit(event);
+      crop.getDomainEvents().forEach((event) => {
+        this.eventEmitter.emit({ ...event, producerId });
       });
 
       crop.clearDomainEvents();

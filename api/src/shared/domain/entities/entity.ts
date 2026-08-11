@@ -10,11 +10,8 @@ export class Entity<Props, EventData = unknown> {
     this.props = props;
   }
 
-  public getDomainEvents(producerId: string) {
-    return this.domainEvents.map((e) => ({
-      ...e,
-      producerId,
-    }));
+  public getDomainEvents() {
+    return this.domainEvents;
   }
 
   public clearDomainEvents(): void {

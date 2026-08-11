@@ -1,7 +1,7 @@
 import { Entity } from 'src/shared/domain/entities/entity';
 import { Role } from 'src/shared/application/types/role';
 
-interface ProducerLoginProps {
+export interface ProducerLoginProps {
   producerId: string;
   username: string;
   hashedPassword: string;
