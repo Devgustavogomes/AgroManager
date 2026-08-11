@@ -8,12 +8,15 @@ import { CropMapper } from '../../infrastructure/crop.mapper';
 import { ValidateCultureCropsAreaService } from 'src/shared/domain/services/validateCultureCropsArea.service';
 import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 
+import { IdGeneratorContract } from 'src/shared/domain/providers/idGenerator.contract';
+
 @Injectable()
 export class CreateCropUseCase {
   constructor(
     private readonly repository: CropContract,
     private readonly databaseService: DatabaseContract,
     private readonly eventEmitter: EventEmitterContract,
+    private readonly idGenerator: IdGeneratorContract,
   ) {}
 
   async execute(cultureId: string, producerId: string, dto: CreateCropInput) {
@@ -34,6 +37,7 @@ export class CreateCropUseCase {
       plantingDate,
       harvestDateExpected,
       harvestDateActual,
+      cropId: this.idGenerator.generate(),
     });
 
     const result = await this.databaseService.transaction(async (client) => {

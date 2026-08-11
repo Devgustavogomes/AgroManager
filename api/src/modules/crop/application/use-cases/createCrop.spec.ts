@@ -7,11 +7,13 @@ import { Crop } from '../../domain/entities/crop.entity';
 import { DatabaseContract } from '@agromanager/infra/database/contract';
 import { Area } from 'src/shared/domain/value-objects/area';
 import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
+import { IdGeneratorContract } from 'src/shared/domain/providers/idGenerator.contract';
 
 describe('CreateCropUseCase', () => {
   let mockCropRepository: Mocked<CropContract>;
   let mockDatabaseService: Mocked<DatabaseContract>;
   let mockEventEmitter: Mocked<EventEmitterContract>;
+  let mockIdGenerator: Mocked<IdGeneratorContract>;
   let useCase: CreateCropUseCase;
 
   beforeAll(() => {
@@ -32,10 +34,15 @@ describe('CreateCropUseCase', () => {
       emit: vi.fn(),
     };
 
+    mockIdGenerator = {
+      generate: vi.fn().mockReturnValue('test-uuid'),
+    };
+
     useCase = new CreateCropUseCase(
       mockCropRepository,
       mockDatabaseService,
       mockEventEmitter,
+      mockIdGenerator,
     );
   });
 
@@ -59,6 +66,7 @@ describe('CreateCropUseCase', () => {
       plantingDate: new Date(dto.plantingDate),
       harvestDateExpected: new Date(dto.harvestDateExpected),
       harvestDateActual: null,
+      cropId: 'test-uuid',
     });
 
     mockCropRepository.getCultureArea.mockResolvedValueOnce(20);

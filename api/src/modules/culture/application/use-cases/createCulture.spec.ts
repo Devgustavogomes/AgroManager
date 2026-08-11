@@ -6,11 +6,13 @@ import { CreateCultureUseCase } from './createCulture';
 import { Area } from 'src/shared/domain/value-objects/area';
 import { Culture } from '../../domain/entities/culture.entity';
 import { ValidateCultureAreaService } from '../../domain/services/validateCultureArea.service';
+import { IdGeneratorContract } from 'src/shared/domain/providers/idGenerator.contract';
 
 describe('CreateCultureUseCase', () => {
   let mockCultureRepository: Mocked<CultureContract>;
   let mockDatabaseService: Mocked<DatabaseContract>;
   let mockEventEmitter: Mocked<EventEmitterContract>;
+  let mockIdGenerator: Mocked<IdGeneratorContract>;
   let useCase: CreateCultureUseCase;
 
   beforeEach(() => {
@@ -32,10 +34,15 @@ describe('CreateCultureUseCase', () => {
       emit: vi.fn(),
     };
 
+    mockIdGenerator = {
+      generate: vi.fn().mockReturnValue('test-uuid'),
+    };
+
     useCase = new CreateCultureUseCase(
       mockCultureRepository,
       mockDatabaseService,
       mockEventEmitter,
+      mockIdGenerator,
     );
   });
 
