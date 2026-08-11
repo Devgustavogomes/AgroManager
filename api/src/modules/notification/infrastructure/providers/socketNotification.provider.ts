@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Server } from 'socket.io';
-import { Notification } from 'src/shared/domain/entities/notification.entity';
+import { Notification } from 'src/modules/notification/domain/entities/notification.entity';
 
 import { NotificationProviderContract } from '../../domain/providers/notificationProvider.contract';
 import { NotificationMapper } from '../notification.mapper';
