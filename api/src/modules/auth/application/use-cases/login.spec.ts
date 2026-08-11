@@ -56,7 +56,6 @@ describe('LoginUseCase', () => {
       fakeProducer.hashedPassword,
     );
 
-    // signAsync is called twice: once for refresh, once for access token
     expect(mockJwtService.signAsync).toHaveBeenCalledTimes(2);
     expect(mockAuthRepository.registerRefreshToken).toHaveBeenCalledOnce();
 
