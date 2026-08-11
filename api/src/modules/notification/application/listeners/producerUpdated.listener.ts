@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { NotificationProviderContract } from '../../domain/providers/notificationProvider.contract';
-import { Notification } from 'src/shared/domain/entities/notification.entity';
+import { Notification } from 'src/modules/notification/domain/entities/notification.entity';
 import { NotificationContract } from '../../domain/repositories/notificationRepository.contract';
 import type { EmitterPayload } from 'src/shared/domain/providers/emitterProvider.contract';
+import { IdGeneratorContract } from 'src/shared/domain/providers/idGenerator.contract';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 
 @Injectable()
@@ -11,18 +12,26 @@ export class ProducerUpdatedListener {
   constructor(
     private readonly notificationService: NotificationProviderContract,
     private readonly notificationRepository: NotificationContract,
+    private readonly idGenerator: IdGeneratorContract,
     @InjectPinoLogger(ProducerUpdatedListener.name)
     private readonly logger: PinoLogger,
   ) {}
 
   @OnEvent('producer.updated', { async: true })
   async handleProducerUpdatedEvent(
-    payload: Omit<EmitterPayload<Notification>, 'event'>,
+    payload: Omit<EmitterPayload<{ username: string }>, 'event'>,
   ) {
     try {
-      const notification = await this.notificationRepository.create(
+      const notification = Notification.create({
+        notificationId: this.idGenerator.generate(),
+        event: 'producer.updated',
+        title: 'Dados alterados',
+        content: `Suas informações de perfil foram atualizadas com sucesso.`,
+      });
+
+      await this.notificationRepository.create(
         payload.producerId,
-        payload.data,
+        notification,
       );
 
       this.notificationService.sendToProducer(payload.producerId, notification);

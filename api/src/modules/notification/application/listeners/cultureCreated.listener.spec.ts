@@ -4,12 +4,14 @@ import { NotificationProviderContract } from '../../domain/providers/notificatio
 import { NotificationContract } from '../../domain/repositories/notificationRepository.contract';
 import { PinoLogger } from 'nestjs-pino';
 import { Mocked } from 'vitest';
+import { IdGeneratorContract } from 'src/shared/domain/providers/idGenerator.contract';
 import { makeFakeNotification } from '../../../../../test/factories/makeNotification';
 
 describe('CultureCreatedListener', () => {
   let mockNotificationProvider: Mocked<NotificationProviderContract>;
   let mockNotificationRepository: Mocked<NotificationContract>;
   let mockLogger: Mocked<PinoLogger>;
+  let mockIdGenerator: Mocked<IdGeneratorContract>;
   let listener: CultureCreatedListener;
 
   beforeEach(() => {
@@ -25,9 +27,14 @@ describe('CultureCreatedListener', () => {
       error: vi.fn(),
     } as unknown as Mocked<PinoLogger>;
 
+    mockIdGenerator = {
+      generate: vi.fn().mockReturnValue('test-uuid'),
+    };
+
     listener = new CultureCreatedListener(
       mockNotificationProvider,
       mockNotificationRepository,
+      mockIdGenerator,
       mockLogger,
     );
   });
@@ -36,7 +43,7 @@ describe('CultureCreatedListener', () => {
     const fakeNotification = makeFakeNotification();
     const payload = {
       producerId: 'producer-123',
-      data: fakeNotification,
+      data: { cultureName: 'Milho' },
     };
     mockNotificationRepository.create.mockResolvedValueOnce(fakeNotification);
 
@@ -48,10 +55,9 @@ describe('CultureCreatedListener', () => {
   });
 
   it('Should log error if handling fails', async () => {
-    const fakeNotification = makeFakeNotification();
     const payload = {
       producerId: 'producer-123',
-      data: fakeNotification,
+      data: { cultureName: 'Milho' },
     };
 
     const error = new Error('Database Error');

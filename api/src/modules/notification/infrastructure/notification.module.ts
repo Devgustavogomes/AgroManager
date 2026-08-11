@@ -12,12 +12,15 @@ import { CropCreatedListener } from '../application/listeners/cropCreated.listen
 import { CropUpdatedListener } from '../application/listeners/cropUpdated.listener';
 import { NotificationContract } from '../domain/repositories/notificationRepository.contract';
 import { NotificationRepository } from './persistence/notification.repository';
+import { IdGeneratorContract } from 'src/shared/domain/providers/idGenerator.contract';
+import { UuidV7Generator } from 'src/shared/infrastructure/providers/uuidGenerator.provider';
 
 @Module({
   providers: [
     NotificationGateway,
     { provide: NotificationProviderContract, useClass: NotificationProvider },
     { provide: NotificationContract, useClass: NotificationRepository },
+    { provide: IdGeneratorContract, useClass: UuidV7Generator },
     ProducerCreatedListener,
     ProducerUpdatedListener,
     PropertyCreatedListener,
