@@ -9,7 +9,7 @@ import {
 import { InvalidAreaError } from 'src/shared/domain/errors/invalidAreaError';
 import { Notification } from 'src/shared/domain/entities/notification.entity';
 
-interface CropProps {
+export interface CropProps {
   cropId: string;
   cultureId: string;
   name: string;
