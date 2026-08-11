@@ -38,8 +38,8 @@ export class UpdatePropertyUseCase {
 
     const result = await this.propertyRepository.update(producerId, property);
 
-    property.getDomainEvents(producerId).forEach((event) => {
-      this.eventEmitter.emit(event);
+    property.getDomainEvents().forEach((event) => {
+      this.eventEmitter.emit({ ...event, producerId });
     });
 
     property.clearDomainEvents();

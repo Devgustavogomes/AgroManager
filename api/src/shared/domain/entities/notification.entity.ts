@@ -1,6 +1,6 @@
 import { Optional } from 'src/shared/application/types/optional';
 
-interface NotificationProps {
+export interface NotificationProps {
   notificationId: string;
   event: string;
   title: string;

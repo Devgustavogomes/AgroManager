@@ -52,8 +52,8 @@ export class CreatePropertyUseCase {
       return await this.propertyRepository.create(property, client);
     });
 
-    property.getDomainEvents(producerId).forEach((event) => {
-      this.eventEmitter.emit(event);
+    property.getDomainEvents().forEach((event) => {
+      this.eventEmitter.emit({ ...event, producerId });
     });
 
     property.clearDomainEvents();

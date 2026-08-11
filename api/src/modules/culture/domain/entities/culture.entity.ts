@@ -7,7 +7,7 @@ import {
 import { Optional } from 'src/shared/application/types/optional';
 import { Notification } from 'src/shared/domain/entities/notification.entity';
 
-interface CultureProps {
+export interface CultureProps {
   cultureId: string;
   name: string;
   allocatedArea: Area;
