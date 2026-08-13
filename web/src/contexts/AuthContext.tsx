@@ -1,18 +1,19 @@
 import { useState, type ReactNode } from "react";
 import type { AuthResponse } from "../types/auth.type";
 import { AuthContext } from "../hooks/useAuth";
+import { tokenStorage } from "../store/tokenStorage";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
 
   const signIn = (data: AuthResponse) => {
     setToken(data.accessToken);
-    localStorage.setItem("AgroManager:AccessToken", data.accessToken);
+    tokenStorage.saveToken(data.accessToken);
   };
 
   const signOut = () => {
     setToken(null);
-    localStorage.removeItem("AgroManager:AccessToken");
+    tokenStorage.removeToken();
   };
 
   const isAuthenticated = !!token;
