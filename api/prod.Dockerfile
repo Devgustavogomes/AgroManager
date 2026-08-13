@@ -1,4 +1,4 @@
-FROM node:26.5 AS test-stage
+FROM node:26.7 AS test-stage
 
 WORKDIR /usr/src/app
 
@@ -18,7 +18,7 @@ RUN npm run test --workspace=api
 
 
 
-FROM node:26.5 AS build-stage
+FROM node:26.7 AS build-stage
 
 WORKDIR /usr/src/app
 
@@ -27,7 +27,7 @@ COPY --from=test-stage /usr/src/app .
 RUN npm run build --workspace=api
 
 
-FROM node:26.5
+FROM node:26.7
 
 WORKDIR /usr/src/app
 
