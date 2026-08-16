@@ -8,7 +8,7 @@ interface ButtonProps
 }
 
 const intentStyles: Record<UIIntent, string> = {
-  primary: "bg-agro-main text-white hover:bg-agro-dark",
+  primary: "bg-agro-main text-white font-semibold hover:bg-agro-dark",
   secondary: "bg-surface-border text-content-primary hover:bg-gray-300",
   success: "bg-feedback-success text-white hover:bg-green-600",
   danger: "bg-feedback-error text-white hover:bg-red-600",
