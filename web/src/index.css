@@ -18,6 +18,7 @@
   /* Colors - Feedback */
   --color-feedback-error: #ef4444;
   --color-feedback-success: #22c55e;
+  --color-feedback-warning: #f59e0b;
 
   /* Border Radius */
   --radius: 0.375rem;
