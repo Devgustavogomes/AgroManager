@@ -59,7 +59,7 @@ O projeto é estruturado como um **monorepo** que abriga quatro workspaces indep
 | ---------- | ---------------------------------------------------------- | ------------------------------ |
 | `api/`     | API REST construída com NestJS                             | 🟢 Em desenvolvimento avançado |
 | `infra/`   | Módulos de infraestrutura compartilhados (Database, Redis) | 🟢 Em uso                      |
-| `web/`     | Frontend web com Next.js                                   | 🔴 Não iniciado                |
+| `web/`     | Frontend web com React + Vite                              | 🟡 Em desenvolvimento inicial  |
 | `workers/` | Workers para processamento assíncrono                      | 🔴 Não iniciado                |
 
 ---
@@ -96,7 +96,21 @@ AgroManager/
 │   ├── database/                 # DatabaseModule (pg + connection pool)
 │   └── redis/                    # RedisModule (ioredis + session management)
 │
-├── web/                          # Frontend (Next.js) — 🔴 Não iniciado
+├── web/                          # Frontend (React + Vite)
+│   ├── src/
+│   │   ├── components/           # Componentes reutilizáveis
+│   │   │   └── ui/               # Componentes base (Button, Input, Toast)
+│   │   ├── contexts/             # React Contexts (Auth, Toast)
+│   │   ├── features/             # Módulos de feature
+│   │   │   └── auth/             # Feature de autenticação (LoginPage)
+│   │   ├── hooks/                # Custom hooks (useAuth, useToast)
+│   │   ├── routes/               # Roteamento (AppRouter, ProtectedRoute)
+│   │   ├── services/             # Serviços HTTP (Axios + Auth)
+│   │   ├── store/                # Gerenciamento de estado (token storage)
+│   │   └── types/                # Tipagens compartilhadas
+│   ├── index.html                # Entry point HTML
+│   └── vite.config.ts            # Configuração do Vite + Tailwind
+│
 ├── workers/                      # Workers (NestJS) — 🔴 Não iniciado
 │
 ├── migrations/                   # Migrations SQL do banco de dados
@@ -112,6 +126,8 @@ O monorepo utiliza **NPM Workspaces** para gerenciar dependências de forma cent
 ---
 
 ## 🧰 Tech Stack
+
+### Backend (API)
 
 | Camada              | Tecnologia                             | Finalidade                                   |
 | ------------------- | -------------------------------------- | -------------------------------------------- |
@@ -129,6 +145,24 @@ O monorepo utiliza **NPM Workspaces** para gerenciar dependências de forma cent
 | **Eventos**         | @nestjs/event-emitter (EventEmitter2)  | Pub/Sub interno para eventos de domínio      |
 | **Documentação**    | Swagger (@nestjs/swagger)              | Documentação interativa da API               |
 | **Testes**          | Vitest + SWC                           | Testes unitários com performance otimizada   |
+
+### Frontend (Web)
+
+| Camada               | Tecnologia                        | Finalidade                                       |
+| -------------------- | --------------------------------- | ------------------------------------------------ |
+| **Framework**        | React 19                          | Biblioteca de UI com componentes declarativos    |
+| **Build Tool**       | Vite 8                            | Bundler rápido com HMR instantâneo               |
+| **Linguagem**        | TypeScript 6                      | Tipagem estática                                 |
+| **Estilização**      | Tailwind CSS 4                    | Utility-first CSS com design system integrado    |
+| **Roteamento**       | React Router DOM 7                | Roteamento SPA com rotas protegidas              |
+| **Estado Servidor**  | TanStack React Query 5            | Cache, sincronização e gerenciamento de dados    |
+| **Formulários**      | React Hook Form 7 + Zod 4         | Formulários performáticos com validação tipada   |
+| **HTTP Client**      | Axios                             | Requisições HTTP com interceptors                |
+
+### Infraestrutura & DevOps
+
+| Camada              | Tecnologia                             | Finalidade                                   |
+| ------------------- | -------------------------------------- | -------------------------------------------- |
 | **Container**       | Docker + Docker Compose                | Containerização e orquestração local         |
 | **Reverse Proxy**   | Nginx                                  | Proxy reverso com suporte a WebSocket        |
 | **CI/CD**           | GitHub Actions                         | Build, lint, testes e deploy automatizados   |
@@ -1027,7 +1061,18 @@ Consulte o `.env.example` de cada workspace para ver todas as variáveis dispon�
 - [x] Multi-stage Dockerfile com suporte a monorepo
 - [x] CI/CD com GitHub Actions
 - [ ] API — Dashboard com métricas agregadas
-- [ ] Web — Interface do produtor (Next.js)
+- [x] Web — Setup do projeto (Vite + React 19 + TypeScript + Tailwind CSS 4)
+- [x] Web — Componentes UI base (Button, Input, Toast)
+- [x] Web — Sistema de autenticação (Context + Hooks + Token Storage)
+- [x] Web — Serviços HTTP (Axios com interceptors)
+- [x] Web — Roteamento com rotas protegidas (React Router DOM)
+- [x] Web — Página de Login
+- [ ] Web — Página de cadastro de produtor
+- [ ] Web — Dashboard do produtor
+- [ ] Web — CRUD de propriedades
+- [ ] Web — CRUD de culturas
+- [ ] Web — CRUD de safras (crops)
+- [ ] Web — Notificações em tempo real (Socket.IO client)
 - [ ] Workers — Processamento assíncrono de tarefas
 
 ---
