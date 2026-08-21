@@ -48,9 +48,5 @@
     "infra/**/*.{ts,tsx}": [
       "eslint --fix"
     ]
-  },
-  "dependencies": {
-    "axios": "^1.19.0",
-    "react-router-dom": "^7.18.2"
   }
 }
