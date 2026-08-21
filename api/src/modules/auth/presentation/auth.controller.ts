@@ -50,7 +50,7 @@ export class AuthController {
     res.cookie('refresh_token', tokens.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'none',
       path: '/auth/refresh',
       maxAge: TTL_REFRESH_TOKEN,
     });
@@ -79,7 +79,7 @@ export class AuthController {
     res.cookie('refresh_token', tokens.newRefreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'none',
       path: '/auth/refresh',
       maxAge: TTL_REFRESH_TOKEN,
     });
@@ -100,7 +100,7 @@ export class AuthController {
     res.clearCookie('refresh_token', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'none',
       path: '/auth/refresh',
     });
 
