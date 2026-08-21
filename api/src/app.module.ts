@@ -28,7 +28,7 @@ import { AppController } from './app.controller';
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
       load: [configuration],
-      validate: (env) => envSchema.parse(env),
+      validate: (env) => envSchema.parse({ ...process.env, ...env }),
     }),
     ThrottlerModule.forRootAsync({
       imports: [RedisModule],
