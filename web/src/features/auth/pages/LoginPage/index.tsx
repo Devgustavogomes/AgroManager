@@ -48,7 +48,7 @@ export function LoginPage() {
   });
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-surface-base px-4">
+    <div className="flex flex-1 items-center justify-center px-4 py-12">
       <section className="w-full max-w-md rounded-lg bg-surface-paper p-8 shadow-card space-y-4">
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold text-content-primary">
@@ -91,6 +91,6 @@ export function LoginPage() {
           </Link>
         </p>
       </section>
-    </main>
+    </div>
   );
 }
