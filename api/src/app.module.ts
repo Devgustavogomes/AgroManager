@@ -16,7 +16,6 @@ import { NotificationModule } from './modules/notification/infrastructure/notifi
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
-import { Redis } from 'ioredis';
 import { LoggerModule } from 'nestjs-pino';
 import { trace } from '@opentelemetry/api';
 import { TerminusModule } from '@nestjs/terminus';
@@ -34,7 +33,7 @@ import { AppController } from './app.controller';
     ThrottlerModule.forRootAsync({
       imports: [RedisModule],
       inject: ['REDIS_CLIENT'],
-      useFactory: (redis: Redis) => ({
+      useFactory: (redis) => ({
         throttlers: [{ ttl: 60000, limit: 30 }],
         storage: new ThrottlerStorageRedisService(redis),
       }),
