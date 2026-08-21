@@ -9,9 +9,14 @@ import {
   ConsoleMetricExporter,
   PeriodicExportingMetricReader,
 } from '@opentelemetry/sdk-metrics';
+import * as fs from 'fs';
 
 const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env';
-dotenv.config({ path: path.resolve(process.cwd(), envFile) });
+const envPath = path.resolve(process.cwd(), envFile);
+
+if (fs.existsSync(envPath)) {
+  dotenv.config({ path: envPath });
+}
 
 const sdk = new NodeSDK({
   resource: resourceFromAttributes({
