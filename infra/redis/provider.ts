@@ -13,6 +13,7 @@ export const redisProvider = {
       password: configService.get<string>("REDIS_PASSWORD"),
       port: Number(configService.get<string>("REDIS_PORT")),
       host: configService.get<string>("REDIS_HOST"),
+      family: 4,
       tls:
         configService.get<string>("REDIS_SSL") === "true"
           ? { servername: configService.get<string>("REDIS_HOST") }
