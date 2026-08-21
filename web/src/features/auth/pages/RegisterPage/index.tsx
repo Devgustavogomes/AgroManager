@@ -1,20 +1,21 @@
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-
-import { Button } from "../../../../components/ui/Button";
-import {
-  loginSchema,
-  type LoginCredentials,
-} from "../../../../types/auth.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
+
+import {
+  registerSchema,
+  type RegisterCredentials,
+  type RegisterPayload,
+} from "../../../../types/auth.type";
 import { authService } from "../../../../services/auth.service";
 import { useAuth } from "../../../../hooks/useAuth";
-import { Input } from "../../../../components/ui/Input";
 import { useToast } from "../../../../hooks/useToast";
+import { Input } from "../../../../components/ui/Input";
+import { Button } from "../../../../components/ui/Button";
 import { PasswordInput } from "../../components/PasswordInput";
 
-export function LoginPage() {
+export function RegisterPage() {
   const { signIn } = useAuth();
   const { toast } = useToast();
 
@@ -22,28 +23,39 @@ export function LoginPage() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginCredentials>({
+  } = useForm<RegisterCredentials>({
     mode: "onBlur",
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(registerSchema),
   });
 
   const mutation = useMutation({
-    mutationFn: async (credentials: LoginCredentials) => {
-      return await authService.login(credentials);
+    mutationFn: async (data: RegisterCredentials) => {
+      const payload: RegisterPayload = {
+        username: data.username,
+        email: data.email,
+        password: data.password,
+      };
+      await authService.register(payload);
+
+      const authData = await authService.login({
+        email: data.email,
+        password: data.password,
+      });
+      return authData;
     },
     onSuccess: (data) => {
       signIn(data);
     },
     onError: (error) => {
-      console.error("Falha ao logar:", error);
+      console.error("Falha ao cadastrar:", error);
       toast({
         intent: "danger",
-        message: "Credenciais inválidas ou servidor indisponível.",
+        message: "Erro ao criar conta. Verifique os dados e tente novamente.",
       });
     },
   });
 
-  const handleLogin = handleSubmit(async (data) => {
+  const handleRegister = handleSubmit(async (data) => {
     mutation.mutate(data);
   });
 
@@ -55,20 +67,36 @@ export function LoginPage() {
             AgroManager
           </h1>
           <h4 className="mt-2 text-lg text-content-secondary">
-            Insira suas credenciais para acessar o painel
+            Crie sua conta para começar
           </h4>
         </div>
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleRegister} className="space-y-4">
+          <Input
+            {...register("username")}
+            placeholder="Nome de usuário"
+            error={errors.username?.message}
+          />
           <Input
             type="email"
             {...register("email")}
             placeholder="Email"
             error={errors.email?.message}
           />
+          <Input
+            type="email"
+            {...register("confirmEmail")}
+            placeholder="Confirmar email"
+            error={errors.confirmEmail?.message}
+          />
           <PasswordInput
             {...register("password")}
             placeholder="Senha"
             error={errors.password?.message}
+          />
+          <PasswordInput
+            {...register("confirmPassword")}
+            placeholder="Confirmar senha"
+            error={errors.confirmPassword?.message}
           />
 
           <Button
@@ -78,16 +106,16 @@ export function LoginPage() {
             className="w-full mt-6"
             isLoading={mutation.isPending}
           >
-            Entrar no sistema
+            Criar conta
           </Button>
         </form>
         <p className="text-center text-sm text-content-secondary">
-          Não possui uma conta?{" "}
+          Já possui uma conta?{" "}
           <Link
-            to="/register"
+            to="/login"
             className="font-semibold text-agro-main hover:underline"
           >
-            Crie sua conta
+            Faça login
           </Link>
         </p>
       </section>
