@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ProducerModule } from './modules/producer/infrastructure/producer.module';
 import { DatabaseModule } from '@agromanager/infra/database/module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './shared/infrastructure/config/configuration';
 import { envSchema } from './shared/infrastructure/config/dto/env.dto';
 import { AuthModule } from './modules/auth/infrastructure/auth.module';
@@ -16,7 +16,6 @@ import { NotificationModule } from './modules/notification/infrastructure/notifi
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
-import { Redis } from 'ioredis';
 import { LoggerModule } from 'nestjs-pino';
 import { trace } from '@opentelemetry/api';
 import { TerminusModule } from '@nestjs/terminus';
@@ -32,11 +31,24 @@ import { AppController } from './app.controller';
       validate: (env) => envSchema.parse({ ...env, ...process.env }),
     }),
     ThrottlerModule.forRootAsync({
-      imports: [RedisModule],
-      inject: ['REDIS_CLIENT'],
-      useFactory: (redis: Redis) => ({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
         throttlers: [{ ttl: 60000, limit: 30 }],
-        storage: new ThrottlerStorageRedisService(redis),
+
+        storage: new ThrottlerStorageRedisService({
+          username: config.get<string>('REDIS_USERNAME'),
+          password: config.get<string>('REDIS_PASSWORD'),
+          port: Number(config.get<string>('REDIS_PORT')),
+          host: config.get<string>('REDIS_HOST'),
+          family: 4,
+          tls:
+            config.get<string>('REDIS_SSL') === 'true'
+              ? { servername: config.get<string>('REDIS_HOST') }
+              : undefined,
+          retryStrategy: (times: number) => Math.min(times * 50, 2000),
+          enableReadyCheck: true,
+        }),
       }),
     }),
     EventEmitterModule.forRoot(),
