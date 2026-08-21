@@ -13,7 +13,10 @@ export const redisProvider = {
       password: configService.get<string>("REDIS_PASSWORD"),
       port: Number(configService.get<string>("REDIS_PORT")),
       host: configService.get<string>("REDIS_HOST"),
-      tls: configService.get<string>("REDIS_SSL") === "true" ? {} : undefined,
+      tls:
+        configService.get<string>("REDIS_SSL") === "true"
+          ? { servername: configService.get<string>("REDIS_HOST") }
+          : undefined,
       retryStrategy: (times) => Math.min(times * 50, 2000),
       enableReadyCheck: true,
     });
