@@ -3,6 +3,7 @@ import { PropertyContract } from '../domain/repositories/propertyRepository.cont
 import { PropertyRepository } from './persistence/property.repository';
 import { CreatePropertyUseCase } from '../application/use-cases/createProperty';
 import { FindBySlugUseCase } from '../application/use-cases/findPropertyBySlug';
+import { FindAllPropertiesUseCase } from '../application/use-cases/findAllProperties';
 import { DeletePropertyUseCase } from '../application/use-cases/deleteProperty';
 import { PropertyController } from '../presentation/property.controller';
 import { UpdatePropertyUseCase } from '../application/use-cases/updateProperty';
@@ -18,6 +19,7 @@ import { UuidV7Generator } from 'src/shared/infrastructure/providers/uuidGenerat
     { provide: PropertyContract, useClass: PropertyRepository },
     CreatePropertyUseCase,
     FindBySlugUseCase,
+    FindAllPropertiesUseCase,
     DeletePropertyUseCase,
     UpdatePropertyUseCase,
     IsPropertyOwnerUseCase,

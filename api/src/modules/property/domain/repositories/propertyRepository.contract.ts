@@ -15,6 +15,8 @@ export interface PropertyPersistence {
 }
 
 export abstract class PropertyContract {
+  abstract findAllByProducerId(producerId: string): Promise<Property[]>;
+
   abstract findBySlug(
     slug: string,
     producerId: string,
