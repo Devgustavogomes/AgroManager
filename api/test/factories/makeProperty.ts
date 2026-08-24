@@ -11,6 +11,7 @@ export function makeFakeProperty(override: Override = {}) {
   return Property.create({
     producerId: randomUUID(),
     name: 'Fazenda Feliz',
+    propertyId: randomUUID(),
     city: 'São Paulo',
     state: 'SP',
     totalArea: Area.create(100),

@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { Button } from "../../../../components/ui/Button";
 import {
@@ -17,6 +17,7 @@ import { PasswordInput } from "../../components/PasswordInput";
 export function LoginPage() {
   const { signIn } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -33,6 +34,7 @@ export function LoginPage() {
     },
     onSuccess: (data) => {
       signIn(data);
+      navigate("/properties");
     },
     onError: (error) => {
       console.error("Falha ao logar:", error);
