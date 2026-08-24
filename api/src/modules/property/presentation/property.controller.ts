@@ -1,4 +1,5 @@
 import { FindBySlugUseCase } from '../application/use-cases/findPropertyBySlug';
+import { FindAllPropertiesUseCase } from '../application/use-cases/findAllProperties';
 import {
   Body,
   Controller,
@@ -28,9 +29,18 @@ export class PropertyController {
   constructor(
     private readonly createPropertyUseCase: CreatePropertyUseCase,
     private readonly findBySlugUseCase: FindBySlugUseCase,
+    private readonly findAllPropertiesUseCase: FindAllPropertiesUseCase,
     private readonly deletePropertyUseCase: DeletePropertyUseCase,
     private readonly updatePropertyUseCase: UpdatePropertyUseCase,
   ) {}
+
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({ type: [PropertyOutputDto] })
+  @ApiBearerAuth()
+  async findAll(@Req() req: AuthenticatedRequest) {
+    return await this.findAllPropertiesUseCase.execute(req.producer.id);
+  }
 
   @Get(':slug')
   @HttpCode(HttpStatus.OK)

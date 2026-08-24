@@ -12,6 +12,22 @@ import { PropertyMapper } from '../property.mapper';
 export class PropertyRepository implements PropertyContract {
   constructor(private readonly databaseservice: DatabaseContract) {}
 
+  async findAllByProducerId(producerId: string): Promise<Property[]> {
+    const sql = `SELECT *
+                FROM properties
+                WHERE "producerId" = $1
+                ORDER BY "createdAt" DESC`;
+
+    const params = [producerId];
+
+    const result = await this.databaseservice.query<PropertyPersistence>(
+      sql,
+      params,
+    );
+
+    return PropertyMapper.toDomain(result);
+  }
+
   async findBySlug(
     slug: string,
     producerId: string,
@@ -37,6 +53,7 @@ export class PropertyRepository implements PropertyContract {
       "propertyId",
       "producerId",
       "name",
+      "slug",
       "city",
       "state",
       "arableArea",
@@ -50,13 +67,15 @@ export class PropertyRepository implements PropertyContract {
       $5,
       $6,
       $7,
-      $8
+      $8,
+      $9
     ) RETURNING *`;
 
     const params = [
       property.propertyId,
       property.producerId,
       property.name,
+      property.slug,
       property.city,
       property.state,
       property.arableArea,
