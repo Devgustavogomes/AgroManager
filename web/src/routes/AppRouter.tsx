@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { LoginPage } from "../features/auth/pages/LoginPage";
 import { RegisterPage } from "../features/auth/pages/RegisterPage";
 import { PropertySelectionPage } from "../features/property/pages/PropertySelectionPage";
+import { DashboardPage } from "../features/dashboard/pages/DashboardPage";
 import { MainLayout } from "../components/layout/MainLayout";
 import { ProtectedRoute } from "./ProtectedRoute";
 
@@ -17,6 +18,14 @@ export function AppRouter() {
           element={
             <ProtectedRoute>
               <PropertySelectionPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/:slug/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
             </ProtectedRoute>
           }
         />

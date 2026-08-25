@@ -2,15 +2,23 @@ import type { PropertyResponse } from "../../../types/property.type";
 
 interface PropertyCardProps {
   property: PropertyResponse;
+  onClick: () => void;
 }
 
-export function PropertyCard({ property }: PropertyCardProps) {
+export function PropertyCard({ property, onClick }: PropertyCardProps) {
   return (
     <article
       className="group bg-surface-paper border border-surface-border rounded-lg p-5 shadow-card cursor-pointer transition-all duration-200 hover:border-agro-main hover:shadow-modal hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-agro-main"
       role="button"
       tabIndex={0}
       aria-label={`Selecionar propriedade ${property.name}`}
+      onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
     >
       <div className="flex items-start justify-between gap-2 mb-4">
         <div className="flex items-center gap-3 min-w-0">
