@@ -6,6 +6,13 @@
 
 ---
 
+## 🔗 Links de Produção
+
+- **Frontend:** [https://agro-manager-web-eight.vercel.app/](https://agro-manager-web-eight.vercel.app/)
+- **Backend (API):** [https://api-production-45934.up.railway.app/](https://api-production-45934.up.railway.app/)
+
+---
+
 ## 📋 Índice
 
 - [Visão Geral](#-visão-geral)
@@ -788,8 +795,9 @@ O ambiente é orquestrado via `docker-compose.yml` com os seguintes serviços:
 
 | Serviço      | Imagem                          | Porta            | Finalidade                     |
 | ------------ | ------------------------------- | ---------------- | ------------------------------ |
-| **nginx**    | `nginx:1.29`                    | `8080:80`        | Reverse proxy para a API       |
-| **api**      | Build local (`prod.Dockerfile`) | `3000` (interna) | API NestJS em produção         |
+| **nginx**    | `nginx:1.29`                    | `8080:80`        | Gateway único para Front e API |
+| **web**      | Build local (`prod.Dockerfile`) | Interna          | Frontend estático (Nginx Alpine) |
+| **api**      | Build local (`prod.Dockerfile`) | Interna          | API NestJS em produção         |
 | **postgres** | `postgres:16`                   | `5432` (interna) | Banco de dados com healthcheck |
 | **redis**    | `redis:8.2.3-alpine`            | `6379` (interna) | Cache e sessões                |
 
@@ -799,6 +807,7 @@ Os containers são organizados em **redes Docker isoladas** para segmentar a com
 
 | Rede       | Serviços conectados | Finalidade                       |
 | ---------- | ------------------- | -------------------------------- |
+| `web`      | nginx, web          | Isolamento do Frontend           |
 | `api`      | nginx, api          | Comunicação entre proxy e API    |
 | `database` | api, postgres       | Acesso ao banco de dados isolado |
 | `cache`    | api, redis          | Acesso ao Redis isolado          |
@@ -971,16 +980,25 @@ Esses indexes beneficiam diretamente a **performance do OwnerGuard**, que execut
 git clone https://github.com/Devgustavogomes/AgroManager
 cd AgroManager
 
-# Setup + start (cria os .env e sobe todos os containers)
-npm run setup
+# Crie os arquivos .env.development e instale as dependências base
+npm run setup:env
+npm install
+
+# Para rodar o ambiente de DESENVOLVIMENTO (com Hot-Reload)
+npm run compose:dev:build
+
+# Para rodar o ambiente de PRODUÇÃO localmente
+npm run compose:build
 ```
 
-O comando `setup` faz tudo automaticamente:
+O comando `setup:env` cria automaticamente os arquivos `.env.development`, `.env.test` e `.env.production` em cada workspace a partir do `.env.example`.
 
-1. Cria os arquivos `.env.development`, `.env.test` e `.env.production` em cada workspace a partir do `.env.example` (sem sobrescrever arquivos existentes)
-2. Sobe todos os containers via Docker Compose com build das imagens
+### Acesso Único
 
-A API estará acessível em `http://localhost:8080` (via Nginx).
+Tanto o Frontend quanto a API são servidos através de um único **Gateway Nginx**.
+Após rodar qualquer um dos comandos acima, acesse a aplicação em:
+
+👉 **http://localhost:8080**
 
 ## 🔑 Variáveis de Ambiente
 

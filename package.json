@@ -9,7 +9,6 @@
     "infra"
   ],
   "scripts": {
-    "setup": "npm run setup:env && npm run compose:build",
     "compose:up": "docker compose -f ./docker-compose.yml up",
     "compose:build": "docker compose -f ./docker-compose.yml up --build",
     "compose:stop": "docker compose -f ./docker-compose.yml stop",
