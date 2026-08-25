@@ -120,7 +120,7 @@ export function PropertySelectionPage() {
   return (
     <>
       <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-8">
-        {/* Page Header */}
+
         <div className="mb-8">
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div>
@@ -132,7 +132,7 @@ export function PropertySelectionPage() {
               </p>
             </div>
 
-            {/* Contador + badge de limite */}
+
             <div className="flex items-center gap-2">
               <span
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border ${
