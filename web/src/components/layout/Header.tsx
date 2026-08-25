@@ -1,8 +1,17 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isAuthenticated, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    signOut();
+    navigate("/login");
+    setIsMenuOpen(false);
+  };
 
   return (
     <header className="bg-surface-paper border-b border-surface-border sticky top-0 z-50 shadow-sm">
@@ -14,31 +23,42 @@ export function Header() {
             </Link>
           </div>
 
-          <nav className="hidden md:flex space-x-8">
+          <nav className="hidden md:flex space-x-8 items-center">
             <Link
               to="/"
               className="text-content-secondary hover:text-agro-main font-medium transition-colors"
             >
               Início
             </Link>
-            <Link
-              to="/login"
-              className="text-content-secondary hover:text-agro-main font-medium transition-colors"
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className="text-content-secondary hover:text-agro-main font-medium transition-colors"
-            >
-              Cadastrar
-            </Link>
+            {!isAuthenticated ? (
+              <>
+                <Link
+                  to="/login"
+                  className="text-content-secondary hover:text-agro-main font-medium transition-colors"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="text-content-secondary hover:text-agro-main font-medium transition-colors"
+                >
+                  Cadastrar
+                </Link>
+              </>
+            ) : (
+              <button
+                onClick={handleSignOut}
+                className="text-content-secondary hover:text-feedback-error font-medium transition-colors cursor-pointer"
+              >
+                Sair
+              </button>
+            )}
           </nav>
 
           <div className="flex items-center md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-content-secondary hover:text-content-primary focus:outline-none p-2 rounded-md hover:bg-surface-base transition-colors"
+              className="text-content-secondary hover:text-content-primary focus:outline-none p-2 rounded-md hover:bg-surface-base transition-colors cursor-pointer"
               aria-label="Menu principal"
               aria-expanded={isMenuOpen}
             >
@@ -79,20 +99,31 @@ export function Header() {
             >
               Início
             </Link>
-            <Link
-              to="/login"
-              className="block px-3 py-2 rounded-md text-base font-medium text-content-primary hover:text-agro-main hover:bg-surface-base transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className="block px-3 py-2 rounded-md text-base font-medium text-content-primary hover:text-agro-main hover:bg-surface-base transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Cadastrar
-            </Link>
+            {!isAuthenticated ? (
+              <>
+                <Link
+                  to="/login"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-content-primary hover:text-agro-main hover:bg-surface-base transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-content-primary hover:text-agro-main hover:bg-surface-base transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Cadastrar
+                </Link>
+              </>
+            ) : (
+              <button
+                onClick={handleSignOut}
+                className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-content-primary hover:text-feedback-error hover:bg-surface-base transition-colors cursor-pointer"
+              >
+                Sair
+              </button>
+            )}
           </div>
         </div>
       )}
