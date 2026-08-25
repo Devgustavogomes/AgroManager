@@ -130,16 +130,16 @@ export function CreatePropertyModal({
       aria-modal="true"
       aria-labelledby="create-property-modal-title"
     >
-      {/* Backdrop */}
+
       <div
         className="absolute inset-0 bg-content-primary/40 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Modal */}
+
       <div className="relative w-full sm:max-w-lg bg-surface-paper rounded-t-2xl sm:rounded-2xl shadow-modal max-h-[90vh] overflow-y-auto">
-        {/* Header */}
+
         <div className="flex items-center justify-between p-5 border-b border-surface-border sticky top-0 bg-surface-paper rounded-t-2xl sm:rounded-t-2xl z-10">
           <div>
             <h2
@@ -174,9 +174,9 @@ export function CreatePropertyModal({
           </button>
         </div>
 
-        {/* Form */}
+
         <form onSubmit={handleCreate} className="p-5 space-y-4">
-          {/* Nome */}
+
           <div>
             <label
               htmlFor="property-name"
@@ -192,7 +192,7 @@ export function CreatePropertyModal({
             />
           </div>
 
-          {/* Cidade e Estado */}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label
@@ -232,7 +232,7 @@ export function CreatePropertyModal({
             </div>
           </div>
 
-          {/* Áreas */}
+
           <div>
             <label
               htmlFor="property-total-area"
@@ -288,7 +288,7 @@ export function CreatePropertyModal({
             </div>
           </div>
 
-          {/* Slug — avançado, opcional */}
+
           <div className="pt-2 border-t border-surface-border">
             <button
               type="button"
@@ -359,7 +359,7 @@ export function CreatePropertyModal({
             )}
           </div>
 
-          {/* Actions */}
+
           <div className="flex gap-3 pt-2">
             <Button
               type="button"

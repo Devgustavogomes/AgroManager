@@ -1,14 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 import { propertyService } from "../../../../services/property.service";
 import { MAX_PROPERTIES } from "../../../../types/property.type";
 import { PropertyCard } from "../../components/PropertyCard";
 import { CreatePropertyModal } from "../../components/CreatePropertyModal";
-
-// ============================================================
-// Componentes internos
-// ============================================================
 
 function PropertySkeleton() {
   return (
@@ -71,11 +68,8 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
   );
 }
 
-// ============================================================
-// Página principal
-// ============================================================
-
 export function PropertySelectionPage() {
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
@@ -115,7 +109,8 @@ export function PropertySelectionPage() {
             Falha ao carregar
           </h2>
           <p className="text-sm text-content-secondary">
-            Não foi possível carregar suas propriedades. Verifique sua conexão e tente novamente.
+            Não foi possível carregar suas propriedades. Verifique sua conexão e
+            tente novamente.
           </p>
         </div>
       </div>
@@ -125,7 +120,7 @@ export function PropertySelectionPage() {
   return (
     <>
       <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-8">
-        {/* Page Header */}
+
         <div className="mb-8">
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div>
@@ -137,7 +132,7 @@ export function PropertySelectionPage() {
               </p>
             </div>
 
-            {/* Contador + badge de limite */}
+
             <div className="flex items-center gap-2">
               <span
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border ${
@@ -172,7 +167,6 @@ export function PropertySelectionPage() {
             </div>
           </div>
 
-          {/* Aviso de limite atingido */}
           {!isLoading && propertyCount >= MAX_PROPERTIES && (
             <div
               role="alert"
@@ -197,14 +191,14 @@ export function PropertySelectionPage() {
                   Limite de propriedades atingido
                 </p>
                 <p className="text-xs text-content-secondary mt-0.5">
-                  Cada conta pode ter no máximo {MAX_PROPERTIES} propriedades cadastradas. Para adicionar uma nova, remova uma existente.
+                  Cada conta pode ter no máximo {MAX_PROPERTIES} propriedades
+                  cadastradas. Para adicionar uma nova, remova uma existente.
                 </p>
               </div>
             </div>
           )}
         </div>
 
-        {/* Loading */}
         {isLoading && (
           <div
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
@@ -217,19 +211,20 @@ export function PropertySelectionPage() {
           </div>
         )}
 
-        {/* Empty state */}
         {!isLoading && propertyCount === 0 && (
           <EmptyState onCreateClick={() => setIsModalOpen(true)} />
         )}
 
-        {/* Grid de propriedades */}
         {!isLoading && propertyCount > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {properties.map((property) => (
-              <PropertyCard key={property.propertyId} property={property} />
+              <PropertyCard
+                key={property.propertyId}
+                property={property}
+                onClick={() => navigate(`/${property.slug}/dashboard`)}
+              />
             ))}
 
-            {/* Card de criar (aparece ao lado da última, se não atingiu o limite) */}
             {canCreate && (
               <CreatePropertyCard onClick={() => setIsModalOpen(true)} />
             )}
@@ -237,7 +232,6 @@ export function PropertySelectionPage() {
         )}
       </div>
 
-      {/* Modal de criação */}
       <CreatePropertyModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

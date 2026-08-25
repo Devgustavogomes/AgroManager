@@ -27,9 +27,18 @@ export const createPropertySchema = z
     state: z.string().min(2, "Selecione um estado.").max(2).trim(),
     totalArea: z
       .number("A área total é obrigatória.")
-      .positive("A área total deve ser um valor positivo."),
-    arableArea: z.number().min(0).optional(),
-    vegetationArea: z.number().min(0).optional(),
+      .positive("A área total deve ser um valor positivo.")
+      .max(99999999, "O valor excede o limite (99.999.999)"),
+    arableArea: z
+      .number("Deve ser um número")
+      .min(0, "Não pode ser negativo")
+      .max(99999999, "Valor muito alto")
+      .optional(),
+    vegetationArea: z
+      .number("Deve ser um número")
+      .min(0, "Não pode ser negativo")
+      .max(99999999, "Valor muito alto")
+      .optional(),
   })
   .refine(
     (data) => {
