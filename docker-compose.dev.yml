@@ -8,38 +8,48 @@ services:
     depends_on:
       - api
     networks:
-      - api
       - web
+      - api
   web:
-    container_name: web_prod
+    container_name: web_dev
     build:
       context: .
-      dockerfile: ./web/prod.Dockerfile
+      dockerfile: ./web/Dockerfile
+    env_file:
+      - ./web/.env.development
+    volumes:
+      - ./web:/usr/src/app/web
     networks:
       - web
   api:
-    container_name: api_prod
+    container_name: api_dev
     build:
       context: .
-      dockerfile: ./api/prod.Dockerfile
+      dockerfile: ./api/Dockerfile
+    ports:
+      - "3000:3000"
     env_file:
-      - ./api/.env.production
+      - ./api/.env.development
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+    volumes:
+      - ./api:/usr/src/app/api
     networks:
       - api
       - database
       - cache
 
   postgres:
-    container_name: postgres_prod
+    container_name: postgres_dev
     image: postgres:16
     shm_size: 128mb
+    ports:
+      - "5432:5432"
     env_file:
-      - ./infra/.env
+      - ./infra/.env.development
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -52,10 +62,12 @@ services:
       - database
 
   redis:
-    container_name: redis_prod
+    container_name: redis_dev
     image: redis:8.2.3-alpine
+    ports:
+      - "6379:6379"
     env_file:
-      - ./infra/.env
+      - ./infra/.env.development
     volumes:
       - redis-data:/data
     healthcheck:

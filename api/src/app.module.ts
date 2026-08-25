@@ -64,7 +64,8 @@ import { AppController } from './app.controller';
           return { traceId, spanId };
         },
         transport:
-          process.env.NODE_ENV === 'production'
+          process.env.OTEL_EXPORTER_OTLP_ENDPOINT &&
+          process.env.OTEL_EXPORTER_OTLP_HEADERS
             ? {
                 target: 'pino-opentelemetry-transport',
                 options: {
@@ -74,7 +75,7 @@ import { AppController } from './app.controller';
                   },
                   headers: {
                     Authorization:
-                      process.env.OTEL_EXPORTER_OTLP_HEADERS?.replace(
+                      process.env.OTEL_EXPORTER_OTLP_HEADERS.replace(
                         'Authorization=',
                         '',
                       ),
