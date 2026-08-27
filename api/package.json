@@ -87,6 +87,6 @@
     "typescript-eslint": "^8.62.0",
     "unplugin-swc": "^1.5.10",
     "vite-tsconfig-paths": "^6.0.4",
-    "vitest": "^4.1.0"
+    "vitest": "^4.1.11"
   }
 }
