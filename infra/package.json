@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "pg": "^8.22.0",
-    "ioredis": "^5.11.0",
+    "ioredis": "^6.0.0",
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.0"
   }
