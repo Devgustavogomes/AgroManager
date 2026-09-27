@@ -39,7 +39,7 @@ services:
     image: postgres:16
     shm_size: 128mb
     env_file:
-      - ./infra/.env
+      - ./api/.env.production
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -54,8 +54,6 @@ services:
   redis:
     container_name: redis_prod
     image: redis:8.2.3-alpine
-    env_file:
-      - ./infra/.env
     volumes:
       - redis-data:/data
     healthcheck:

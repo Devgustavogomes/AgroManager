@@ -3,7 +3,7 @@ import { CultureContract } from '../../domain/repositories/cultureRepository.con
 import { UpdateCultureInput } from '../dto/updateCulture.dto';
 import { CultureOutput } from '../dto/cultureOutput.dto';
 import { CultureMapper } from '../../infrastructure/culture.mapper';
-import { DatabaseContract } from '@agromanager/infra/database/contract';
+import { DatabaseContract } from '../../../../shared/infrastructure/database/contract';
 import { Area } from 'src/shared/domain/value-objects/area';
 import { ValidateCultureCropsAreaService } from '../../../../shared/domain/services/validateCultureCropsArea.service';
 import { NotFoundError } from 'src/shared/domain/errors/notFoundError';

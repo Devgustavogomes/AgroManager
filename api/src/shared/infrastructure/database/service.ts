@@ -5,17 +5,17 @@ import {
   Inject,
   OnModuleDestroy,
   OnModuleInit,
-} from "@nestjs/common";
-import { Pool } from "pg";
-import type { PoolClient } from "pg";
-import { DatabaseContract } from "./contract";
-import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
+} from '@nestjs/common';
+import { Pool } from 'pg';
+import type { PoolClient } from 'pg';
+import { DatabaseContract } from './contract';
+import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 @Injectable()
 export class DatabaseService
   implements OnModuleDestroy, OnModuleInit, DatabaseContract
 {
   constructor(
-    @Inject("DATABASE_CLIENT") private readonly pool: Pool,
+    @Inject('DATABASE_CLIENT') private readonly pool: Pool,
     @InjectPinoLogger(DatabaseService.name) private readonly logger: PinoLogger,
   ) {}
 
@@ -23,9 +23,9 @@ export class DatabaseService
     try {
       const client = await this.pool.connect();
       client.release();
-      this.logger.info("[Database] connected!");
+      this.logger.info('[Database] connected!');
     } catch (err) {
-      this.logger.error(err, "[Database] connection failed");
+      this.logger.error(err, '[Database] connection failed');
       throw err;
     }
   }
@@ -51,15 +51,15 @@ export class DatabaseService
   async transaction<T>(fn: (client: PoolClient) => Promise<T>): Promise<T> {
     const client = await this.pool.connect();
     try {
-      await client.query("BEGIN");
+      await client.query('BEGIN');
 
       const result = await fn(client);
 
-      await client.query("COMMIT");
+      await client.query('COMMIT');
 
       return result;
     } catch (error) {
-      await client.query("ROLLBACK");
+      await client.query('ROLLBACK');
 
       throw error;
     } finally {

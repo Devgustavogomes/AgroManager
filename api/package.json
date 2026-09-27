@@ -6,7 +6,6 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "prebuild": "tsc -b ../infra --force",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "nest start",
@@ -18,11 +17,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
-    "migrate:prod": "node-pg-migrate up --envPath .env.production --migrations-dir ../infra/database/migrations",
-    "migrate:dev": "node-pg-migrate up --envPath .env.development --migrations-dir ../infra/database/migrations"
+    "migrate:prod": "node-pg-migrate up --migrations-dir ./src/shared/infrastructure/database/migrations",
+    "migrate:dev": "node-pg-migrate up --envPath .env.development --migrations-dir ./src/shared/infrastructure/database/migrations"
   },
   "dependencies": {
-    "@agromanager/infra": "*",
     "@nest-lab/throttler-storage-redis": "^1.2.0",
     "@nestjs-modules/ioredis": "^2.2.2",
     "@nestjs/common": "^11.1.26",
@@ -51,6 +49,8 @@
     "node-pg-migrate": "^9.0.0",
     "pino-http": "^11.0.0",
     "pino-opentelemetry-transport": "^4.0.2",
+    "pg": "^8.22.0",
+    "ioredis": "^6.0.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "uuid": "^14.0.1",

@@ -5,14 +5,13 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 COPY api/package*.json ./api/
-COPY infra/package*.json ./infra/
+COPY web/package*.json ./web/
+COPY workers/package*.json ./workers/
 COPY commitlint.config.js ./
 
 RUN npm ci --include=dev --ignore-scripts
 
 COPY . .
-
-RUN npm run build --workspace=infra
 
 RUN npm run test --workspace=api
 
@@ -33,13 +32,12 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 COPY api/package*.json ./api/
-COPY infra/package*.json ./infra/
+COPY web/package*.json ./web/
+COPY workers/package*.json ./workers/
 
 RUN npm ci --omit=dev --ignore-scripts
 
 COPY --from=build-stage /usr/src/app/api/dist ./api/dist
-COPY --from=build-stage /usr/src/app/infra/dist ./infra/dist
-
-COPY --from=build-stage /usr/src/app/infra/database/migrations ./infra/database/migrations
+COPY --from=build-stage /usr/src/app/api/src/shared/infrastructure/database/migrations ./api/src/shared/infrastructure/database/migrations
 
 CMD [ "npm", "run", "start:prod", "--workspace=api"]

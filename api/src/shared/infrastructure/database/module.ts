@@ -1,7 +1,7 @@
-import { Global, Module } from "@nestjs/common";
-import { DatabaseClientProvider } from "./provider";
-import { DatabaseService } from "./service";
-import { DatabaseContract } from "./contract";
+import { Global, Module } from '@nestjs/common';
+import { DatabaseClientProvider } from './provider';
+import { DatabaseService } from './service';
+import { DatabaseContract } from './contract';
 
 @Global()
 @Module({

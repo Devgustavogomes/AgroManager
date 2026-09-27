@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ProducerModule } from './modules/producer/infrastructure/producer.module';
-import { DatabaseModule } from '@agromanager/infra/database/module';
+import { DatabaseModule } from './shared/infrastructure/database/module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './shared/infrastructure/config/configuration';
 import { envSchema } from './shared/infrastructure/config/dto/env.dto';
 import { AuthModule } from './modules/auth/infrastructure/auth.module';
-import { RedisModule } from '@agromanager/infra/redis/module';
+import { RedisModule } from './shared/infrastructure/redis/module';
 import { MigrationModule } from './modules/migration/infrastructure/migration.module';
 import { CultureModule } from './modules/culture/infrastructure/culture.module';
 import { PropertyModule } from './modules/property/infrastructure/property.module';
