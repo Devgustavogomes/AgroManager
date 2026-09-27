@@ -1,10 +1,11 @@
-FROM node:26.7
+FROM node:26.9
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 COPY api/package*.json ./api/
-COPY infra/package*.json ./infra/
+COPY web/package*.json ./web/
+COPY workers/package*.json ./workers/
 
 RUN npm install
 

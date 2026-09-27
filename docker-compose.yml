@@ -27,19 +27,20 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
+      redis-cache:
         condition: service_healthy
     networks:
       - api
       - database
       - cache
+      - queue
 
   postgres:
     container_name: postgres_prod
     image: postgres:16
     shm_size: 128mb
     env_file:
-      - ./infra/.env
+      - ./api/.env.production
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -51,13 +52,11 @@ services:
     networks:
       - database
 
-  redis:
-    container_name: redis_prod
+  redis-cache:
+    container_name: cache_prod
     image: redis:8.2.3-alpine
-    env_file:
-      - ./infra/.env
     volumes:
-      - redis-data:/data
+      - redis-cache-data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -67,12 +66,29 @@ services:
     networks:
       - cache
 
+  redis-queue:
+    container_name: queue_prod
+    image: redis:8.2.3-alpine
+    command: ["redis-server", "--maxmemory-policy", "noeviction"]
+    volumes:
+      - redis-queue-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - queue
+
 volumes:
   postgres-data:
-  redis-data:
+  redis-cache-data:
+  redis-queue-data:
 
 networks:
   web:
   api:
   database:
   cache:
+  queue:

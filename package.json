@@ -5,8 +5,7 @@
   "workspaces": [
     "api",
     "web",
-    "workers",
-    "infra"
+    "workers"
   ],
   "scripts": {
     "compose:up": "docker compose -f ./docker-compose.yml up",
@@ -23,8 +22,8 @@
     "test": "npm run test -ws --if-present",
     "lint": "npm run lint -ws --if-present",
     "format": "npm run format -ws --if-present",
-    "migrate": "node-pg-migrate up --envPath .env.development",
-    "setup:env": "node -e \"const f=require('fs');['api','web','workers','infra'].forEach(d=>['development','test','production'].forEach(e=>{const t=d+'/.env.'+e;if(!f.existsSync(t))f.copyFileSync(d+'/.env.example',t)}))\"",
+    "migrate": "npm run migrate:dev --workspace=api",
+    "setup:env": "node -e \"const f=require('fs');['api','web','workers'].forEach(d=>['development','test','production'].forEach(e=>{const t=d+'/.env.'+e;if(!f.existsSync(t))f.copyFileSync(d+'/.env.example',t)}))\"",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -34,7 +33,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.6",
     "husky": "^9.1.7",
-    "lint-staged": "^17.3.0",
+    "lint-staged": "^17.4.1",
     "node-pg-migrate": "^9.0.0",
     "pg": "^8.22.0"
   },
@@ -47,9 +46,6 @@
       "eslint --fix"
     ],
     "workers/**/*.{ts,tsx}": [
-      "eslint --fix"
-    ],
-    "infra/**/*.{ts,tsx}": [
       "eslint --fix"
     ]
   }

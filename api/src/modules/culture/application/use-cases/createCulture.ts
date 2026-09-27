@@ -5,7 +5,7 @@ import { CultureOutput } from '../dto/cultureOutput.dto';
 import { Culture } from '../../domain/entities/culture.entity';
 import { Area } from 'src/shared/domain/value-objects/area';
 import { CultureMapper } from '../../infrastructure/culture.mapper';
-import { DatabaseContract } from '@agromanager/infra/database/contract';
+import { DatabaseContract } from '../../../../shared/infrastructure/database/contract';
 import { ValidateCultureAreaService } from '../../domain/services/validateCultureArea.service';
 import { EventEmitterContract } from 'src/shared/domain/providers/emitterProvider.contract';
 

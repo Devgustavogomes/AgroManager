@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ProducerModule } from './modules/producer/infrastructure/producer.module';
-import { DatabaseModule } from '@agromanager/infra/database/module';
+import { DatabaseModule } from './shared/infrastructure/database/module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './shared/infrastructure/config/configuration';
 import { envSchema } from './shared/infrastructure/config/dto/env.dto';
 import { AuthModule } from './modules/auth/infrastructure/auth.module';
-import { RedisModule } from '@agromanager/infra/redis/module';
+import { RedisModule } from './shared/infrastructure/redis/module';
 import { MigrationModule } from './modules/migration/infrastructure/migration.module';
 import { CultureModule } from './modules/culture/infrastructure/culture.module';
 import { PropertyModule } from './modules/property/infrastructure/property.module';
@@ -37,14 +37,14 @@ import { AppController } from './app.controller';
         throttlers: [{ ttl: 60000, limit: 30 }],
 
         storage: new ThrottlerStorageRedisService({
-          username: config.get<string>('REDIS_USERNAME'),
-          password: config.get<string>('REDIS_PASSWORD'),
-          port: Number(config.get<string>('REDIS_PORT')),
-          host: config.get<string>('REDIS_HOST'),
+          username: config.get<string>('redis.REDIS_USERNAME'),
+          password: config.get<string>('redis.REDIS_PASSWORD'),
+          port: Number(config.get<string>('redis.REDIS_PORT')),
+          host: config.get<string>('redis.REDIS_HOST'),
           family: 4,
           tls:
-            config.get<string>('REDIS_SSL') === 'true'
-              ? { servername: config.get<string>('REDIS_HOST') }
+            config.get<string>('redis.REDIS_SSL') === 'true'
+              ? { servername: config.get<string>('redis.REDIS_HOST') }
               : undefined,
           retryStrategy: (times: number) => Math.min(times * 50, 2000),
           enableReadyCheck: true,

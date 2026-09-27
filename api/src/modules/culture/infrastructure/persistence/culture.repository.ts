@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { DatabaseContract } from '@agromanager/infra/database/contract';
+import { DatabaseContract } from '../../../../shared/infrastructure/database/contract';
 import { Culture } from '../../domain/entities/culture.entity';
 import { CultureMapper } from '../culture.mapper';
 import {

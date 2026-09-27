@@ -1,4 +1,4 @@
-import { DatabaseContract } from '@agromanager/infra/database/contract';
+import { DatabaseContract } from '../../../../shared/infrastructure/database/contract';
 import { Property } from '../../domain/entities/property.entity';
 import { Area } from '../../../../shared/domain/value-objects/area';
 import { Slug } from '../../domain/value-object/slug';

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseContract } from '@agromanager/infra/database/contract';
+import { DatabaseContract } from '../../../../shared/infrastructure/database/contract';
 import { ProducerLogin } from '../../domain/entities/producerLogin.entity';
 import {
   AuthContract,
   ProducerLoginPersistence,
 } from '../../domain/repositories/authRepository.contract';
 import { AuthMapper } from '../auth.mapper';
-import { CacheContract } from '@agromanager/infra/redis/contract';
+import { CacheContract } from '../../../../shared/infrastructure/redis/contract';
 
 @Injectable()
 export class AuthRepository implements AuthContract {

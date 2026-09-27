@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { runner } from 'node-pg-migrate';
 import { join } from 'node:path';
 import { PoolClient } from 'pg';
-import { DatabaseContract } from '@agromanager/infra/database/contract';
+import { DatabaseContract } from '../../../../shared/infrastructure/database/contract';
 import { MigrationProviderContract } from '../../domain/providers/migration.provider.contract';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 
@@ -21,7 +21,14 @@ export class MigrationProvider implements MigrationProviderContract {
       return await runner({
         dbClient: client,
         direction: 'up',
-        dir: join(process.cwd(), '..', 'infra', 'database', 'migrations'),
+        dir: join(
+          process.cwd(),
+          'src',
+          'shared',
+          'infrastructure',
+          'database',
+          'migrations',
+        ),
         dryRun: true,
         migrationsTable: 'pgmigrations',
       });
@@ -40,7 +47,14 @@ export class MigrationProvider implements MigrationProviderContract {
       await runner({
         dbClient: client,
         direction: 'up',
-        dir: join(process.cwd(), '..', 'infra', 'database', 'migrations'),
+        dir: join(
+          process.cwd(),
+          'src',
+          'shared',
+          'infrastructure',
+          'database',
+          'migrations',
+        ),
         dryRun: false,
         migrationsTable: 'pgmigrations',
       });
