@@ -1,32 +1,41 @@
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
 import { PinoLogger } from 'nestjs-pino';
+import { CacheConnectionContract } from './connection.contract';
 
-export const redisProvider = {
-  provide: 'REDIS_CLIENT',
-  inject: [ConfigService, PinoLogger],
-  useFactory: (configService: ConfigService, logger: PinoLogger) => {
-    logger.setContext('redis-provider');
+@Injectable()
+export class RedisProvider implements CacheConnectionContract<Redis> {
+  private readonly client: Redis;
 
-    const client = new Redis({
-      username: configService.get<string>('REDIS_USERNAME'),
-      password: configService.get<string>('REDIS_PASSWORD'),
-      port: Number(configService.get<string>('REDIS_PORT')),
-      host: configService.get<string>('REDIS_HOST'),
+  constructor(config: ConfigService, logger: PinoLogger) {
+    logger.setContext('redis-cache-provider');
+
+    this.client = new Redis({
+      username: config.get<string>('redis.REDIS_USERNAME'),
+      password: config.get<string>('redis.REDIS_PASSWORD'),
+      port: Number(config.get<string>('redis.REDIS_PORT')),
+      host: config.get<string>('redis.REDIS_HOST'),
       family: 4,
       tls:
-        configService.get<string>('REDIS_SSL') === 'true'
-          ? { servername: configService.get<string>('REDIS_HOST') }
+        config.get<string>('redis.REDIS_SSL') === 'true'
+          ? { servername: config.get<string>('redis.REDIS_HOST') }
           : undefined,
       retryStrategy: (times) => Math.min(times * 50, 2000),
       enableReadyCheck: true,
     });
 
-    client.on('connect', () => logger.info('[Redis] connected!'));
-    client.on('ready', () => logger.info('[Redis] Ready for commands!'));
-    client.on('error', (err) => logger.error('[Redis] Error:', err));
-    client.on('reconnecting', () => logger.warn('[Redis] Reconnecting...'));
+    this.client.on('connect', () => logger.info('[Redis-Cache] connected!'));
+    this.client.on('ready', () =>
+      logger.info('[Redis-Cache] Ready for commands!'),
+    );
+    this.client.on('error', (err) => logger.error('[Redis-Cache] Error:', err));
+    this.client.on('reconnecting', () =>
+      logger.warn('[Redis-Cache] Reconnecting...'),
+    );
+  }
 
-    return client;
-  },
-};
+  getClient(): Redis {
+    return this.client;
+  }
+}

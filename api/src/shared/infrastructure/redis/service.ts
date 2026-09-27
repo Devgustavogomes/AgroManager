@@ -1,10 +1,15 @@
-import { Inject, Injectable, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import Redis from 'ioredis';
 import { CacheContract } from './contract';
+import { CacheConnectionContract } from './connection.contract';
 
 @Injectable()
 export class RedisService implements OnModuleDestroy, CacheContract {
-  constructor(@Inject('REDIS_CLIENT') private readonly redis: Redis) {}
+  private readonly redis: Redis;
+
+  constructor(connection: CacheConnectionContract<Redis>) {
+    this.redis = connection.getClient();
+  }
 
   async onModuleDestroy() {
     await this.redis.quit();
