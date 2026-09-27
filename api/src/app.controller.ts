@@ -7,8 +7,8 @@ import {
   MemoryHealthIndicator,
   DiskHealthIndicator,
 } from '@nestjs/terminus';
-import { DatabaseContract } from '@agromanager/infra/database/contract';
-import { CacheContract } from '@agromanager/infra/redis/contract';
+import { DatabaseContract } from './shared/infrastructure/database/contract';
+import { CacheContract } from './shared/infrastructure/redis/contract';
 
 @Controller('health')
 export class AppController {

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { NotificationContract } from '../../domain/repositories/notificationRepository.contract';
-import { DatabaseContract } from '@agromanager/infra/database/contract';
+import { DatabaseContract } from '../../../../shared/infrastructure/database/contract';
 import { Notification } from 'src/modules/notification/domain/entities/notification.entity';
 import { NotificationMapper } from '../notification.mapper';
 import { NotificationPersistence } from '../../domain/providers/notificationProvider.contract';

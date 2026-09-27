@@ -60,12 +60,11 @@ O AgroManager é uma plataforma completa para gestão agrícola, projetada para 
 - **Acompanhem safras (crops)** com status de plantio, colheita esperada e pragas
 - **Controlem acesso** através de autenticação segura com tokens JWT e sessões revogáveis via Redis
 
-O projeto é estruturado como um **monorepo** que abriga quatro workspaces independentes:
+O projeto é estruturado como um **monorepo** que abriga três workspaces independentes:
 
 | Workspace  | Descrição                                                  | Status                         |
 | ---------- | ---------------------------------------------------------- | ------------------------------ |
 | `api/`     | API REST construída com NestJS                             | 🟢 Em desenvolvimento avançado |
-| `infra/`   | Módulos de infraestrutura compartilhados (Database, Redis) | 🟢 Em uso                      |
 | `web/`     | Frontend web com React + Vite                              | 🟡 Em desenvolvimento inicial  |
 | `workers/` | Workers para processamento assíncrono                      | 🔴 Não iniciado                |
 
@@ -93,15 +92,9 @@ AgroManager/
 │   │       │   ├── errors/       # Hierarquia de erros customizados
 │   │       │   ├── providers/    # Contratos de providers (EventEmitter)
 │   │       │   └── value-object/ # Value Objects compartilhados
-│   │       ├── filters/          # Global Error Handler
-│   │       ├── guards/           # Guards de autenticação e autorização
-│   │       └── types/            # Tipos compartilhados
+│   │       └── infrastructure/   # Banco de dados, Redis, migrações e adaptadores da API
 │   ├── Dockerfile                # Container de desenvolvimento
 │   └── prod.Dockerfile           # Multi-stage build para produção
-│
-├── infra/                        # Módulos de infraestrutura compartilhados
-│   ├── database/                 # DatabaseModule (pg + connection pool)
-│   └── redis/                    # RedisModule (ioredis + session management)
 │
 ├── web/                          # Frontend (React + Vite)
 │   ├── src/
@@ -120,7 +113,6 @@ AgroManager/
 │
 ├── workers/                      # Workers (NestJS) — 🔴 Não iniciado
 │
-├── migrations/                   # Migrations SQL do banco de dados
 ├── docker-compose.yml            # Orquestração local (API + Postgres + Redis + Nginx)
 ├── nginx.conf                    # Reverse proxy para a API
 └── .github/
@@ -128,7 +120,7 @@ AgroManager/
     └── dependabot.yml            # Atualização automática de dependências
 ```
 
-O monorepo utiliza **NPM Workspaces** para gerenciar dependências de forma centralizada, com um único `package-lock.json` na raiz, garantindo consistência de versões entre todos os subprojetos. O workspace `infra/` é consumido pelos demais como dependência interna via alias `@agromanager/infra`.
+O monorepo utiliza **NPM Workspaces** para gerenciar dependências de forma centralizada, com um único `package-lock.json` na raiz. A API mantém seus módulos de banco de dados, Redis e migrações em `api/src/shared/infrastructure/`.
 
 ---
 
@@ -831,11 +823,11 @@ O Nginx foi configurado para suportar **WebSocket** (necessário para as notific
 
 A API em produção usa um **multi-stage Dockerfile** (`prod.Dockerfile`) com 3 estágios:
 
-1. **test-stage** — Instala dependências, compila o workspace `infra/` e roda os testes da API
+1. **test-stage** — Instala dependências e roda os testes da API
 2. **build-stage** — Reutiliza o estágio anterior e compila o workspace `api/`
 3. **runtime** — Instala apenas dependências de produção, copia os `dist/` compilados e as migrations
 
-O Dockerfile opera no contexto do monorepo (build context na raiz), permitindo que o `npm ci` resolva corretamente os workspaces `api/` e `infra/` com um único `package-lock.json`.
+O Dockerfile opera no contexto do monorepo (build context na raiz), permitindo que o `npm ci` resolva os workspaces com um único `package-lock.json`.
 
 ---
 
@@ -1004,12 +996,11 @@ Após rodar qualquer um dos comandos acima, acesse a aplicação em:
 
 Cada workspace possui seu próprio `.env.example` com as variáveis necessárias. O comando `npm run setup:env` cria automaticamente os arquivos `.env.development`, `.env.test` e `.env.production` a partir dos exemplos.
 
-| Workspace  | Variáveis                                                |
-| ---------- | -------------------------------------------------------- |
-| `api/`     | Porta, banco de dados, JWT secrets, Redis, OTLP Endpoint |
-| `infra/`   | Credenciais do PostgreSQL e Redis para Docker Compose    |
-| `web/`     | URL da API, porta do frontend                            |
-| `workers/` | Porta do worker                                          |
+| Workspace  | Variáveis                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| `api/`     | Porta, banco de dados, JWT, Redis, OTLP e credenciais do PostgreSQL para Docker Compose   |
+| `web/`     | URL da API, porta do frontend                                                              |
+| `workers/` | Porta do worker                                                                            |
 
 **Variável de observabilidade:**
 
@@ -1056,7 +1047,7 @@ Consulte o `.env.example` de cada workspace para ver todas as variáveis dispon�
 ## 🗺 Roadmap
 
 - [x] Estrutura do monorepo com NPM Workspaces
-- [x] Workspace `infra/` com módulos compartilhados (Database + Redis)
+- [x] Módulos de banco de dados e Redis próprios da API
 - [x] API — Módulo de Autenticação (JWT + Redis)
 - [x] API — CRUD de Produtores com DDD
 - [x] API — CRUD de Propriedades com Value Objects

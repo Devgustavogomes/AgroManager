@@ -1,4 +1,4 @@
-import { DatabaseContract } from '@agromanager/infra/database/contract';
+import { DatabaseContract } from '../../../../shared/infrastructure/database/contract';
 import { Injectable } from '@nestjs/common';
 import { PoolClient } from 'pg';
 import {
