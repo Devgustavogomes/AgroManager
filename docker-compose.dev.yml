@@ -33,7 +33,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
+      redis-cache:
         condition: service_healthy
     volumes:
       - ./api:/usr/src/app/api
@@ -41,6 +41,7 @@ services:
       - api
       - database
       - cache
+      - queue
 
   postgres:
     container_name: postgres_dev
@@ -61,13 +62,13 @@ services:
     networks:
       - database
 
-  redis:
-    container_name: redis_dev
+  redis-cache:
+    container_name: cache
     image: redis:8.2.3-alpine
     ports:
       - "6379:6379"
     volumes:
-      - redis-data:/data
+      - redis-cache-data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -77,12 +78,31 @@ services:
     networks:
       - cache
 
+  redis-queue:
+    container_name: queue
+    image: redis:8.2.3-alpine
+    command: ["redis-server", "--maxmemory-policy", "noeviction"]
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis-queue-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - queue
+
 volumes:
   postgres-data:
-  redis-data:
+  redis-cache-data:
+  redis-queue-data:
 
 networks:
   web:
   api:
   database:
   cache:
+  queue:

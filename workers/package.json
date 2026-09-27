@@ -22,11 +22,14 @@
   "dependencies": {
     "@nestjs/bullmq": "^12.0.0",
     "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.1.29",
     "@nestjs/platform-express": "^11.1.28",
     "bullmq": "^6.3.9",
+    "nestjs-pino": "^4.6.1",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",
