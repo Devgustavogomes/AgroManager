@@ -1,4 +1,4 @@
-FROM node:26.9 AS build-stage
+FROM node:26.11 AS build-stage
 
 WORKDIR /usr/src/app
 
