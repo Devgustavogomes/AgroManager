@@ -20,6 +20,8 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@agromanager/eslint-config": "*",
+    "@agromanager/typescript-config": "*",
     "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^26.2.0",

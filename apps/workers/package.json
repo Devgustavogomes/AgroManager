@@ -32,6 +32,8 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@agromanager/eslint-config": "*",
+    "@agromanager/typescript-config": "*",
     "@eslint/eslintrc": "^3.3.6",
     "@eslint/js": "^10.0.1",
     "@nestjs/cli": "^11.0.0",
