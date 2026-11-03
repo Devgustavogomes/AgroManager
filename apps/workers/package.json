@@ -7,6 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
+    "dev": "nest start --watch",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -26,14 +27,15 @@
     "@nestjs/core": "^11.1.29",
     "@nestjs/platform-express": "^11.1.28",
     "bullmq": "^6.3.9",
+    "ioredis": "^6.0.0",
     "nestjs-pino": "^4.6.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "zod": "^4.6.5"
   },
   "devDependencies": {
-    "@agromanager/eslint-config": "*",
-    "@agromanager/typescript-config": "*",
+    "@agromanager/eslint-config": "workspace:*",
+    "@agromanager/typescript-config": "workspace:*",
     "@eslint/eslintrc": "^3.3.6",
     "@eslint/js": "^10.0.1",
     "@nestjs/cli": "^11.0.0",

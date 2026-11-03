@@ -1,6 +1,9 @@
 # Dependency directories
 node_modules/
 **/node_modules/
+.turbo/
+**/.turbo/
+.pnpm-store/
 
 # Git & configuration
 .git/
