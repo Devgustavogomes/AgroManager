@@ -1,43 +1,48 @@
-FROM node:26.9 AS test-stage
+FROM node:26.9 AS pruner
+
+RUN corepack enable
 
 WORKDIR /usr/src/app
-
-
-COPY package*.json ./
-COPY apps/api/package*.json ./apps/api/
-COPY apps/web/package*.json ./apps/web/
-COPY apps/workers/package*.json ./apps/workers/
-COPY commitlint.config.js ./
-
-RUN npm ci --include=dev --ignore-scripts
 
 COPY . .
 
-RUN npm run test --workspace=api
+RUN pnpm dlx turbo@2.11.10 prune api --docker
 
 
+FROM node:26.9 AS builder
 
-FROM node:26.9 AS build-stage
-
-WORKDIR /usr/src/app
-
-COPY --from=test-stage /usr/src/app .
-
-RUN npm run build --workspace=api
-
-
-FROM node:26.9
+RUN corepack enable
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
-COPY apps/api/package*.json ./apps/api/
-COPY apps/web/package*.json ./apps/web/
-COPY apps/workers/package*.json ./apps/workers/
+COPY --from=pruner /usr/src/app/out/json/ .
+COPY --from=pruner /usr/src/app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=pruner /usr/src/app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY .npmrc ./
 
-RUN npm ci --omit=dev --ignore-scripts
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
-COPY --from=build-stage /usr/src/app/apps/api/dist ./apps/api/dist
-COPY --from=build-stage /usr/src/app/apps/api/src/shared/infrastructure/database/migrations ./apps/api/src/shared/infrastructure/database/migrations
+COPY --from=pruner /usr/src/app/out/full/ .
+COPY turbo.json ./
 
-CMD [ "npm", "run", "start:prod", "--workspace=api"]
+RUN pnpm turbo run test --filter=api
+RUN pnpm turbo run build --filter=api
+
+
+FROM node:26.9 AS runner
+
+RUN corepack enable
+
+WORKDIR /usr/src/app
+
+COPY --from=pruner /usr/src/app/out/json/ .
+COPY --from=pruner /usr/src/app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=pruner /usr/src/app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY .npmrc ./
+
+RUN pnpm install --prod --frozen-lockfile --ignore-scripts
+
+COPY --from=builder /usr/src/app/apps/api/dist ./apps/api/dist
+COPY --from=builder /usr/src/app/apps/api/src/shared/infrastructure/database/migrations ./apps/api/src/shared/infrastructure/database/migrations
+
+CMD ["pnpm", "--filter", "api", "run", "start:prod"]
