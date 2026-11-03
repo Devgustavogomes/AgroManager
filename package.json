@@ -2,10 +2,7 @@
   "name": "agromanager-monorepo",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "packageManager": "pnpm@12.16.1",
   "scripts": {
     "compose:up": "docker compose -f ./docker-compose.yml up",
     "compose:build": "docker compose -f ./docker-compose.yml up --build",
@@ -17,11 +14,12 @@
     "compose:dev:stop": "docker compose -f ./docker-compose.dev.yml stop",
     "compose:dev:start": "docker compose -f ./docker-compose.dev.yml start",
     "compose:dev:down": "docker compose -f ./docker-compose.dev.yml down",
-    "build": "npm run build -ws --if-present",
-    "test": "npm run test -ws --if-present",
-    "lint": "npm run lint -ws --if-present",
-    "format": "npm run format -ws --if-present",
-    "migrate": "npm run migrate:dev --workspace=api",
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "migrate": "pnpm --filter api run migrate:dev",
     "setup:env": "node -e \"const f=require('fs');['apps/api','apps/web','apps/workers'].forEach(d=>['development','test','production'].forEach(e=>{const t=d+'/.env.'+e;if(!f.existsSync(t))f.copyFileSync(d+'/.env.example',t)}))\"",
     "prepare": "husky"
   },
@@ -34,12 +32,13 @@
     "husky": "^9.1.7",
     "lint-staged": "^17.4.1",
     "node-pg-migrate": "^9.0.0",
-    "pg": "^8.22.0"
+    "pg": "^8.22.0",
+    "turbo": "^2.11.10"
   },
   "lint-staged": {
     "apps/api/**/*.{ts,tsx}": [
       "eslint --fix",
-      "npm run test --workspace=api -- --changed"
+      "pnpm --filter api run test -- --changed"
     ],
     "apps/web/**/*.{ts,tsx}": [
       "eslint --fix"

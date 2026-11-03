@@ -1,0 +1,11 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+allowBuilds:
+  "@parcel/watcher": true
+  "@scarf/scarf": false
+  "@swc/core": true
+  cpu-features: false
+  msgpackr-extract: true
+  protobufjs: true
+  ssh2: false
