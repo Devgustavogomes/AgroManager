@@ -14,16 +14,16 @@ services:
     container_name: web_prod
     build:
       context: .
-      dockerfile: ./web/prod.Dockerfile
+      dockerfile: ./apps/web/prod.Dockerfile
     networks:
       - web
   api:
     container_name: api_prod
     build:
       context: .
-      dockerfile: ./api/prod.Dockerfile
+      dockerfile: ./apps/api/prod.Dockerfile
     env_file:
-      - ./api/.env.production
+      - ./apps/api/.env.production
     depends_on:
       postgres:
         condition: service_healthy
@@ -40,7 +40,7 @@ services:
     image: postgres:16
     shm_size: 128mb
     env_file:
-      - ./api/.env.production
+      - ./apps/api/.env.production
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:

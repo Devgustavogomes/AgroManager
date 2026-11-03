@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "api",
-    "web",
-    "workers"
+    "apps/*"
   ],
   "scripts": {
     "compose:up": "docker compose -f ./docker-compose.yml up",
@@ -23,7 +21,7 @@
     "lint": "npm run lint -ws --if-present",
     "format": "npm run format -ws --if-present",
     "migrate": "npm run migrate:dev --workspace=api",
-    "setup:env": "node -e \"const f=require('fs');['api','web','workers'].forEach(d=>['development','test','production'].forEach(e=>{const t=d+'/.env.'+e;if(!f.existsSync(t))f.copyFileSync(d+'/.env.example',t)}))\"",
+    "setup:env": "node -e \"const f=require('fs');['apps/api','apps/web','apps/workers'].forEach(d=>['development','test','production'].forEach(e=>{const t=d+'/.env.'+e;if(!f.existsSync(t))f.copyFileSync(d+'/.env.example',t)}))\"",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -38,14 +36,14 @@
     "pg": "^8.22.0"
   },
   "lint-staged": {
-    "api/**/*.{ts,tsx}": [
+    "apps/api/**/*.{ts,tsx}": [
       "eslint --fix",
       "npm run test --workspace=api -- --changed"
     ],
-    "web/**/*.{ts,tsx}": [
+    "apps/web/**/*.{ts,tsx}": [
       "eslint --fix"
     ],
-    "workers/**/*.{ts,tsx}": [
+    "apps/workers/**/*.{ts,tsx}": [
       "eslint --fix"
     ]
   }
