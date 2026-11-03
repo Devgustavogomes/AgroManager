@@ -1,0 +1,11 @@
+{
+  "name": "@agromanager/eslint-config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    "./nestjs": "./nestjs.mjs",
+    "./react": "./react.mjs"
+  }
+}
