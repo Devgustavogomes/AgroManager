@@ -4,9 +4,9 @@ WORKDIR /usr/src/app
 
 
 COPY package*.json ./
-COPY api/package*.json ./api/
-COPY web/package*.json ./web/
-COPY workers/package*.json ./workers/
+COPY apps/api/package*.json ./apps/api/
+COPY apps/web/package*.json ./apps/web/
+COPY apps/workers/package*.json ./apps/workers/
 COPY commitlint.config.js ./
 
 RUN npm ci --include=dev --ignore-scripts
@@ -31,13 +31,13 @@ FROM node:26.9
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-COPY api/package*.json ./api/
-COPY web/package*.json ./web/
-COPY workers/package*.json ./workers/
+COPY apps/api/package*.json ./apps/api/
+COPY apps/web/package*.json ./apps/web/
+COPY apps/workers/package*.json ./apps/workers/
 
 RUN npm ci --omit=dev --ignore-scripts
 
-COPY --from=build-stage /usr/src/app/api/dist ./api/dist
-COPY --from=build-stage /usr/src/app/api/src/shared/infrastructure/database/migrations ./api/src/shared/infrastructure/database/migrations
+COPY --from=build-stage /usr/src/app/apps/api/dist ./apps/api/dist
+COPY --from=build-stage /usr/src/app/apps/api/src/shared/infrastructure/database/migrations ./apps/api/src/shared/infrastructure/database/migrations
 
 CMD [ "npm", "run", "start:prod", "--workspace=api"]

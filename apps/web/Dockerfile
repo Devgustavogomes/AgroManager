@@ -3,7 +3,7 @@ FROM node:26.9
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-COPY web/package*.json ./web/
+COPY apps/web/package*.json ./apps/web/
 
 RUN npm install
 

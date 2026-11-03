@@ -7,19 +7,19 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "/api"
+    directory: "/apps/api"
     target-branch: "develop"
     schedule:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "/web"
+    directory: "/apps/web"
     target-branch: "develop"
     schedule:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "/workers"
+    directory: "/apps/workers"
     target-branch: "develop"
     schedule:
       interval: "weekly"

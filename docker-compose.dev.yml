@@ -14,29 +14,29 @@ services:
     container_name: web_dev
     build:
       context: .
-      dockerfile: ./web/Dockerfile
+      dockerfile: ./apps/web/Dockerfile
     env_file:
-      - ./web/.env.development
+      - ./apps/web/.env.development
     volumes:
-      - ./web:/usr/src/app/web
+      - ./apps/web:/usr/src/app/apps/web
     networks:
       - web
   api:
     container_name: api_dev
     build:
       context: .
-      dockerfile: ./api/Dockerfile
+      dockerfile: ./apps/api/Dockerfile
     ports:
       - "3000:3000"
     env_file:
-      - ./api/.env.development
+      - ./apps/api/.env.development
     depends_on:
       postgres:
         condition: service_healthy
       redis-cache:
         condition: service_healthy
     volumes:
-      - ./api:/usr/src/app/api
+      - ./apps/api:/usr/src/app/apps/api
     networks:
       - api
       - database
@@ -50,7 +50,7 @@ services:
     ports:
       - "5432:5432"
     env_file:
-      - ./api/.env.development
+      - ./apps/api/.env.development
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
