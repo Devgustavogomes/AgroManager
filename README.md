@@ -60,13 +60,15 @@ O AgroManager é uma plataforma completa para gestão agrícola, projetada para 
 - **Acompanhem safras (crops)** com status de plantio, colheita esperada e pragas
 - **Controlem acesso** através de autenticação segura com tokens JWT e sessões revogáveis via Redis
 
-O projeto é estruturado como um **monorepo** que abriga três workspaces independentes:
+O projeto é estruturado como um **monorepo** gerenciado com **pnpm Workspaces** e **Turborepo**:
 
-| Workspace  | Descrição                                                  | Status                         |
-| ---------- | ---------------------------------------------------------- | ------------------------------ |
-| `api/`     | API REST construída com NestJS                             | 🟢 Em desenvolvimento avançado |
-| `web/`     | Frontend web com React + Vite                              | 🟡 Em desenvolvimento inicial  |
-| `workers/` | Workers para processamento assíncrono                      | 🔴 Não iniciado                |
+| Workspace                      | Descrição                                                  | Status                         |
+| ------------------------------ | ---------------------------------------------------------- | ------------------------------ |
+| `apps/api/`                    | API REST construída com NestJS                             | 🟢 Em desenvolvimento avançado |
+| `apps/web/`                    | Frontend web com React + Vite                              | 🟡 Em desenvolvimento inicial  |
+| `apps/workers/`                | Workers para processamento assíncrono                      | 🔴 Em estruturação             |
+| `packages/eslint-config/`      | Presets compartilhados de ESLint (NestJS e React)          | 🟢 Ativo                       |
+| `packages/typescript-config/`  | Presets compartilhados de `tsconfig.json`                  | 🟢 Ativo                       |
 
 ---
 
@@ -74,53 +76,31 @@ O projeto é estruturado como um **monorepo** que abriga três workspaces indepe
 
 ```
 AgroManager/
-├── api/                          # API REST (NestJS)
-│   ├── src/
-│   │   ├── modules/              # Módulos de domínio
-│   │   │   ├── auth/             # Autenticação (JWT + Redis)
-│   │   │   ├── producer/         # Produtores (DDD completo)
-│   │   │   ├── property/         # Propriedades (DDD completo)
-│   │   │   ├── culture/          # Culturas (DDD completo)
-│   │   │   ├── crop/             # Safras (DDD completo)
-│   │   │   ├── notification/     # Notificações (WebSocket + Domain Events)
-│   │   │   └── migration/        # Execução de migrations (Admin)
-│   │   └── shared/               # Código compartilhado
-│   │       ├── config/           # Configurações e validação de env
-│   │       ├── decorators/       # Decoradores customizados
-│   │       ├── domain/           # Entidades base, Value Objects e Erros
-│   │       │   ├── entities/     # Entidades base (Entity + Notification)
-│   │       │   ├── errors/       # Hierarquia de erros customizados
-│   │       │   ├── providers/    # Contratos de providers (EventEmitter)
-│   │       │   └── value-object/ # Value Objects compartilhados
-│   │       └── infrastructure/   # Banco de dados, Redis, migrações e adaptadores da API
-│   ├── Dockerfile                # Container de desenvolvimento
-│   └── prod.Dockerfile           # Multi-stage build para produção
-│
-├── web/                          # Frontend (React + Vite)
-│   ├── src/
-│   │   ├── components/           # Componentes reutilizáveis
-│   │   │   └── ui/               # Componentes base (Button, Input, Toast)
-│   │   ├── contexts/             # React Contexts (Auth, Toast)
-│   │   ├── features/             # Módulos de feature
-│   │   │   └── auth/             # Feature de autenticação (LoginPage)
-│   │   ├── hooks/                # Custom hooks (useAuth, useToast)
-│   │   ├── routes/               # Roteamento (AppRouter, ProtectedRoute)
-│   │   ├── services/             # Serviços HTTP (Axios + Auth)
-│   │   ├── store/                # Gerenciamento de estado (token storage)
-│   │   └── types/                # Tipagens compartilhadas
-│   ├── index.html                # Entry point HTML
-│   └── vite.config.ts            # Configuração do Vite + Tailwind
-│
-├── workers/                      # Workers (NestJS) — 🔴 Não iniciado
-│
-├── docker-compose.yml            # Orquestração local (API + Postgres + Redis + Nginx)
-├── nginx.conf                    # Reverse proxy para a API
+├── apps/
+│   ├── api/                      # API REST (NestJS)
+│   │   ├── src/
+│   │   │   ├── modules/          # Módulos de domínio
+│   │   │   └── shared/           # Código compartilhado da API
+│   │   ├── Dockerfile            # Container de desenvolvimento
+│   │   └── prod.Dockerfile       # Multi-stage build com turbo prune
+│   ├── web/                      # Frontend (React + Vite)
+│   │   ├── src/
+│   │   ├── index.html
+│   │   └── vite.config.ts
+│   └── workers/                  # Workers assíncronos (NestJS + BullMQ)
+├── packages/
+│   ├── eslint-config/            # Presets ESLint (@agromanager/eslint-config)
+│   └── typescript-config/        # Presets TSConfig (@agromanager/typescript-config)
+├── turbo.json                    # Pipeline de tarefas e cache do Turborepo
+├── pnpm-workspace.yaml           # Definição dos workspaces do pnpm
+├── docker-compose.yml            # Orquestração local (API + Web + Postgres + Redis + Nginx)
+├── nginx.conf                    # Reverse proxy para a API e Web
 └── .github/
     ├── workflows/                # CI/CD pipelines
     └── dependabot.yml            # Atualização automática de dependências
 ```
 
-O monorepo utiliza **NPM Workspaces** para gerenciar dependências de forma centralizada, com um único `package-lock.json` na raiz. A API mantém seus módulos de banco de dados, Redis e migrações em `api/src/shared/infrastructure/`.
+O monorepo utiliza **pnpm Workspaces** para isolamento estrito e gerenciamento eficiente de dependências (`pnpm-lock.yaml`), combinado com **Turborepo** (`turbo.json`) para execução paralela de tarefas, ordenação topológica e cache inteligente.
 
 ---
 
@@ -819,30 +799,28 @@ A API depende de ambos via `condition: service_healthy`, evitando erros de conex
 
 O Nginx foi configurado para suportar **WebSocket** (necessário para as notificações em tempo real via Socket.IO), com os headers `Upgrade` e `Connection` configurados no proxy, além de `server_tokens off` para ocultar a versão do Nginx nos headers de resposta.
 
-#### Multi-stage Dockerfile
+#### Multi-stage Dockerfile com `turbo prune`
 
-A API em produção usa um **multi-stage Dockerfile** (`prod.Dockerfile`) com 3 estágios:
+A API e o Web em produção usam **multi-stage Dockerfiles** (`prod.Dockerfile`) otimizados com `turbo prune --docker`:
 
-1. **test-stage** — Instala dependências e roda os testes da API
-2. **build-stage** — Reutiliza o estágio anterior e compila o workspace `api/`
-3. **runtime** — Instala apenas dependências de produção, copia os `dist/` compilados e as migrations
-
-O Dockerfile opera no contexto do monorepo (build context na raiz), permitindo que o `npm ci` resolva os workspaces com um único `package-lock.json`.
+1. **pruner** — Gera um subconjunto isolado do monorepo (`out/json` e `out/full`) contendo apenas os pacotes necessários para o app alvo
+2. **builder** — Instala dependências via `pnpm install --frozen-lockfile` e executa os testes/build via Turborepo
+3. **runner** — Instala apenas dependências de produção e copia os artefatos compilados
 
 ---
 
 ### CI/CD — GitHub Actions
 
-Os pipelines de CI/CD são organizados em workflows separados. Apenas o pipeline de deploy utiliza filtro de paths, garantindo que deploys ocorram somente quando o código da API é alterado:
+Os pipelines de CI/CD são organizados em workflows separados utilizando **pnpm** + **Turborepo**:
 
-| Workflow         | Trigger                          | O que faz                     |
-| ---------------- | -------------------------------- | ----------------------------- |
-| `build.yml`      | PR em `main`/`develop`           | Build de todo o monorepo      |
-| `test.yml`       | PR em `main`/`develop`           | Testes unitários (Vitest)     |
-| `linting.yml`    | PR em `main`/`develop`           | ESLint, Prettier e Commitlint |
-| `deploy-api.yml` | Push em `main` — paths: `api/**` | Deploy via Render webhook     |
+| Workflow         | Trigger                               | O que faz                     |
+| ---------------- | ------------------------------------- | ----------------------------- |
+| `build.yml`      | PR em `main`/`develop`                | Build de todo o monorepo      |
+| `test.yml`       | PR em `main`/`develop`                | Testes unitários              |
+| `linting.yml`    | PR em `main`/`develop`                | ESLint, Prettier e Commitlint |
+| `deploy-api.yml` | Push em `main` — paths: `apps/api/**` | Deploy via Render webhook     |
 
-O pipeline de testes executa `npm run test` na raiz, que roda os testes de todos os workspaces. Os workflows de build, test e linting ignoram PRs do Dependabot (quando aplicável) para economizar minutos de CI.
+O pipeline executa `pnpm run test`, `pnpm run build` e `pnpm run lint` na raiz via Turborepo. Os workflows ignoram PRs do Dependabot (quando aplicável) para economizar minutos de CI.
 
 ---
 
@@ -850,11 +828,13 @@ O pipeline de testes executa `npm run test` na raiz, que roda os testes de todos
 
 | Ferramenta     | Finalidade                                                         |
 | -------------- | ------------------------------------------------------------------ |
-| **ESLint**     | Linting de código TypeScript                                       |
+| **Turborepo**  | Orquestração paralela de builds, testes, lint e cache              |
+| **pnpm**       | Gerenciamento rápido e estrito de pacotes em workspaces            |
+| **ESLint**     | Linting de código TypeScript (`@agromanager/eslint-config`)        |
 | **Prettier**   | Formatação automática de código                                    |
 | **Commitlint** | Validação de mensagens de commit (Conventional Commits)            |
-| **Husky**      | Git hooks para executar commitlint automaticamente no `commit-msg` |
-| **Dependabot** | Atualização automática de dependências NPM e Docker                |
+| **Husky**      | Git hooks para executar commitlint e lint-staged automaticamente   |
+| **Dependabot** | Atualização automática de dependências pnpm e Docker               |
 
 ---
 
@@ -961,7 +941,7 @@ Esses indexes beneficiam diretamente a **performance do OwnerGuard**, que execut
 
 ### Pré-requisitos
 
-- [Node.js](https://nodejs.org/) v26+
+- [Node.js](https://nodejs.org/) v26+ (com Corepack / pnpm habilitado)
 - [Docker](https://www.docker.com/) e Docker Compose
 - [Git](https://git-scm.com/)
 
@@ -973,17 +953,20 @@ git clone https://github.com/Devgustavogomes/AgroManager
 cd AgroManager
 
 # Crie os arquivos .env.development e instale as dependências base
-npm run setup:env
-npm install
+pnpm run setup:env
+pnpm install
 
-# Para rodar o ambiente de DESENVOLVIMENTO (com Hot-Reload)
-npm run compose:dev:build
+# Para rodar o ambiente de DESENVOLVIMENTO via Docker (com Hot-Reload)
+pnpm run compose:dev:build
+
+# Ou para rodar todos os apps localmente com Turborepo TUI
+pnpm run dev
 
 # Para rodar o ambiente de PRODUÇÃO localmente
-npm run compose:build
+pnpm run compose:build
 ```
 
-O comando `setup:env` cria automaticamente os arquivos `.env.development`, `.env.test` e `.env.production` em cada workspace a partir do `.env.example`.
+O comando `setup:env` cria automaticamente os arquivos `.env.development`, `.env.test` e `.env.production` em cada app a partir do `.env.example`.
 
 ### Acesso Único
 
@@ -994,13 +977,13 @@ Após rodar qualquer um dos comandos acima, acesse a aplicação em:
 
 ## 🔑 Variáveis de Ambiente
 
-Cada workspace possui seu próprio `.env.example` com as variáveis necessárias. O comando `npm run setup:env` cria automaticamente os arquivos `.env.development`, `.env.test` e `.env.production` a partir dos exemplos.
+Cada app possui seu próprio `.env.example` com as variáveis necessárias. O comando `pnpm run setup:env` cria automaticamente os arquivos `.env.development`, `.env.test` e `.env.production` a partir dos exemplos.
 
-| Workspace  | Variáveis                                                                                  |
-| ---------- | ------------------------------------------------------------------------------------------ |
-| `api/`     | Porta, banco de dados, JWT, Redis, OTLP e credenciais do PostgreSQL para Docker Compose   |
-| `web/`     | URL da API, porta do frontend                                                              |
-| `workers/` | Porta do worker                                                                            |
+| App             | Variáveis                                                                                |
+| --------------- | ---------------------------------------------------------------------------------------- |
+| `apps/api/`     | Porta, banco de dados, JWT, Redis, OTLP e credenciais do PostgreSQL para Docker Compose |
+| `apps/web/`     | URL da API, porta do frontend                                                            |
+| `apps/workers/` | Porta e credenciais do Redis para filas BullMQ                                           |
 
 **Variável de observabilidade:**
 
@@ -1008,7 +991,7 @@ Cada workspace possui seu próprio `.env.example` com as variáveis necessárias
 | ----------------------------- | ----------- | -------------------------------------------------------------------------------------- |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | Não         | Endpoint do collector OTLP. Se não definida, traces e métricas são exibidos no console |
 
-Consulte o `.env.example` de cada workspace para ver todas as variáveis disponíveis.
+Consulte o `.env.example` de cada app para ver todas as variáveis disponíveis.
 
 ---
 
@@ -1016,21 +999,21 @@ Consulte o `.env.example` de cada workspace para ver todas as variáveis dispon�
 
 ### Raiz do Monorepo
 
-| Script          | Comando                     | Descrição                                              |
-| --------------- | --------------------------- | ------------------------------------------------------ |
-| `setup`         | `setup:env + compose:build` | Setup completo: cria .env's e sobe os containers       |
-| `setup:env`     | `node -e ...`               | Cria .env.{development,test,production} nos workspaces |
-| `compose:up`    | `docker compose up`         | Sobe todos os containers                               |
-| `compose:build` | `docker compose up --build` | Sobe com rebuild de imagens                            |
-| `compose:stop`  | `docker compose stop`       | Para todos os containers                               |
-| `compose:down`  | `docker compose down`       | Remove todos os containers                             |
-| `build`         | `npm run build -ws`         | Build de todos os workspaces                           |
-| `test`          | `npm run test -ws`          | Testes de todos os workspaces                          |
-| `lint`          | `npm run lint -ws`          | Lint de todos os workspaces                            |
-| `format`        | `npm run format -ws`        | Formatação de todos os workspaces                      |
-| `migrate`       | `node-pg-migrate up`        | Executa migrations                                     |
+| Script          | Comando                              | Descrição                                           |
+| --------------- | ------------------------------------ | --------------------------------------------------- |
+| `setup:env`     | `node -e ...`                        | Cria `.env.{development,test,production}` nos apps  |
+| `compose:up`    | `docker compose up`                  | Sobe todos os containers                            |
+| `compose:build` | `docker compose up --build`          | Sobe com rebuild de imagens                         |
+| `compose:stop`  | `docker compose stop`                | Para todos os containers                            |
+| `compose:down`  | `docker compose down`                | Remove todos os containers                          |
+| `dev`           | `turbo run dev`                      | Inicia todos os apps em modo watch no Turborepo TUI |
+| `build`         | `turbo run build`                    | Build paralelo com cache de todos os pacotes        |
+| `test`          | `turbo run test`                     | Testes de todos os pacotes                          |
+| `lint`          | `turbo run lint`                     | Lint de todos os pacotes                            |
+| `format`        | `turbo run format`                   | Formatação de todos os pacotes                      |
+| `migrate`       | `pnpm --filter api run migrate:dev`  | Executa migrations na API                           |
 
-### API Workspace (`-w api`)
+### API App (`pnpm --filter api <script>`)
 
 | Script       | Comando                                            | Descrição                                   |
 | ------------ | -------------------------------------------------- | ------------------------------------------- |
